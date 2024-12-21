@@ -1,0 +1,6 @@
+.banner-link:hover,
+.banner-link:focus {
+    color: #333;
+    text-decoration: none !important;
+    background-color: #fcb941;
+}
