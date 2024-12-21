@@ -208,14 +208,14 @@
                                 
                                 <div class="col-sm-6 mt-4 mb-5">
 
-                                    <div class="row">
+                                    <div class="row d-none">
                                         <div class="col-sm-6 d-flex align-items-center">
                                             <span class="">Direct cost:</span>
                                             <input type="number" class="form-control" id="direct_cost" style="width: 100px; margin-left: auto;" min="0">
                                         </div>
                                     </div>
                                     
-                                    <div class="row mt-1">
+                                    <div class="row mt-1 d-none">
                                         <div class="col-sm-6 d-flex align-items-center">
                                             <span class="">CNF cost:</span>
                                             <input type="number" class="form-control" id="cnf_cost" style="width: 100px; margin-left: auto;" min="0">
@@ -223,21 +223,21 @@
                                     </div>
 
                                     
-                                    <div class="row mt-1">
+                                    <div class="row mt-1 d-none">
                                         <div class="col-sm-6 d-flex align-items-center">
                                             <span class="">Title need:</span>
                                             <input type="number" class="form-control" id="cost_a" style="width: 100px; margin-left: auto;" min="0">
                                         </div>
                                     </div>
 
-                                    <div class="row mt-1">
+                                    <div class="row mt-1 d-none">
                                         <div class="col-sm-6 d-flex align-items-center">
                                             <span class="">Title need:</span>
                                             <input type="number" class="form-control" id="cost_b" style="width: 100px; margin-left: auto;" min="0">
                                         </div>
                                     </div>
 
-                                    <div class="row mt-1">
+                                    <div class="row mt-1 d-none">
                                         <div class="col-sm-6 d-flex align-items-center">
                                             <span class="">Others cost:</span>
                                             <input type="number" class="form-control" id="other_cost" style="width: 100px; margin-left: auto;" min="0">
