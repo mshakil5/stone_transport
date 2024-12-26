@@ -983,4 +983,31 @@ class StockController extends Controller
         return redirect()->back()->with('success', 'Missing product recorded successfully.');
     }
 
+    public function createOrder()
+    {
+        $motherVassels = MotherVassel::select('id', 'name','code')->orderby('id','DESC')->get();
+        return view('admin.stock.create_order', compact('motherVassels'));
+    }
+
+    public function storeOrder(Request $request)
+    {
+        $request->validate([
+            'consignment_number' => 'required|string|max:255',
+            'mother_vassels_id' => 'required',
+            'payment_type' => 'required|string|max:50',
+            'payment_amount' => 'required|numeric|min:0',
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $purchase = new Purchase();
+        $purchase->consignment_number = $request->consignment_number;
+        $purchase->mother_vassels_id = $request->mother_vassels_id;
+        $purchase->payment_type = $request->payment_type;
+        $purchase->payment_amount = $request->payment_amount;
+        $purchase->quantity = $request->quantity;
+        $purchase->save();
+
+        return response()->json(['message' => 'Order created successfully!'], 201);
+    }
+
 }

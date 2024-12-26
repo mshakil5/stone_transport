@@ -33,6 +33,10 @@ return new class extends Migration
             $table->decimal('cost_b',10,2)->nullable();
             $table->decimal('cnf_cost',10,2)->nullable();
             $table->decimal('other_cost',10,2)->nullable();
+            $table->decimal('payment_amount', 10, 2)->nullable();
+            $table->string('consignment_number')->nullable();
+            $table->string('payment_type')->nullable();
+            $table->decimal('quantity', 10, 2)->nullable();
 
             $table->boolean('status')->default(1);
             // 1==Processing, 2==On The Way, 3==Customs, 4==Received

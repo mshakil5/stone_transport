@@ -267,6 +267,11 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::post('/submit-return', [StockController::class, 'returnStore']);
     Route::post('/supplier-pay', [TransactionController::class,'pay'])->name('pay');
 
+    //Create Order
+    Route::get('/create-order', [StockController::class, 'createOrder'])->name('createOrder');
+
+    Route::post('/store-order', [StockController::class, 'storeOrder'])->name('storeOrder');
+
     //Orders
     Route::get('/all-orders/{userId?}', [OrderController::class, 'getAllOrder'])->name('getallorder');
     Route::get('/coupon-all-orders/{couponId}', [OrderController::class, 'getAllOrderByCoupon'])->name('getallorderbycoupon');
