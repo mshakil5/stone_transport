@@ -272,6 +272,8 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
 
     Route::post('/store-order', [StockController::class, 'storeOrder'])->name('storeOrder');
 
+    Route::get('/order-list', [StockController::class, 'orderList'])->name('orderList');
+
     //Orders
     Route::get('/all-orders/{userId?}', [OrderController::class, 'getAllOrder'])->name('getallorder');
     Route::get('/coupon-all-orders/{couponId}', [OrderController::class, 'getAllOrderByCoupon'])->name('getallorderbycoupon');

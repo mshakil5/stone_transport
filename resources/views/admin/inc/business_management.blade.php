@@ -85,8 +85,8 @@
         </li>
 
         <!-- purchase -->
-        <li class="nav-item dropdown {{( request()->is('admin/purchase-history*') || request()->is('admin/add-stock*') || request()->is('admin/purchase-return-history*') || request()->routeIs('purchase.edit') || request()->routeIs('stockReturnHistory') || request()->routeIs('returnProduct') || request()->routeIs('admin.mothervassel') || request()->routeIs('admin.lightervassel') || request()->routeIs('admin.ghat') || request()->routeIs('allsupplier') || request()->routeIs('supplier.transactions') || request()->routeIs('supplier.purchase') || request()->routeIs('supplier.email') || request()->routeIs('createOrder')) ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link dropdown-toggle {{ (request()->is('admin/purchase-history*') || request()->is('admin/add-stock*') || request()->is('admin/purchase-return-history*') || request()->routeIs('purchase.edit') || request()->routeIs('stockReturnHistory') || request()->routeIs('returnProduct') || request()->routeIs('admin.mothervassel') || request()->routeIs('admin.lightervassel') || request()->routeIs('admin.ghat') || request()->routeIs('allsupplier') || request()->routeIs('supplier.transactions') || request()->routeIs('supplier.purchase') || request()->routeIs('supplier.email') || request()->routeIs('createOrder')) ? 'active' : '' }}">
+        <li class="nav-item dropdown {{( request()->is('admin/purchase-history*') || request()->is('admin/add-stock*') || request()->is('admin/purchase-return-history*') || request()->routeIs('purchase.edit') || request()->routeIs('stockReturnHistory') || request()->routeIs('returnProduct') || request()->routeIs('admin.mothervassel') || request()->routeIs('admin.lightervassel') || request()->routeIs('admin.ghat') || request()->routeIs('allsupplier') || request()->routeIs('supplier.transactions') || request()->routeIs('supplier.purchase') || request()->routeIs('supplier.email') || request()->routeIs('createOrder') || request()->routeIs('orderList')) ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link dropdown-toggle {{ (request()->is('admin/purchase-history*') || request()->is('admin/add-stock*') || request()->is('admin/purchase-return-history*') || request()->routeIs('purchase.edit') || request()->routeIs('stockReturnHistory') || request()->routeIs('returnProduct') || request()->routeIs('admin.mothervassel') || request()->routeIs('admin.lightervassel') || request()->routeIs('admin.ghat') || request()->routeIs('allsupplier') || request()->routeIs('supplier.transactions') || request()->routeIs('supplier.purchase') || request()->routeIs('supplier.email') || request()->routeIs('createOrder') || request()->routeIs('orderList')) ? 'active' : '' }}">
                 <i class="nav-icon fas fa-warehouse"></i>
                 <p>
                     Purchase <i class="fas fa-angle-left right"></i>
@@ -97,6 +97,12 @@
                     <a href="{{ route('createOrder') }}" class="nav-link {{ (request()->is('admin/create-order*')) ? 'active' : '' }}">
                         <i class="fas fa-shopping-cart nav-icon"></i>
                         <p>Create order</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('orderList') }}" class="nav-link {{ (request()->is('admin/order-list*')) ? 'active' : '' }}">
+                        <i class="fas fa-shopping-cart nav-icon"></i>
+                        <p>Order List</p>
                     </a>
                 </li>
                 <li class="nav-item">

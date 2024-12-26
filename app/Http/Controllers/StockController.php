@@ -1005,9 +1005,16 @@ class StockController extends Controller
         $purchase->payment_type = $request->payment_type;
         $purchase->payment_amount = $request->payment_amount;
         $purchase->quantity = $request->quantity;
+        $purchase->created_by = auth()->user()->id;
         $purchase->save();
 
         return response()->json(['message' => 'Order created successfully!'], 201);
+    }
+
+    public function orderList()
+    {
+        $data = Purchase::select('id', 'consignment_number', 'mother_vassels_id', 'payment_type', 'payment_amount', 'quantity')->orderby('id','DESC')->get();
+        return view('admin.stock.order_list', compact('data'));
     }
 
 }

@@ -30,4 +30,9 @@ class Purchase extends Model
     {
         return $this->hasMany(Transaction::class);
     }
+
+    public function motherVessel()
+    {
+        return $this->belongsTo(MotherVassel::class, 'mother_vassels_id', 'id');
+    }
 }
