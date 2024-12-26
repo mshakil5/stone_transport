@@ -18,8 +18,8 @@
                                     <th>Consignment Number</th>
                                     <th>Mother Vessel</th>
                                     <th>Payment Type</th>
-                                    <th>Payment Amount</th>
-                                    <th>Quantity</th>
+                                    <th>Advance Amount</th>
+                                    <th>Advance Quantity</th>
                                     <th>Purchase</th>
                                 </tr>
                             </thead>
@@ -29,9 +29,9 @@
                                     <td>{{ $key + 1 }}</td>
                                     <td>{{ $order->consignment_number }}</td>
                                     <td>{{ $order->motherVessel->name }}</td>
-                                    <td>{{ $order->payment_type }}</td>
-                                    <td>{{ $order->payment_amount }}</td>
-                                    <td>{{ $order->quantity }}</td>
+                                    <td>{{ $order->purchase_type }}</td>
+                                    <td>{{ $order->advance_amount }}</td>
+                                    <td>{{ $order->advance_quantity }}</td>
                                     <td>
                                         <a href="{{ route('purchase.edit', $order->id) }}" class="btn btn-sm btn-info">
                                             Add To Stock

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('purchases', function (Blueprint $table) {
             $table->id();
             $table->string('invoice')->nullable();
+            $table->string('advance_date')->nullable();
             $table->unsignedBigInteger('supplier_id')->nullable();
             $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('cascade'); 
             $table->string('purchase_date')->nullable();
@@ -23,6 +24,8 @@ return new class extends Migration
             $table->longText('remarks')->nullable();
             $table->decimal('total_amount',10,2)->nullable();
             $table->decimal('discount',10,2)->nullable();
+            $table->decimal('total_scale_fee',10,2)->nullable();
+            $table->string('vat_percent')->nullable();
             $table->decimal('total_vat_amount',10,2)->nullable();
             $table->decimal('net_amount',10,2)->nullable();
             $table->decimal('paid_amount',10,2)->nullable();
@@ -33,9 +36,8 @@ return new class extends Migration
             $table->decimal('cost_b',10,2)->nullable();
             $table->decimal('cnf_cost',10,2)->nullable();
             $table->decimal('other_cost',10,2)->nullable();
-            $table->decimal('payment_amount', 10, 2)->nullable();
+            $table->decimal('advance_amount', 10, 2)->nullable();
             $table->string('consignment_number')->nullable();
-            $table->string('payment_type')->nullable();
             $table->decimal('quantity', 10, 2)->nullable();
 
             $table->boolean('status')->default(1);

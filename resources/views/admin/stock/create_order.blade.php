@@ -14,13 +14,19 @@
                         <form id="createThisForm">
                             @csrf
                             <div class="row">
-                                <div class="col-sm-6">
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="advance_date">Advance Date <span class="text-danger">*</span></label>
+                                        <input type="date" class="form-control" id="advance_date" name="advance_date" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="consignment_number">Consignment Number <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" id="consignment_number" name="consignment_number" placeholder="Enter consignment number" required>
                                     </div>
                                 </div>
-                                <div class="col-sm-6">
+                                <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="mother_vassels_id">Mother Vessel <span class="text-danger">*</span></label>
                                         <select class="form-control" id="mother_vassels_id" name="mother_vassels_id" required>
@@ -33,25 +39,24 @@
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group">
-                                        <label for="payment_type">Payment Type <span class="text-danger">*</span></label>
-                                        <select class="form-control" id="payment_type" name="payment_type" required>
+                                        <label for="purchase_type">Payment Type <span class="text-danger">*</span></label>
+                                        <select class="form-control" id="purchase_type" name="purchase_type" required>
                                             <option value="">Select...</option>
                                             <option value="Cash">Cash</option>
                                             <option value="Bank">Bank</option>
-                                            <option value="Credit">Credit</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group">
-                                        <label for="payment_amount">Payment Amount <span class="text-danger">*</span></label>
-                                        <input type="number" step="0.01" class="form-control" id="payment_amount" name="payment_amount" placeholder="Enter payment amount" required>
+                                        <label for="advance_amount">Advance Amount <span class="text-danger">*</span></label>
+                                        <input type="number" step="0.01" class="form-control" id="advance_amount" name="advance_amount" placeholder="Enter advance amount" required>
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group">
-                                        <label for="quantity">Quantity <span class="text-danger">*</span></label>
-                                        <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Enter quantity" min="1" required>
+                                        <label for="advance_quantity">Advance Quantity <span class="text-danger">*</span></label>
+                                        <input type="number" class="form-control" id="advance_quantity" name="advance_quantity" placeholder="Enter advance_quantity" min="1" required>
                                     </div>
                                 </div>
                             </div>

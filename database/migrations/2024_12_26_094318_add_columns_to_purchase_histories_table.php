@@ -1,0 +1,31 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('purchase_histories', function (Blueprint $table) {
+            $table->foreignId('lighter_vassel_id')->nullable()->constrained('lighter_vassels')->onDelete('cascade');
+            $table->foreignId('ghat_id')->nullable()->constrained('ghats')->onDelete('cascade');
+            $table->foreignId('warehouse_id')->nullable()->constrained('warehouses')->onDelete('cascade');
+            $table->string('scale_quantity')->nullable();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('purchase_histories', function (Blueprint $table) {
+            //
+        });
+    }
+};

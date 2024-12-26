@@ -18,4 +18,19 @@ class PurchaseHistory extends Model
     {
         return $this->belongsTo(Purchase::class);
     }
+
+    public function lighterVessel()
+    {
+        return $this->belongsTo(LighterVessel::class, 'lighter_vessel_id');
+    }
+
+    public function ghat()
+    {
+        return $this->belongsTo(Ghat::class, 'ghat_id');
+    }
+
+    public function warehouse()
+    {
+        return $this->belongsTo(Warehouse::class, 'warehouse_id');
+    }
 }

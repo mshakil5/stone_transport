@@ -994,17 +994,19 @@ class StockController extends Controller
         $request->validate([
             'consignment_number' => 'required|string|max:255',
             'mother_vassels_id' => 'required',
-            'payment_type' => 'required|string|max:50',
-            'payment_amount' => 'required|numeric|min:0',
-            'quantity' => 'required|integer|min:1',
+            'advance_date' => 'required',
+            'purchase_type' => 'required|string|max:50',
+            'advance_amount' => 'required|numeric|min:0',
+            'advance_quantity' => 'required|integer|min:1',
         ]);
 
         $purchase = new Purchase();
         $purchase->consignment_number = $request->consignment_number;
+        $purchase->advance_date = $request->advance_date;
         $purchase->mother_vassels_id = $request->mother_vassels_id;
-        $purchase->payment_type = $request->payment_type;
-        $purchase->payment_amount = $request->payment_amount;
-        $purchase->quantity = $request->quantity;
+        $purchase->purchase_type = $request->purchase_type;
+        $purchase->advance_amount = $request->advance_amount;
+        $purchase->advance_quantity = $request->advance_quantity;
         $purchase->created_by = auth()->user()->id;
         $purchase->save();
 
@@ -1013,7 +1015,7 @@ class StockController extends Controller
 
     public function orderList()
     {
-        $data = Purchase::select('id', 'consignment_number', 'mother_vassels_id', 'payment_type', 'payment_amount', 'quantity')->orderby('id','DESC')->get();
+        $data = Purchase::select('id', 'consignment_number', 'mother_vassels_id', 'purchase_type', 'advance_amount', 'advance_quantity')->orderby('id','DESC')->get();
         return view('admin.stock.order_list', compact('data'));
     }
 
