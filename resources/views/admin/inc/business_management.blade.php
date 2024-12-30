@@ -111,7 +111,7 @@
                         <p>Add new stock</p>
                     </a>
                 </li>
-                <li class="nav-item d-none">
+                <li class="nav-item">
                     <a href="{{ route('productPurchaseHistory') }}" class="nav-link {{ (request()->is('admin/purchase-history*') || request()->routeIs('purchase.edit')) ? 'active' : '' }}">
                         <i class="fas fa-file-invoice-dollar nav-icon"></i>
                         <p>Purchase History</p>

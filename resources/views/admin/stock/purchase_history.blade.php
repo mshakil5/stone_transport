@@ -34,9 +34,12 @@
                                     <td>{{ $key + 1 }}</td>
                                     <td>{{ \Carbon\Carbon::parse($purchase->purchase_date)->format('d-m-Y') }}</td>
                                     <td>{{ $purchase->invoice }}</td>
-                                    <td>{{ $purchase->supplier->name }}
+                                    <td>
+                                        @if($purchase->supplier)
+                                        {{ $purchase->supplier->name }}
                                         <br> {{ $purchase->supplier->email }}
                                         <br> {{ $purchase->supplier->phone }}
+                                        @endif
                                     </td>
                                     <td>{{ $purchase->ref }}</td>
                                     <td>{{ $purchase->net_amount }}</td>
@@ -45,7 +48,9 @@
                                         <span  class="btn btn-sm btn-danger">£{{$purchase->due_amount }}</span>
                                         <button class="btn btn-sm btn-warning pay-btn" 
                                             data-id="{{ $purchase->id }}" 
+                                            @if($purchase->supplier)
                                             data-supplier-id="{{ $purchase->supplier->id }}" 
+                                            @endif
                                             data-toggle="modal" 
                                             data-target="#payModal">
                                             Pay
