@@ -15,6 +15,7 @@
                             <thead>
                                 <tr>
                                     <th>Sl</th>
+                                    <th>Advance Date</th>
                                     <th>Consignment Number</th>
                                     <th>Mother Vessel</th>
                                     <th>Payment Type</th>
@@ -27,6 +28,7 @@
                                 @foreach ($data as $key => $order)
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
+                                    <td>{{ \Illuminate\Support\Carbon::parse($order->advance_date)->format('d-m-Y') }}</td>
                                     <td>{{ $order->consignment_number }}</td>
                                     <td>{{ $order->motherVessel->name }}</td>
                                     <td>{{ $order->purchase_type }}</td>

@@ -21,7 +21,7 @@ class PurchaseHistory extends Model
 
     public function lighterVessel()
     {
-        return $this->belongsTo(LighterVessel::class, 'lighter_vessel_id');
+        return $this->belongsTo(LighterVassel::class, 'lighter_vassel_id');
     }
 
     public function ghat()

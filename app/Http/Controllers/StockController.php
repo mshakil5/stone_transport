@@ -562,14 +562,18 @@ class StockController extends Controller
             'invoice' => 'required',
             'supplier_id' => 'required|exists:suppliers,id',
             'mother_vassels_id' => 'required',
-            'lighter_vassels_id' => 'required',
-            'ghats_id' => 'required',
             'purchase_date' => 'required|date',
-            // 'purchase_type' => 'required',
+            'advance_date' => 'required|date',
+            'purchase_type' => 'required',
             'ref' => 'nullable|string',
+            'advance_amount' => 'nullable',
+            'advance_quantity' => 'nullable',
             'vat_reg' => 'nullable|string',
             'remarks' => 'nullable|string',
             'total_amount' => 'required|numeric',
+            'vat_percent' => 'nullable|numeric',
+            'total_vat_amount' => 'nullable|numeric',
+            'total_scale_fee' => 'nullable|numeric',
             'discount' => 'nullable|numeric',
             'total_vat_amount' => 'required|numeric',
             'net_amount' => 'required|numeric',
@@ -577,12 +581,15 @@ class StockController extends Controller
             'products' => 'required|array',
             'products.*.product_id' => 'required|exists:products,id',
             'products.*.quantity' => 'required|numeric|min:1',
+            'products.*.lighter_vassel_id' => 'required',
+            'products.*.warehouse_id' => 'required',
+            'products.*.ghat_id' => 'required',
+            'products.*.scale_quantity' => 'required',
+            'products.*.scale_fee' => 'required',
             // 'products.*.product_size' => 'nullable|string',
             // 'products.*.product_color' => 'nullable|string',
             'products.*.unit_price' => 'required|numeric',
-            'products.*.vat_percent' => 'required|numeric',
-            'products.*.vat_amount' => 'required|numeric',
-            'products.*.total_price_with_vat' => 'required|numeric',
+            'products.*.total_price' => 'required|numeric',
             'cash_payment' => 'nullable|numeric',
             'bank_payment' => 'nullable|numeric',
         ]);
@@ -598,11 +605,14 @@ class StockController extends Controller
     
         // Update Purchase Info
         $purchase->invoice = $request->invoice;
+        $purchase->vat_percent = $request->vat_percent;
+        $purchase->total_vat_amount = $request->total_vat_amount;
+        $purchase->advance_quantity = $request->advance_quantity;
+        $purchase->total_scale_fee = $request->total_scale_fee;
         $purchase->supplier_id = $request->supplier_id;
         $purchase->mother_vassels_id = $request->mother_vassels_id;
-        $purchase->lighter_vassels_id = $request->lighter_vassels_id;
-        $purchase->ghats_id = $request->ghats_id;
         $purchase->purchase_date = $request->purchase_date;
+        $purchase->advance_date = $request->advance_date;
         $purchase->purchase_type = $request->purchase_type;
         $purchase->ref = $request->ref;
         $purchase->vat_reg = $request->vat_reg;
@@ -642,20 +652,28 @@ class StockController extends Controller
                 if ($purchaseHistory) {
                     $purchaseHistory->product_id = $product['product_id'];
                     $purchaseHistory->quantity = $product['quantity'];
-                    // $purchaseHistory->product_size = $product['product_size'];
-                    // $purchaseHistory->product_color = $product['product_color'];
                     $purchaseHistory->purchase_price = $product['unit_price'];
-                    $purchaseHistory->vat_percent = $product['vat_percent'];
-                    $purchaseHistory->vat_amount_per_unit = $product['vat_amount'] / $product['quantity'];
-                    $purchaseHistory->total_vat = $purchaseHistory->vat_amount_per_unit * $product['quantity'];
+        
+                    $vatPercent = $request->vat_percent;
+                    $purchaseHistory->vat_percent = $vatPercent;
+        
+                    $totalVatAmount = $request->total_vat_amount;
+                    $purchaseHistory->vat_amount_per_unit = $totalVatAmount / $product['quantity'];
+                    $purchaseHistory->total_vat = $totalVatAmount;
+        
                     $purchaseHistory->total_amount = $product['unit_price'] * $product['quantity'];
-                    $purchaseHistory->total_amount_with_vat = $product['total_price_with_vat'];
+                    $purchaseHistory->total_amount_with_vat = $purchaseHistory->total_amount + $totalVatAmount;
+        
+                    $purchaseHistory->lighter_vassel_id = $product['lighter_vassel_id'];
+                    $purchaseHistory->warehouse_id = $product['warehouse_id'];
+                    $purchaseHistory->ghat_id = $product['ghat_id'];
+                    $purchaseHistory->scale_quantity = $product['scale_quantity'];
+                    $purchaseHistory->scale_fee = $product['scale_fee'];
+        
                     if ($purchaseHistory->transferred_product_quantity > 0) {
-                        // If product was transferred before, keep the transferred quantity
                         $purchaseHistory->remaining_product_quantity = 0;
                         $purchaseHistory->transferred_product_quantity = $product['quantity'];
                     } else {
-                        // If the product was not transferred, just update remaining quantity
                         $purchaseHistory->remaining_product_quantity = $product['quantity'];
                         $purchaseHistory->transferred_product_quantity = 0;
                     }
@@ -668,14 +686,24 @@ class StockController extends Controller
                 $purchaseHistory->purchase_id = $purchase->id;
                 $purchaseHistory->product_id = $product['product_id'];
                 $purchaseHistory->quantity = $product['quantity'];
-                // $purchaseHistory->product_size = $product['product_size'];
-                // $purchaseHistory->product_color = $product['product_color'];
                 $purchaseHistory->purchase_price = $product['unit_price'];
-                $purchaseHistory->vat_percent = $product['vat_percent'];
-                $purchaseHistory->vat_amount_per_unit = $product['vat_amount'] / $product['quantity'];
-                $purchaseHistory->total_vat = $purchaseHistory->vat_amount_per_unit * $product['quantity'];
+        
+                $vatPercent = $request->vat_percent;
+                $purchaseHistory->vat_percent = $vatPercent;
+        
+                $totalVatAmount = $request->total_vat_amount;
+                $purchaseHistory->vat_amount_per_unit = $totalVatAmount / $product['quantity'];
+                $purchaseHistory->total_vat = $totalVatAmount;
+        
                 $purchaseHistory->total_amount = $product['unit_price'] * $product['quantity'];
-                $purchaseHistory->total_amount_with_vat = $product['total_price_with_vat'];
+                $purchaseHistory->total_amount_with_vat = $purchaseHistory->total_amount + $totalVatAmount;
+        
+                $purchaseHistory->lighter_vassel_id = $product['lighter_vassel_id'];
+                $purchaseHistory->warehouse_id = $product['warehouse_id'];
+                $purchaseHistory->ghat_id = $product['ghat_id'];
+                $purchaseHistory->scale_quantity = $product['scale_quantity'];
+                $purchaseHistory->scale_fee = $product['scale_fee'];
+        
                 $purchaseHistory->created_by = Auth::user()->id;
                 $purchaseHistory->save();
             }
@@ -692,56 +720,56 @@ class StockController extends Controller
         }
     
         // Update Cash Payment
-        if ($request->cash_payment) {
-            $cashpayment = Transaction::where('purchase_id', $purchase->id)
-                ->where('payment_type', 'Cash')->first();
+        // if ($request->cash_payment) {
+        //     $cashpayment = Transaction::where('purchase_id', $purchase->id)
+        //         ->where('payment_type', 'Cash')->first();
     
-            if ($cashpayment) {
-                $cashpayment->amount = $request->cash_payment;
-                $cashpayment->at_amount = $request->cash_payment;
-                $cashpayment->save();
-            } else {
-                $cashpayment = new Transaction();
-                $cashpayment->date = $request->purchase_date;
-                $cashpayment->supplier_id = $request->supplier_id;
-                $cashpayment->purchase_id = $purchase->id;
-                $cashpayment->table_type = "Purchase";
-                $cashpayment->description = "Purchase";
-                $cashpayment->payment_type = "Cash";
-                $cashpayment->transaction_type = "Current";
-                $cashpayment->amount = $request->cash_payment;
-                $cashpayment->at_amount = $request->cash_payment;
-                $cashpayment->save();
-                $cashpayment->tran_id = 'SL' . date('ymd') . str_pad($cashpayment->id, 4, '0', STR_PAD_LEFT);
-                $cashpayment->save();
-            }
-        }
+        //     if ($cashpayment) {
+        //         $cashpayment->amount = $request->cash_payment;
+        //         $cashpayment->at_amount = $request->cash_payment;
+        //         $cashpayment->save();
+        //     } else {
+        //         $cashpayment = new Transaction();
+        //         $cashpayment->date = $request->purchase_date;
+        //         $cashpayment->supplier_id = $request->supplier_id;
+        //         $cashpayment->purchase_id = $purchase->id;
+        //         $cashpayment->table_type = "Purchase";
+        //         $cashpayment->description = "Purchase";
+        //         $cashpayment->payment_type = "Cash";
+        //         $cashpayment->transaction_type = "Current";
+        //         $cashpayment->amount = $request->cash_payment;
+        //         $cashpayment->at_amount = $request->cash_payment;
+        //         $cashpayment->save();
+        //         $cashpayment->tran_id = 'SL' . date('ymd') . str_pad($cashpayment->id, 4, '0', STR_PAD_LEFT);
+        //         $cashpayment->save();
+        //     }
+        // }
     
         // Update Bank Payment
-        if ($request->bank_payment) {
-            $bankpayment = Transaction::where('purchase_id', $purchase->id)
-                ->where('payment_type', 'Bank')->first();
+        // if ($request->bank_payment) {
+        //     $bankpayment = Transaction::where('purchase_id', $purchase->id)
+        //         ->where('payment_type', 'Bank')->first();
     
-            if ($bankpayment) {
-                $bankpayment->amount = $request->bank_payment;
-                $bankpayment->at_amount = $request->bank_payment;
-                $bankpayment->save();
-            } else {
-                $bankpayment = new Transaction();
-                $bankpayment->date = $request->purchase_date;
-                $bankpayment->supplier_id = $request->supplier_id;
-                $bankpayment->purchase_id = $purchase->id;
-                $bankpayment->table_type = "Purchase";
-                $bankpayment->description = "Purchase";
-                $bankpayment->payment_type = "Bank";
-                $bankpayment->transaction_type = "Current";
-                $bankpayment->amount = $request->bank_payment;
-                $bankpayment->at_amount = $request->bank_payment;
-                $bankpayment->save();
-                $bankpayment->tran_id = 'SL' . date('ymd') . str_pad($bankpayment->id, 4, '0', STR_PAD_LEFT);
-                $bankpayment->save();
-            }
-        }
+        //     if ($bankpayment) {
+        //         $bankpayment->amount = $request->bank_payment;
+        //         $bankpayment->at_amount = $request->bank_payment;
+        //         $bankpayment->save();
+        //     } else {
+        //         $bankpayment = new Transaction();
+        //         $bankpayment->date = $request->purchase_date;
+        //         $bankpayment->supplier_id = $request->supplier_id;
+        //         $bankpayment->purchase_id = $purchase->id;
+        //         $bankpayment->table_type = "Purchase";
+        //         $bankpayment->description = "Purchase";
+        //         $bankpayment->payment_type = "Bank";
+        //         $bankpayment->transaction_type = "Current";
+        //         $bankpayment->amount = $request->bank_payment;
+        //         $bankpayment->at_amount = $request->bank_payment;
+        //         $bankpayment->save();
+        //         $bankpayment->tran_id = 'SL' . date('ymd') . str_pad($bankpayment->id, 4, '0', STR_PAD_LEFT);
+        //         $bankpayment->save();
+        //     }
+        // }
     
         return response()->json([
             'status' => 'success',
@@ -1015,7 +1043,7 @@ class StockController extends Controller
 
     public function orderList()
     {
-        $data = Purchase::select('id', 'consignment_number', 'mother_vassels_id', 'purchase_type', 'advance_amount', 'advance_quantity')->orderby('id','DESC')->get();
+        $data = Purchase::select('id', 'advance_date', 'consignment_number', 'mother_vassels_id', 'purchase_type', 'advance_amount', 'advance_quantity')->orderby('id','DESC')->get();
         return view('admin.stock.order_list', compact('data'));
     }
 
