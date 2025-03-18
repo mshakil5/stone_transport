@@ -15,6 +15,11 @@ class WareHouseController extends Controller
 {
     public function index()
     {
+
+        if (!(in_array('32', json_decode(auth()->user()->role->permission)))) {
+          return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
+        }
+
         $data = Warehouse::orderby('id','DESC')->get();
         return view('admin.warehouse.index', compact('data'));
     }

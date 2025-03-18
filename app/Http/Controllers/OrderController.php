@@ -1099,6 +1099,11 @@ class OrderController extends Controller
 
     public function getAllOrder(Request $request, $userId = null)
     {
+
+        if (!(in_array('20', json_decode(auth()->user()->role->permission)))) {
+          return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
+        }
+
         if ($request->ajax()) {
             $userId = $request->get('userId') ?? $userId;
 
@@ -1196,6 +1201,10 @@ class OrderController extends Controller
 
     public function getInHouseOrder(Request $request, $userId = null)
     {
+
+        if (!(in_array('25', json_decode(auth()->user()->role->permission)))) {
+          return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
+        }
         if ($request->ajax()) {
             $userId = $request->get('userId') ?? $userId;
 
@@ -1373,6 +1382,10 @@ class OrderController extends Controller
 
     public function processingOrders()
     {
+
+        if (!(in_array('21', json_decode(auth()->user()->role->permission)))) {
+          return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
+        }
         $orders = Order::with('user')
                 ->whereIn('order_type', [0, 1])
                 ->where('status', 2)
@@ -1401,6 +1414,11 @@ class OrderController extends Controller
     }
     public function deliveredOrders()
     {
+
+        if (!(in_array('22', json_decode(auth()->user()->role->permission)))) {
+          return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
+        }
+
         $orders = Order::with('user')
                 ->where('status', 5)
                 ->whereIn('order_type', [0, 1])
@@ -1420,6 +1438,10 @@ class OrderController extends Controller
     }
     public function cancelledOrders()
     {
+
+        if (!(in_array('23', json_decode(auth()->user()->role->permission)))) {
+          return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
+        }
         $orders = Order::with('user', 'cancelledOrder')
                 ->whereIn('order_type', [0, 1])
                 ->where('status', 7)

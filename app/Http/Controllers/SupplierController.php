@@ -17,6 +17,10 @@ class SupplierController extends Controller
 {
     public function getSupplier()
     {
+        if (!(in_array('31', json_decode(auth()->user()->role->permission)))) {
+          return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
+        }
+        
         $data = Supplier::getAllsuppliersWithBalance();
         return view('admin.supplier.index', compact('data'));
     }

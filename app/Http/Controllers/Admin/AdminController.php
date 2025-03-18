@@ -6,13 +6,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Role;
 
 class AdminController extends Controller
 {
     public function getAdmin()
     {
         $data = User::where('is_type', '1')->orderby('id','DESC')->get();
-        return view('admin.admin.index', compact('data'));
+        $role = Role::orderby('id','DESC')->get();
+        return view('admin.admin.index', compact('data', 'role'));
     }
 
     public function adminStore(Request $request)
@@ -29,6 +31,11 @@ class AdminController extends Controller
         }
         if(empty($request->phone)){
             $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Phone \" field..!</b></div>";
+            return response()->json(['status'=> 303,'message'=>$message]);
+            exit();
+        }
+        if(empty($request->role_id)){            
+            $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Role\" field..!</b></div>"; 
             return response()->json(['status'=> 303,'message'=>$message]);
             exit();
         }
@@ -56,6 +63,7 @@ class AdminController extends Controller
         $data->house_number = $request->house_number;
         $data->street_name = $request->street_name;
         $data->town = $request->town;
+        $data->role_id = $request->role_id;
         $data->is_type = "1";
         $data->postcode = $request->postcode;
         if(isset($request->password)){
@@ -97,6 +105,12 @@ class AdminController extends Controller
             return response()->json(['status'=> 303,'message'=>$message]);
             exit();
         }
+
+        if(empty($request->role_id)){            
+            $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Please fill \"Role\" field..!</b></div>"; 
+            return response()->json(['status'=> 303,'message'=>$message]);
+            exit();
+        }
         
         if(isset($request->password) && ($request->password != $request->confirm_password)){
             $message ="<div class='alert alert-warning'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Password doesn't match.</b></div>";
@@ -121,6 +135,7 @@ class AdminController extends Controller
         $data->street_name = $request->street_name;
         $data->town = $request->town;
         $data->postcode = $request->postcode;
+        $data->role_id = $request->role_id;
         if(isset($request->password)){
             $data->password = Hash::make($request->password);
         }

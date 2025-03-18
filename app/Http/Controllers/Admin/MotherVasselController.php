@@ -11,6 +11,10 @@ class MotherVasselController extends Controller
 {
     public function index()
     {
+        if (!(in_array('13', json_decode(auth()->user()->role->permission)))) {
+          return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
+        }
+
         $data = MotherVassel::orderby('id','DESC')->get();
         return view('admin.mothervassel.index', compact('data'));
     }

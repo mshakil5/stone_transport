@@ -30,6 +30,10 @@ class StockController extends Controller
 {
     public function getStock()
     {
+
+        if (!(in_array('16', json_decode(auth()->user()->role->permission)))) {
+          return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
+        }
         $products = Product::select('id','name','product_code')->orderBy('id', 'DESC')->get();
         $warehouses = Warehouse::select('id', 'name','location')->where('status', 1)->get();
         return view('admin.stock.index', compact('warehouses','products'));
@@ -157,7 +161,9 @@ class StockController extends Controller
 
     public function getStockLedger()
     {
-        
+        if (!(in_array('17', json_decode(auth()->user()->role->permission)))) {
+          return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
+        }
 
         $totalQty = Stock::sum('quantity');
         $totalProduct = Stock::count('product_id');
@@ -245,6 +251,7 @@ class StockController extends Controller
 
     public function addstock()
     {
+
         $products = Product::orderby('id','DESC')->select('id', 'name','price', 'product_code')->get();
         $suppliers = Supplier::where('status', 1)->select('id', 'name')->orderby('id','DESC')->get();
         $colors = Color::where('status', 1)->select('id', 'color')->orderby('id','DESC')->get();
@@ -516,6 +523,10 @@ class StockController extends Controller
 
     public function productPurchaseHistory()
     {
+        if (!(in_array('10', json_decode(auth()->user()->role->permission)))) {
+          return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
+        }
+
         $purchases = Purchase::with('purchaseHistory.product','supplier')->orderby('id','DESC')->get();
         return view('admin.stock.purchase_history', compact('purchases'));
     }
@@ -837,6 +848,11 @@ class StockController extends Controller
 
     public function stockReturnHistory()
     {
+
+        if (!(in_array('11', json_decode(auth()->user()->role->permission)))) {
+          return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
+        }
+
         $purchaseReturns = PurchaseReturn::with('product', 'purchaseHistory') ->orderBy('id', 'desc')->get();
         return view('admin.stock.stock_return_history', compact('purchaseReturns'));
     }
@@ -875,6 +891,11 @@ class StockController extends Controller
 
     public function systemLosses()
     {
+
+        if (!(in_array('19', json_decode(auth()->user()->role->permission)))) {
+          return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
+        }
+
         $systemLosses = SystemLose::with('product')->latest()->get();
         return view('admin.stock.system_losses', compact('systemLosses'));
     }
@@ -1013,6 +1034,10 @@ class StockController extends Controller
 
     public function createOrder()
     {
+        if (!(in_array('7', json_decode(auth()->user()->role->permission)))) {
+          return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
+        }
+
         $motherVassels = MotherVassel::select('id', 'name','code')->orderby('id','DESC')->get();
         return view('admin.stock.create_order', compact('motherVassels'));
     }
@@ -1043,6 +1068,10 @@ class StockController extends Controller
 
     public function orderList()
     {
+        if (!(in_array('8', json_decode(auth()->user()->role->permission)))) {
+          return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
+        }
+
         $data = Purchase::select('id', 'advance_date', 'consignment_number', 'mother_vassels_id', 'purchase_type', 'advance_amount', 'advance_quantity')->orderby('id','DESC')->get();
         return view('admin.stock.order_list', compact('data'));
     }

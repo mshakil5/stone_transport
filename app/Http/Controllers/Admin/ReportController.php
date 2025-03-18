@@ -13,6 +13,10 @@ class ReportController extends Controller
 {
     public function index()
     {
+
+        if (!(in_array('29', json_decode(auth()->user()->role->permission)))) {
+          return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
+        }
         return view('admin.reports.index');
     }
 

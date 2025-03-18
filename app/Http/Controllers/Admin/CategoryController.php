@@ -11,6 +11,10 @@ class CategoryController extends Controller
 {
     public function getCategory()
     {
+        if (!(in_array('5', json_decode(auth()->user()->role->permission)))) {
+          return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
+        }
+
         $data = Category::orderby('id','DESC')->get();
         return view('admin.category.index', compact('data'));
     }

@@ -16,6 +16,11 @@ class CustomerController extends Controller
 {
     public function getCustomer()
     {
+
+        if (!(in_array('27', json_decode(auth()->user()->role->permission)))) {
+          return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
+        }
+
         $data = User::where('is_type', '0')
             ->with(['customerTransaction' => function ($query) {
                 $query->where('table_type', 'Sales')

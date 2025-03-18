@@ -24,6 +24,9 @@ class InHouseSellController extends Controller
 {
     public function inHouseSell()
     {
+        if (!(in_array('24', json_decode(auth()->user()->role->permission)))) {
+          return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
+        }
         $products = Product::orderby('id', 'DESC')->select('id', 'name', 'price', 'product_code')->get();
         $colors = Color::where('status', 1)->select('id', 'color')->orderby('id', 'DESC')->get();
         $sizes = Size::where('status', 1)->select('id', 'size')->orderby('id', 'DESC')->get();
@@ -309,6 +312,11 @@ class InHouseSellController extends Controller
 
     public function allquotations()
     {
+
+        if (!(in_array('26', json_decode(auth()->user()->role->permission)))) {
+          return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
+        }
+
         $inHouseOrders = Order::with('user')
             ->where('order_type', 2)
             ->orderBy('id', 'desc')
@@ -646,6 +654,11 @@ class InHouseSellController extends Controller
 
     public function fetchStockHistory(Request $request)
     {
+
+        if (!(in_array('18', json_decode(auth()->user()->role->permission)))) {
+          return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
+        }
+
         $request->validate([
             'warehouse_id' => 'required|integer',
             'product_id'   => 'required|integer',

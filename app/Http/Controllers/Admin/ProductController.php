@@ -26,12 +26,22 @@ class ProductController extends Controller
 {
     public function getProduct()
     {
+
+        if (!(in_array('3', json_decode(auth()->user()->role->permission)))) {
+          return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
+        }
+        
         $data = Product::productSellingPriceCal();
         return view('admin.product.index', compact('data'));
     }
 
     public function createProduct()
     {
+
+        if (!(in_array('2', json_decode(auth()->user()->role->permission)))) {
+          return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
+        }
+
         $brands = Brand::select('id', 'name')->orderby('id','DESC')->get();
         $product_models = ProductModel::select('id', 'name')->orderby('id','DESC')->get();
         $groups = Group::select('id', 'name')->orderby('id','DESC')->get();

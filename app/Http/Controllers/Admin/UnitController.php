@@ -11,6 +11,9 @@ class UnitController extends Controller
 {
     public function getUnit()
     {
+        if (!(in_array('30', json_decode(auth()->user()->role->permission)))) {
+          return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
+        }
         $data = Unit::orderby('id','DESC')->get();
         return view('admin.unit.index', compact('data'));
     }

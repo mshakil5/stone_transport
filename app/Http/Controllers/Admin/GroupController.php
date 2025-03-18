@@ -11,6 +11,9 @@ class GroupController extends Controller
 {
     public function getGroup()
     {
+        if (!(in_array('6', json_decode(auth()->user()->role->permission)))) {
+          return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
+        }
         $data = Group::orderby('id','DESC')->get();
         return view('admin.group.index', compact('data'));
     }
