@@ -2,15 +2,35 @@
 
 @section('content')
 
-@if(session('session_clear'))
-  <script>
-      localStorage.removeItem('wishlist');
-      localStorage.removeItem('cart');
-      @php
-          session()->forget('session_clear');
-      @endphp
-  </script>
-@endif
+@php
+    use Carbon\Carbon;
+    use App\Models\Order;
+    use App\Models\User;
+    use App\Models\Stock;
+
+
+    $newOrders = Order::where('admin_notify', 1)
+    ->select('id', 'created_at', 'user_id', 'net_amount', 'name', 'surname')
+    ->orderBy('id', 'desc')
+    ->get();
+
+    $userCount = User::where('is_type', 0)->count();
+
+    $today = Carbon::today()->toDateString();
+    $ordersCount = Order::select('id')
+      ->whereDate('created_at', $today)
+      ->count();
+
+    $totalQty = Stock::sum('quantity');
+
+    $currentMonth = Carbon::now()->month;
+    $currentYear = Carbon::now()->year;
+    $ordersCount = Order::whereMonth('created_at', $currentMonth)
+    ->whereYear('created_at', $currentYear)
+    ->count();
+@endphp
+
+@if(in_array('1', json_decode(auth()->user()->role->permission)))
 
 <!-- Content Header (Page header) -->
 <div class="content-header">
@@ -34,10 +54,6 @@
         <div class="small-box bg-warning">
           <div class="inner">
 
-            @php
-            $userCount = \App\Models\User::where('is_type', 0)->count();
-            @endphp
-
             <h3>{{ $userCount }}</h3>
 
             <p>Customers Count</p>
@@ -52,13 +68,6 @@
       <div class="col-lg-3 col-6">
         <div class="small-box bg-info">
           <div class="inner">
-            @php
-            use Carbon\Carbon;
-            $today = Carbon::today()->toDateString();
-            $ordersCount = \App\Models\Order::select('id')
-            ->whereDate('created_at', $today)
-            ->count();
-            @endphp
             <h3>{{$ordersCount}}</h3>
             <p>Today's Orders</p>
           </div>
@@ -73,9 +82,6 @@
         <!-- small box -->
         <div class="small-box bg-success">
           <div class="inner">
-            @php
-              $totalQty = \App\Models\Stock::sum('quantity');
-            @endphp
             
             <h3>{{ number_format($totalQty, 0) }} <sup style='font-size: 20px'></sup></h3>
             <p>Total Stock Product</p>
@@ -92,13 +98,6 @@
         <div class="small-box bg-danger">
           <div class="inner">
 
-            @php
-            $currentMonth = Carbon::now()->month;
-            $currentYear = Carbon::now()->year;
-            $ordersCount = \App\Models\Order::whereMonth('created_at', $currentMonth)
-            ->whereYear('created_at', $currentYear)
-            ->count();
-            @endphp
             <h3>{{ $ordersCount }}</h3>
 
             <p>This Month's Orders</p>
@@ -123,14 +122,6 @@
           </div>
           <div class="card-body">
             <ul class="todo-list" data-widget="todo-list">
-              @php
-              use App\Models\Order;
-
-              $newOrders = Order::where('admin_notify', 1)
-              ->select('id', 'created_at', 'user_id', 'net_amount', 'name', 'surname')
-              ->orderBy('id', 'desc')
-              ->get();
-              @endphp
 
               @forelse($newOrders as $order)
               <li id="order-{{ $order->id }}">
@@ -219,6 +210,8 @@
 
 </div>
 </section>
+
+@endif
 
 @endsection
 

@@ -21,24 +21,33 @@
                 </p>
             </a>
             <ul class="nav nav-treeview">
+                @if(in_array('2', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
                     <a href="{{ route('createproduct') }}" class="nav-link {{ (request()->is('admin/create-product')) ? 'active' : '' }}">
                         <i class="nav-icon fas fa-plus-circle"></i>
                         <p>Create Product</p>
                     </a>
                 </li>
+                @endif
+
+                @if(in_array('3', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
                     <a href="{{ route('allproduct') }}" class="nav-link {{ (request()->is('admin/product') || request()->routeIs('productHistory') ) ? 'active' : '' }}">
                         <i class="nav-icon fas fa-box-open"></i>
                         <p>Manage Products</p>
                     </a>
                 </li>
+                @endif
+
+                @if(in_array('5', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
                     <a href="{{ route('allcategory') }}" class="nav-link {{ (request()->is('admin/category*')) ? 'active' : '' }}">
                         <i class="far fa-list-alt nav-icon"></i>
                         <p>Categories</p>
                     </a>
                 </li>
+                @endif
+
                 <!-- <li class="nav-item">
                     <a href="{{ route('allsubcategory') }}" class="nav-link {{ (request()->is('admin/sub-category*')) ? 'active' : '' }}">
                         <i class="far fa-folder nav-icon"></i>
@@ -57,18 +66,25 @@
                         <p>Models</p>
                     </a>
                 </li> -->
+
+                @if(in_array('30', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
                     <a href="{{ route('allunit') }}" class="nav-link {{ (request()->is('admin/unit*')) ? 'active' : '' }}">
                         <i class="fas fa-ruler nav-icon"></i>
                         <p>Units</p>
                     </a>
                 </li>
+                @endif
+
+                @if(in_array('6', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
                     <a href="{{ route('allgroup') }}" class="nav-link {{ (request()->is('admin/group*')) ? 'active' : '' }}">
                         <i class="fas fa-object-group nav-icon"></i>
                         <p>Groups</p>
                     </a>
                 </li>
+                @endif
+
                 <!-- <li class="nav-item">
                     <a href="{{ route('allsize') }}" class="nav-link {{ (request()->is('admin/size*')) ? 'active' : '' }}">
                         <i class="fas fa-expand-arrows-alt nav-icon"></i>
@@ -93,36 +109,50 @@
                 </p>
             </a>
             <ul class="nav nav-treeview">
+                @if(in_array('7', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
-                  <a href="{{ route('createOrder') }}" class="nav-link {{ (request()->is('admin/create-order*')) ? 'active' : '' }}">
-                      <i class="fas fa-cart-plus nav-icon"></i>
-                      <p>Create Order</p>
-                  </a>
-              </li>
-              <li class="nav-item">
-                  <a href="{{ route('orderList') }}" class="nav-link {{ (request()->is('admin/order-list*')) ? 'active' : '' }}">
-                      <i class="fas fa-list-alt nav-icon"></i>
-                      <p>Order List</p>
-                  </a>
-              </li>
+                    <a href="{{ route('createOrder') }}" class="nav-link {{ (request()->is('admin/create-order*')) ? 'active' : '' }}">
+                        <i class="fas fa-cart-plus nav-icon"></i>
+                        <p>Create Order</p>
+                    </a>
+                </li>
+                @endif
+
+                @if(in_array('8', json_decode(auth()->user()->role->permission)))
+                <li class="nav-item">
+                    <a href="{{ route('orderList') }}" class="nav-link {{ (request()->is('admin/order-list*')) ? 'active' : '' }}">
+                        <i class="fas fa-list-alt nav-icon"></i>
+                        <p>Order List</p>
+                    </a>
+                </li>
+                @endif
+
                 <li class="nav-item d-none">
                     <a href="{{ route('addStock') }}" class="nav-link {{ (request()->is('admin/add-stock*')) ? 'active' : '' }}">
                         <i class="fas fa-shopping-cart nav-icon"></i>
                         <p>Add new stock</p>
                     </a>
                 </li>
+
+                @if(in_array('10', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
                     <a href="{{ route('productPurchaseHistory') }}" class="nav-link {{ (request()->is('admin/purchase-history*') || request()->routeIs('purchase.edit')) ? 'active' : '' }}">
                         <i class="fas fa-file-invoice-dollar nav-icon"></i>
                         <p>Purchase History</p>
                     </a>
                 </li>
+                @endif
+
+                @if(in_array('11', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
                     <a href="{{ route('stockReturnHistory') }}" class="nav-link {{ (request()->is('admin/purchase-return-history') || request()->routeIs('stockReturnHistory')) ? 'active' : '' }}">
                         <i class="fas fa-undo nav-icon"></i>
                         <p>Return History</p>
                     </a>
                 </li>
+                @endif
+
+                @if(in_array('31', json_decode(auth()->user()->role->permission)))
                 <!-- supplier -->
                 <li class="nav-item">
                     <a href="{{ route('allsupplier') }}" class="nav-link {{ (request()->is('admin/supplier*') || request()->routeIs('supplier.transactions')) ? 'active' : '' }}">
@@ -130,24 +160,34 @@
                         <p>Supplier</p>
                     </a>
                 </li>
+                @endif
+
+                @if(in_array('13', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
                     <a href="{{ route('admin.mothervassel') }}" class="nav-link {{ (request()->is('admin/mother-vassel*')) ? 'active' : '' }}">
                         <i class="nav-icon fas fa-ship"></i>
                         <p>Mother Vessel</p>
                     </a>
                 </li>
+                @endif
+
+                @if(in_array('14', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
                     <a href="{{ route('admin.lightervassel') }}" class="nav-link {{ (request()->is('admin/lighter-vassel*')) ? 'active' : '' }}">
                         <i class="nav-icon fas fa-anchor"></i>
                         <p>Lighter Vessel</p>
                     </a>
                 </li>
+                @endif
+
+                @if(in_array('15', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
                     <a href="{{ route('admin.ghat') }}" class="nav-link {{ (request()->is('admin/ghat*')) ? 'active' : '' }}">
                         <i class="nav-icon fas fa-map-marker-alt"></i>
                         <p>Ghat</p>
                     </a>
                 </li>
+                @endif
             </ul>
         </li>
 
@@ -161,40 +201,51 @@
                 </p>
             </a>
             <ul class="nav nav-treeview">
+
+                @if(in_array('16', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
                     <a href="{{ route('allstock') }}" class="nav-link {{ (request()->is('admin/stock')) ? 'active' : '' }}">
                         <i class="fas fa-list nav-icon"></i>
                         <p>Stock List</p>
                     </a>
                 </li>
+                @endif
 
+                @if(in_array('17', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
                     <a href="{{ route('stockLedger') }}" class="nav-link {{ (request()->is('admin/stock-ledger') && request()->is('admin/stock-ledger')) ? 'active' : '' }}">
                         <i class="fas fa-list nav-icon"></i>
                         <p>Stock Ledger</p>
                     </a>
                 </li>
+                @endif
 
+                @if(in_array('18', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
                     <a href="{{ route('stockhistory') }}" class="nav-link {{ (request()->is('admin/stocking-history') && !request()->is('admin/add-stock*')) ? 'active' : '' }}">
                         <i class="fas fa-list nav-icon"></i>
                         <p>Stocking History</p>
                     </a>
                 </li>
+                @endif
 
+                @if(in_array('19', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
                     <a href="{{ route('system-losses.index') }}" class="nav-link {{ (request()->is('admin/system-losses')) ? 'active' : '' }}">
                         <i class="fas fa-undo nav-icon"></i>
                         <p>System Loses</p>
                     </a>
                 </li>
+                @endif
 
+                @if(in_array('32', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
                     <a href="{{ route('allwarehouse') }}" class="nav-link {{ (request()->is('admin/warehouse*')) ? 'active' : '' }}">
                         <i class="nav-icon fas fa-truck"></i>
                         <p>Warehouse</p>
                     </a>
                 </li>
+                @endif
 
             </ul>
         </li>
@@ -210,12 +261,14 @@
             </a>
             <ul class="nav nav-treeview">
                 
+                @if(in_array('20', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
                     <a href="{{ route('getallorder') }}" class="nav-link {{ request()->is('admin/all-order*') ? 'active' : '' }}">
                         <i class="fas fa-list nav-icon"></i>
                         <p>All Orders</p>
                     </a>
                 </li>
+                @endif
 
                {{-- <li class="nav-item">
                     <a href="{{ route('pendingorders') }}" class="nav-link {{ request()->is('admin/pending-orders*') ? 'active' : '' }}">
@@ -224,19 +277,23 @@
                     </a>
                 </li> --}}
 
+                @if(in_array('21', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
                     <a href="{{ route('processingorders') }}" class="nav-link {{ request()->is('admin/processing-orders*') ? 'active' : '' }}">
                         <i class="fas fa-cogs nav-icon"></i>
                         <p>Processing Orders</p>
                     </a>
                 </li>
+                @endif
 
+                @if(in_array('22', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
                     <a href="{{ route('deliveredorders') }}" class="nav-link {{ request()->is('admin/delivered-orders*') ? 'active' : '' }}">
                         <i class="fas fa-check-circle nav-icon"></i>
                         <p>Delivered Orders</p>
                     </a>
                 </li>
+                @endif
 
                 {{-- <li class="nav-item">
                     <a href="{{ route('packedorders') }}" class="nav-link {{ request()->is('admin/packed-orders*') ? 'active' : '' }}">
@@ -259,45 +316,56 @@
                     </a>
                 </li> --}}
 
+                @if(in_array('23', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
                     <a href="{{ route('cancelledorders') }}" class="nav-link {{ request()->is('admin/cancelled-orders*') ? 'active' : '' }}">
                         <i class="fas fa-ban nav-icon"></i>
                         <p>Cancelled Orders</p>
                     </a>
                 </li>
+                @endif
 
+                @if(in_array('24', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
                     <a href="{{ route('inhousesell') }}" class="nav-link {{ (request()->is('admin/in-house-sell*') || request()->routeIs('order-edit')) ? 'active' : '' }}">
                         <i class="fas fa-industry nav-icon"></i>
                         <p>In House Sale</p>
                     </a>
                 </li>
+                @endif
 
+                @if(in_array('25', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
                     <a href="{{ route('getinhouseorder') }}" class="nav-link {{ (request()->is('admin/all-inhouse-orders*')) ? 'active' : '' }}">
                         <i class="fas fa-industry nav-icon"></i>
                         <p>In House Sales List</p>
                     </a>
                 </li>
+                @endif
 
+                @if(in_array('26', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
                     <a href="{{ route('allquotations') }}" class="nav-link {{ (request()->is('admin/quotations*')) ? 'active' : '' }}">
                         <i class="fas fa-box nav-icon"></i>
                         <p>Quotation List</p>
                     </a>
                 </li>
+                @endif
 
                 <!-- customer -->
+                @if(in_array('27', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
                     <a href="{{ route('allcustomer') }}" class="nav-link {{ (request()->is('admin/whole-saler*')) ? 'active' : '' }}">
                         <i class="nav-icon fas fa-user"></i>
                         <p>Whole Saler</p>
                     </a>
                 </li>
+                @endif
                 
             </ul>
         </li>
 
+        @if(in_array('29', json_decode(auth()->user()->role->permission)))
         <li class="nav-item">
             <a href="{{ route('reports.index') }}" class="nav-link {{ 
                 request()->is('admin/reports') ||
@@ -314,6 +382,7 @@
                 <p>Reports</p>
             </a>
         </li>
+        @endif
         
         <li class="mb-5"></li>
         <li class="mb-5"></li>

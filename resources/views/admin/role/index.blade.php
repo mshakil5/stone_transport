@@ -134,19 +134,23 @@
                                                 <legend class="w-auto px-2">Product</legend>
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="checkbox" id="p2" name="permission[]" value="2">
-                                                    <label class="form-check-label" for="p2">Add Product</label>
+                                                    <label class="form-check-label" for="p2">Create Product</label>
                                                 </div>
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="checkbox" id="p3" name="permission[]" value="3">
-                                                    <label class="form-check-label" for="p3">Edit Product</label>
+                                                    <label class="form-check-label" for="p3">Manage Product</label>
                                                 </div>
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="checkbox" id="p4" name="permission[]" value="4">
-                                                    <label class="form-check-label" for="p4">Delete Product</label>
+                                                    <label class="form-check-label" for="p4">Edit Product</label>
                                                 </div>
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="checkbox" id="p5" name="permission[]" value="5">
                                                     <label class="form-check-label" for="p5">Category</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="p30" name="permission[]" value="30">
+                                                    <label class="form-check-label" for="p30">Unit</label>
                                                 </div>
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="checkbox" id="p6" name="permission[]" value="6">
@@ -177,8 +181,8 @@
                                                     <label class="form-check-label" for="p11">Return History</label>
                                                 </div>
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p11" name="permission[]" value="11">
-                                                    <label class="form-check-label" for="p11">Supplier</label>
+                                                    <input class="form-check-input" type="checkbox" id="p31" name="permission[]" value="31">
+                                                    <label class="form-check-label" for="p31">Supplier</label>
                                                 </div>
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="checkbox" id="p12" name="permission[]" value="12">
@@ -221,6 +225,10 @@
                                               <div class="form-check">
                                                   <input class="form-check-input" type="checkbox" id="p19" name="permission[]" value="19">
                                                   <label class="form-check-label" for="p19">System Loss</label>
+                                              </div>                                     
+                                              <div class="form-check">
+                                                  <input class="form-check-input" type="checkbox" id="p32" name="permission[]" value="32">
+                                                  <label class="form-check-label" for="p32">Warehouse</label>
                                               </div>                                     
                                           </fieldset>
 
