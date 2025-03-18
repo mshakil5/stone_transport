@@ -12,7 +12,12 @@
             Switch to Accounting <i class="fas fa-arrow-right"></i>
         </a>
 
+        @php
+            $permissions = [2, 3, 5, 6, 30];
+            $userPermissions = json_decode(auth()->user()->role->permission, true);
+        @endphp
         <!-- Inventory -->
+        @if(array_intersect($permissions, $userPermissions))
         <li class="nav-item dropdown {{ (request()->is('admin/category*') || request()->is('admin/brand*') || request()->is('admin/model*') || request()->is('admin/unit*') || request()->is('admin/group*') || request()->is('admin/size*') || request()->is('admin/color*') || request()->is('admin/product*') || request()->is('admin/sub-category*') || request()->is('admin/create-product*') || request()->is('admin/bogo-product*')) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link dropdown-toggle {{ (request()->is('admin/category*') || request()->is('admin/brand*') || request()->is('admin/model*') || request()->is('admin/unit*') || request()->is('admin/group*') || request()->is('admin/size*') || request()->is('admin/color*') || request()->is('admin/product*') || request()->is('admin/sub-category*') || request()->is('admin/create-product*') || request()->is('admin/bogo-product*')) ? 'active' : '' }}">
                 <i class="nav-icon fas fa-clipboard-list"></i>
@@ -99,8 +104,15 @@
                 </li> -->
             </ul>
         </li>
+        @endif
+
+        @php
+            $permissions = [7, 8, 10, 11, 31, 13, 14, 15];
+            $userPermissions = json_decode(auth()->user()->role->permission, true);
+        @endphp
 
         <!-- purchase -->
+        @if(array_intersect($permissions, $userPermissions))
         <li class="nav-item dropdown {{( request()->is('admin/purchase-history*') || request()->is('admin/add-stock*') || request()->is('admin/purchase-return-history*') || request()->routeIs('purchase.edit') || request()->routeIs('stockReturnHistory') || request()->routeIs('returnProduct') || request()->routeIs('admin.mothervassel') || request()->routeIs('admin.lightervassel') || request()->routeIs('admin.ghat') || request()->routeIs('allsupplier') || request()->routeIs('supplier.transactions') || request()->routeIs('supplier.purchase') || request()->routeIs('supplier.email') || request()->routeIs('createOrder') || request()->routeIs('orderList')) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link dropdown-toggle {{ (request()->is('admin/purchase-history*') || request()->is('admin/add-stock*') || request()->is('admin/purchase-return-history*') || request()->routeIs('purchase.edit') || request()->routeIs('stockReturnHistory') || request()->routeIs('returnProduct') || request()->routeIs('admin.mothervassel') || request()->routeIs('admin.lightervassel') || request()->routeIs('admin.ghat') || request()->routeIs('allsupplier') || request()->routeIs('supplier.transactions') || request()->routeIs('supplier.purchase') || request()->routeIs('supplier.email') || request()->routeIs('createOrder') || request()->routeIs('orderList')) ? 'active' : '' }}">
                 <i class="nav-icon fas fa-warehouse"></i>
@@ -190,9 +202,15 @@
                 @endif
             </ul>
         </li>
+        @endif
 
+        @php
+            $permissions = [16, 17, 18, 19, 24, 32];
+            $userPermissions = json_decode(auth()->user()->role->permission, true);
+        @endphp      
 
         <!-- stock -->
+        @if(array_intersect($permissions, $userPermissions))
         <li class="nav-item dropdown {{ (request()->is('admin/stock*') || request()->is('admin/system-losses*') || request()->routeIs('allwarehouse')) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link dropdown-toggle {{ (request()->is('admin/stock*') || request()->is('admin/system-losses*') || request()->routeIs('stockhistory') || request()->routeIs('stockLedger') || request()->routeIs('allwarehouse')) ? 'active' : '' }}">
                 <i class="nav-icon fas fa-warehouse"></i>
@@ -249,9 +267,15 @@
 
             </ul>
         </li>
+        @endif
 
+        @php
+            $permissions = [20, 21, 22, 23, 24, 25, 26, 27];
+            $userPermissions = json_decode(auth()->user()->role->permission, true);
+        @endphp
         
         <!-- Sales -->
+        @if(array_intersect($permissions, $userPermissions))
         <li class="nav-item dropdown {{ request()->routeIs('inhousesell') || request()->routeIs('allquotations') || request()->routeIs('allcustomer') || request()->routeIs('deliveredorders') || request()->routeIs('returnedorders') || request()->routeIs('processingorders') || request()->routeIs('packedorders') || request()->routeIs('shippedorders') || request()->routeIs('cancelledorders') || request()->routeIs('customer.transactions') || request()->routeIs('order-edit') || request()->routeIs('getallorder') || request()->routeIs('customer.email') || request()->is('admin/*order*') && request()->is('admin/all-inhouse-orders') ? 'menu-open' : '' }}">
             <a href="#" class="nav-link dropdown-toggle {{ request()->routeIs('inhousesell') || request()->routeIs('allquotations') || request()->routeIs('customer.transactions') || request()->routeIs('allcustomer') || request()->routeIs('returnedorders') || request()->routeIs('processingorders') || request()->routeIs('packedorders') || request()->routeIs('customer.email') || request()->routeIs('shippedorders') || request()->routeIs('order-edit')  || request()->routeIs('deliveredorders') || request()->routeIs('cancelledorders') || request()->routeIs('getallorder') || request()->is('admin/*order*') && request()->is('admin/all-inhouse-orders') ? 'active' : '' }}">
                 <i class="nav-icon fas fa-truck"></i>
@@ -364,6 +388,7 @@
                 
             </ul>
         </li>
+        @endif
 
         @if(in_array('29', json_decode(auth()->user()->role->permission)))
         <li class="nav-item">
