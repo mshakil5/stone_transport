@@ -52,12 +52,12 @@
                                     <td>
                                         <select class="form-control order-status" data-order-id="{{ $order->id }}"
                                             {{ empty($order->warehouse_id) ? 'disabled' : '' }}>
-                                            <option value="1" {{ $order->status == 1 ? 'selected' : '' }}>Pending</option>
+                                            {{-- <option value="1" {{ $order->status == 1 ? 'selected' : '' }}>Pending</option> --}}
                                             <option value="2" {{ $order->status == 2 ? 'selected' : '' }}>Processing</option>
-                                            <option value="3" {{ $order->status == 3 ? 'selected' : '' }}>Packed</option>
-                                            <option value="4" {{ $order->status == 4 ? 'selected' : '' }}>Shipped</option>
+                                            {{-- <option value="3" {{ $order->status == 3 ? 'selected' : '' }}>Packed</option> --}}
+                                            {{-- <option value="4" {{ $order->status == 4 ? 'selected' : '' }}>Shipped</option> --}}
                                             <option value="5" {{ $order->status == 5 ? 'selected' : '' }}>Delivered</option>
-                                            <option value="6" {{ $order->status == 6 ? 'selected' : '' }}>Returned</option>
+                                            {{-- <option value="6" {{ $order->status == 6 ? 'selected' : '' }}>Returned</option> --}}
                                             <option value="7" {{ $order->status == 7 ? 'selected' : '' }}>Cancelled</option>
                                         </select>
                                     </td>

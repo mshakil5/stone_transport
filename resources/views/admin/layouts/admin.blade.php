@@ -33,6 +33,12 @@
   <link rel="stylesheet" href="{{ asset('assets/admin/select2/select2.min.css')}}">
   <link rel="stylesheet" href="{{ asset('assets/admin/summernote/summernote-bs4.min.css')}}">
   <link rel="stylesheet" href="{{ asset('assets/admin/css/customize.css')}}">
+
+  <style>
+    .select2-selection{
+      height: 36px !important;
+    }
+  </style>
   
 
 </head>
@@ -104,14 +110,6 @@
   </div>
   <!-- /.content-wrapper -->
   
-  {{-- <footer class="main-footer">
-    <strong>Copyright &copy; 2023 <a href="#">AdminLTE.io</a>.</strong>
-    All rights reserved.
-    <div class="float-right d-none d-sm-inline-block">
-      <b>Version</b> 3.2.0
-    </div>
-  </footer> --}}
-
   <!-- Control Sidebar -->
   <aside class="control-sidebar control-sidebar-dark">
     <!-- Control sidebar content goes here -->

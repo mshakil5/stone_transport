@@ -107,7 +107,7 @@
                 <div class="col-md-8">
                     <div class="card">
                         <div class="card-header bg-secondary text-white">
-                            <h3 class="card-title">Create Role</h3>
+                            <h3 class="card-title">Create New Role</h3>
                         </div>
                         <div class="card-body">
                             <div class="ermsg"></div>
@@ -126,95 +126,75 @@
                                                 <legend class="w-auto px-2">Dashboard</legend>
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="checkbox" id="p1" name="permission[]" value="1">
-                                                    <label class="form-check-label" for="p1">Dashboard</label>
-                                                </div>
-                                            </fieldset>
-
-                                            <fieldset class="border p-2">
-                                                <legend class="w-auto px-2">Order</legend>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p2" name="permission[]" value="2">
-                                                    <label class="form-check-label" for="p2">Order</label>
-                                                </div>
-                                            </fieldset>
-
-                                            <fieldset class="border p-2">
-                                                <legend class="w-auto px-2">Admin</legend>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p3" name="permission[]" value="3">
-                                                    <label class="form-check-label" for="p3">Create Admin</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p4" name="permission[]" value="4">
-                                                    <label class="form-check-label" for="p4">Edit Admin</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p5" name="permission[]" value="5">
-                                                    <label class="form-check-label" for="p5">Delete Admin</label>
-                                                </div>
-                                            </fieldset>
-
-                                            <fieldset class="border p-2">
-                                                <legend class="w-auto px-2">Customer</legend>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p6" name="permission[]" value="6">
-                                                    <label class="form-check-label" for="p6">Create Customer</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p7" name="permission[]" value="7">
-                                                    <label class="form-check-label" for="p7">Edit Customer</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p8" name="permission[]" value="8">
-                                                    <label class="form-check-label" for="p8">Delete Customer</label>
+                                                    <label class="form-check-label" for="p1">Dashboard Content</label>
                                                 </div>
                                             </fieldset>
 
                                             <fieldset class="border p-2">
                                                 <legend class="w-auto px-2">Product</legend>
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p9" name="permission[]" value="9">
-                                                    <label class="form-check-label" for="p9">Add Product</label>
+                                                    <input class="form-check-input" type="checkbox" id="p2" name="permission[]" value="2">
+                                                    <label class="form-check-label" for="p2">Add Product</label>
                                                 </div>
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p10" name="permission[]" value="10">
-                                                    <label class="form-check-label" for="p10">Edit Product</label>
+                                                    <input class="form-check-input" type="checkbox" id="p3" name="permission[]" value="3">
+                                                    <label class="form-check-label" for="p3">Edit Product</label>
                                                 </div>
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p11" name="permission[]" value="11">
-                                                    <label class="form-check-label" for="p11">Delete Product</label>
+                                                    <input class="form-check-input" type="checkbox" id="p4" name="permission[]" value="4">
+                                                    <label class="form-check-label" for="p4">Delete Product</label>
                                                 </div>
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p12" name="permission[]" value="12">
-                                                    <label class="form-check-label" for="p12">Category</label>
+                                                    <input class="form-check-input" type="checkbox" id="p5" name="permission[]" value="5">
+                                                    <label class="form-check-label" for="p5">Category</label>
                                                 </div>
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p13" name="permission[]" value="13">
-                                                    <label class="form-check-label" for="p13">Brand</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p14" name="permission[]" value="14">
-                                                    <label class="form-check-label" for="p14">Model</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p15" name="permission[]" value="15">
-                                                    <label class="form-check-label" for="p15">Unit</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p16" name="permission[]" value="16">
-                                                    <label class="form-check-label" for="p16">Group</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p17" name="permission[]" value="17">
-                                                    <label class="form-check-label" for="p17">Bundle Product</label>
+                                                    <input class="form-check-input" type="checkbox" id="p6" name="permission[]" value="6">
+                                                    <label class="form-check-label" for="p6">Group</label>
                                                 </div>
                                             </fieldset>
 
                                             <fieldset class="border p-2">
-                                                <legend class="w-auto px-2">Slider</legend>
+                                                <legend class="w-auto px-2">Purchase</legend>
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p18" name="permission[]" value="18">
-                                                    <label class="form-check-label" for="p18">Slider</label>
+                                                    <input class="form-check-input" type="checkbox" id="p7" name="permission[]" value="7">
+                                                    <label class="form-check-label" for="p7">Create Order</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="p8" name="permission[]" value="8">
+                                                    <label class="form-check-label" for="p8">Order List</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="p9" name="permission[]" value="9">
+                                                    <label class="form-check-label" for="p9">Add To Stock From Order List</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="p10" name="permission[]" value="10">
+                                                    <label class="form-check-label" for="p10">Purchase History</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="p11" name="permission[]" value="11">
+                                                    <label class="form-check-label" for="p11">Return History</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="p11" name="permission[]" value="11">
+                                                    <label class="form-check-label" for="p11">Supplier</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="p12" name="permission[]" value="12">
+                                                    <label class="form-check-label" for="p12">Supplier Pay</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="p13" name="permission[]" value="13">
+                                                    <label class="form-check-label" for="p13">Mother Vessel</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="p14" name="permission[]" value="14">
+                                                    <label class="form-check-label" for="p14">Lighter Vessel</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="p15" name="permission[]" value="15">
+                                                    <label class="form-check-label" for="p15">Ghat</label>
                                                 </div>
                                             </fieldset>
 
@@ -223,118 +203,74 @@
 
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            
-                                            <fieldset class="border p-2">
-                                                <legend class="w-auto px-2">Stock</legend>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p19" name="permission[]" value="19">
-                                                    <label class="form-check-label" for="p19">Supplier</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p20" name="permission[]" value="20">
-                                                    <label class="form-check-label" for="p20">Supplier Pay</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p21" name="permission[]" value="21">
-                                                    <label class="form-check-label" for="p21">Supplier Transaction</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p22" name="permission[]" value="22">
-                                                    <label class="form-check-label" for="p22">Purchase</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p23" name="permission[]" value="23">
-                                                    <label class="form-check-label" for="p23">Stock List</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p24" name="permission[]" value="24">
-                                                    <label class="form-check-label" for="p24">System Loss</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p25" name="permission[]" value="25">
-                                                    <label class="form-check-label" for="p25">Purchase History</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p26" name="permission[]" value="26">
-                                                    <label class="form-check-label" for="p26">Purchase Return</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p27" name="permission[]" value="27">
-                                                    <label class="form-check-label" for="p27">Return History</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p28" name="permission[]" value="28">
-                                                    <label class="form-check-label" for="p28">System Loses</label>
-                                                </div>
-                                            </fieldset>
 
-                                            <fieldset class="border p-2">
-                                                <legend class="w-auto px-2">Company</legend>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p29" name="permission[]" value="29">
-                                                    <label class="form-check-label" for="p29">Company Details</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p30" name="permission[]" value="30">
-                                                    <label class="form-check-label" for="p30">Contact Email</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p31" name="permission[]" value="31">
-                                                    <label class="form-check-label" for="p31">Contact Message</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p32" name="permission[]" value="32">
-                                                    <label class="form-check-label" for="p32">Section Status</label>
-                                                </div>
-                                            </fieldset>
+                                          <fieldset class="border p-2">
+                                              <legend class="w-auto px-2">Stock</legend>
+                                              <div class="form-check">
+                                                  <input class="form-check-input" type="checkbox" id="p16" name="permission[]" value="16">
+                                                  <label class="form-check-label" for="p16">Stock List</label>
+                                              </div>
+                                              <div class="form-check">
+                                                  <input class="form-check-input" type="checkbox" id="p17" name="permission[]" value="17">
+                                                  <label class="form-check-label" for="p17">Stock Ledger</label>
+                                              </div>
+                                              <div class="form-check">
+                                                  <input class="form-check-input" type="checkbox" id="p18" name="permission[]" value="18">
+                                                  <label class="form-check-label" for="p18">Stocking History</label>
+                                              </div>
+                                              <div class="form-check">
+                                                  <input class="form-check-input" type="checkbox" id="p19" name="permission[]" value="19">
+                                                  <label class="form-check-label" for="p19">System Loss</label>
+                                              </div>                                     
+                                          </fieldset>
 
-                                            <fieldset class="border p-2">
-                                                <legend class="w-auto px-2">Additional Permissions</legend>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p33" name="permission[]" value="33">
-                                                    <label class="form-check-label" for="p33">Ad</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p34" name="permission[]" value="34">
-                                                    <label class="form-check-label" for="p34">Coupon</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p35" name="permission[]" value="35">
-                                                    <label class="form-check-label" for="p35">Create Special Offer</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p36" name="permission[]" value="36">
-                                                    <label class="form-check-label" for="p36">Edit Special Offer</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p37" name="permission[]" value="37">
-                                                    <label class="form-check-label" for="p37">Create Flash Sale</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p38" name="permission[]" value="38">
-                                                    <label class="form-check-label" for="p38">Edit Flash Sale</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p39" name="permission[]" value="39">
-                                                    <label class="form-check-label" for="p39">In House Sale</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p40" name="permission[]" value="40">
-                                                    <label class="form-check-label" for="p40">In House Orders</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p41" name="permission[]" value="41">
-                                                    <label class="form-check-label" for="p41">Delivery Man</label>
-                                                </div>
-                                                    <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p42" name="permission[]" value="42">
-                                                    <label class="form-check-label" for="p42">Reports</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="p43" name="permission[]" value="43">
-                                                    <label class="form-check-label" for="p43">Role & Permission</label>
-                                                </div>
-                                            </fieldset>
+                                          <fieldset class="border p-2">
+                                              <legend class="w-auto px-2">Sales</legend>
+                                              <div class="form-check">
+                                                  <input class="form-check-input" type="checkbox" id="p20" name="permission[]" value="20">
+                                                  <label class="form-check-label" for="p20">All Orders</label>
+                                              </div>
+                                              <div class="form-check">
+                                                  <input class="form-check-input" type="checkbox" id="p21" name="permission[]" value="21">
+                                                  <label class="form-check-label" for="p21">Processing Orders</label>
+                                              </div>
+                                              <div class="form-check">
+                                                  <input class="form-check-input" type="checkbox" id="p22" name="permission[]" value="22">
+                                                  <label class="form-check-label" for="p22">Delivered Orders</label>
+                                              </div>
+                                              <div class="form-check">
+                                                  <input class="form-check-input" type="checkbox" id="p23" name="permission[]" value="23">
+                                                  <label class="form-check-label" for="p23">Cancelled Orders</label>
+                                              </div>
+                                              <div class="form-check">
+                                                  <input class="form-check-input" type="checkbox" id="p24" name="permission[]" value="24">
+                                                  <label class="form-check-label" for="p24">In House Sale</label>
+                                              </div>
+                                              <div class="form-check">
+                                                  <input class="form-check-input" type="checkbox" id="p25" name="permission[]" value="25">
+                                                  <label class="form-check-label" for="p25">In House Sales List</label>
+                                              </div>
+                                              <div class="form-check">
+                                                  <input class="form-check-input" type="checkbox" id="p26" name="permission[]" value="26">
+                                                  <label class="form-check-label" for="p26">Quotation List</label>
+                                              </div>
+                                              <div class="form-check">
+                                                  <input class="form-check-input" type="checkbox" id="p27" name="permission[]" value="27">
+                                                  <label class="form-check-label" for="p27">Whole Saler</label>
+                                              </div>
+                                              <div class="form-check">
+                                                  <input class="form-check-input" type="checkbox" id="p28" name="permission[]" value="28">
+                                                  <label class="form-check-label" for="p28">Whole Saler Due Receive</label>
+                                              </div>
+                                          </fieldset>
+
+                                          <fieldset class="border p-2">
+                                              <legend class="w-auto px-2">Additional Permissions</legend>
+                                              <div class="form-check">
+                                                  <input class="form-check-input" type="checkbox" id="p29" name="permission[]" value="29">
+                                                  <label class="form-check-label" for="p29">Reports</label>
+                                              </div>
+                                          </fieldset>
 
                                         </div>
                                     </div>
