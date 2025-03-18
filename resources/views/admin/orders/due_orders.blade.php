@@ -53,7 +53,10 @@
 
                                         @if ($netAmount > 0)
                                             <span class="btn btn-sm btn-danger">£ {{ number_format($netAmount, 2) }}</span>
+
+                                            @if(in_array('28', json_decode(auth()->user()->role->permission)))
                                             <button class="btn btn-sm btn-warning pay-btn" data-id="{{ $order->id }}" data-customer-id="{{ $order->user_id }}" data-net-amount="{{ $netAmount }}">Receive</button>
+                                            @endif
                                         @endif
                                         </div>
                                     </td>

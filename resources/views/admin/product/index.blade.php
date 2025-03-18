@@ -93,12 +93,14 @@
                                         <a href="{{ route('product.prices.show', $data->id) }}">
                                             <i class="fa fa-money" style="color: #FF9800; font-size:16px; margin-right: 10px;"></i>
                                         </a> -->
+                                        @if(in_array('47', json_decode(auth()->user()->role->permission)))
                                         <a href="{{ route('product.edit', $data->id) }}" id="EditBtn" rid="{{ $data->id }}">
                                             <i class="fa fa-edit" style="color: #2196f3; font-size:16px; margin-right: 10px;"></i>
                                         </a>
                                         <a class="deleteBtn" rid="{{ $data->id }}">
                                             <i class="fa fa-trash-o" style="color: red; font-size:16px;"></i>
                                         </a>
+                                        @endif
                                     </td>
                                 </tr>
                                 @endforeach

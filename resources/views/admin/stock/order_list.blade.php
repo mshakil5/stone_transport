@@ -35,9 +35,11 @@
                                     <td>{{ $order->advance_amount }}</td>
                                     <td>{{ $order->advance_quantity }}</td>
                                     <td>
+                                      @if(in_array('9', json_decode(auth()->user()->role->permission)))
                                         <a href="{{ route('purchase.edit', $order->id) }}" class="btn btn-sm btn-info">
                                             Add To Stock
                                         </a>
+                                      @endif
                                     </td>
                                 </tr>
                                 @endforeach

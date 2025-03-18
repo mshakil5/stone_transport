@@ -46,6 +46,8 @@
                                     <td>{{ $purchase->paid_amount }}</td>
                                     <td>
                                         <span  class="btn btn-sm btn-danger">£{{$purchase->due_amount }}</span>
+
+                                        @if(in_array('12', json_decode(auth()->user()->role->permission)))
                                         <button class="btn btn-sm btn-warning pay-btn" 
                                             data-id="{{ $purchase->id }}" 
                                             @if($purchase->supplier)
@@ -55,6 +57,8 @@
                                             data-target="#payModal">
                                             Pay
                                         </button>
+                                        @endif
+
                                     </td>
                                     @php
                                     $totalRemainingQuantity = $purchase->purchaseHistory->sum('remaining_product_quantity');
