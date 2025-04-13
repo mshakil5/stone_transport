@@ -23,4 +23,9 @@ class Transaction extends Model
     {
         return $this->belongsTo(User::class, 'customer_id');
     }
+
+    public function purchase()
+    {
+        return $this->belongsTo(Purchase::class, 'purchase_id');
+    }
 }

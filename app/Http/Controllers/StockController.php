@@ -552,7 +552,7 @@ class StockController extends Controller
 
     public function editPurchaseHistory(Purchase $purchase)
     {
-        $purchase = Purchase::with('supplier', 'purchaseHistory.product')->findOrFail($purchase->id);
+        $purchase = Purchase::with('supplier', 'purchaseHistory.product', 'transactions')->findOrFail($purchase->id);
         $products = Product::orderby('id','DESC')->get();
         $suppliers = Supplier::orderby('id','DESC')->get();
         $warehouses = Warehouse::select('id', 'name','location')->where('status', 1)->get();
@@ -570,7 +570,6 @@ class StockController extends Controller
     {
         $validatedData = $request->validate([
             'purchase_id' => 'required|exists:purchases,id',
-            'invoice' => 'required',
             'supplier_id' => 'required|exists:suppliers,id',
             'mother_vassels_id' => 'required',
             'purchase_date' => 'required|date',
@@ -584,7 +583,7 @@ class StockController extends Controller
             'total_amount' => 'required|numeric',
             'vat_percent' => 'nullable|numeric',
             'total_vat_amount' => 'nullable|numeric',
-            'total_scale_fee' => 'nullable|numeric',
+            'total_unloading_cost' => 'nullable|numeric',
             'discount' => 'nullable|numeric',
             'total_vat_amount' => 'required|numeric',
             'net_amount' => 'required|numeric',
@@ -596,7 +595,7 @@ class StockController extends Controller
             'products.*.warehouse_id' => 'required',
             'products.*.ghat_id' => 'required',
             'products.*.scale_quantity' => 'required',
-            'products.*.scale_fee' => 'required',
+            'products.*.unloading_cost' => 'required',
             // 'products.*.product_size' => 'nullable|string',
             // 'products.*.product_color' => 'nullable|string',
             'products.*.unit_price' => 'required|numeric',
@@ -615,11 +614,11 @@ class StockController extends Controller
         }
     
         // Update Purchase Info
-        $purchase->invoice = $request->invoice;
+        $purchase->invoice = rand(10000000, 99999999);
         $purchase->vat_percent = $request->vat_percent;
         $purchase->total_vat_amount = $request->total_vat_amount;
         $purchase->advance_quantity = $request->advance_quantity;
-        $purchase->total_scale_fee = $request->total_scale_fee;
+        $purchase->total_unloading_cost = $request->total_unloading_cost;
         $purchase->supplier_id = $request->supplier_id;
         $purchase->mother_vassels_id = $request->mother_vassels_id;
         $purchase->purchase_date = $request->purchase_date;
@@ -679,7 +678,7 @@ class StockController extends Controller
                     $purchaseHistory->warehouse_id = $product['warehouse_id'];
                     $purchaseHistory->ghat_id = $product['ghat_id'];
                     $purchaseHistory->scale_quantity = $product['scale_quantity'];
-                    $purchaseHistory->scale_fee = $product['scale_fee'];
+                    $purchaseHistory->unloading_cost = $product['unloading_cost'];
         
                     if ($purchaseHistory->transferred_product_quantity > 0) {
                         $purchaseHistory->remaining_product_quantity = 0;
@@ -713,7 +712,7 @@ class StockController extends Controller
                 $purchaseHistory->warehouse_id = $product['warehouse_id'];
                 $purchaseHistory->ghat_id = $product['ghat_id'];
                 $purchaseHistory->scale_quantity = $product['scale_quantity'];
-                $purchaseHistory->scale_fee = $product['scale_fee'];
+                $purchaseHistory->unloading_cost = $product['unloading_cost'];
         
                 $purchaseHistory->created_by = Auth::user()->id;
                 $purchaseHistory->save();
@@ -1049,8 +1048,8 @@ class StockController extends Controller
             'mother_vassels_id' => 'required',
             'advance_date' => 'required',
             'purchase_type' => 'required|string|max:50',
-            'advance_amount' => 'required|numeric|min:0',
-            'advance_quantity' => 'required|integer|min:1',
+            'advance_amount' => 'nullable|numeric|min:0|required_if:purchase_type,Due',
+            'advance_quantity' => 'nullable|integer|min:1|required_if:purchase_type,Due',
         ]);
 
         $purchase = new Purchase();
@@ -1063,7 +1062,71 @@ class StockController extends Controller
         $purchase->created_by = auth()->user()->id;
         $purchase->save();
 
+        $transaction = new Transaction();
+        $transaction->date = $request->advance_date;
+        $transaction->purchase_id = $purchase->id;
+        $transaction->table_type = "Purchase";
+        if($request->purchase_type == "Due"){
+          $transaction->transaction_type = "Due";
+        } else {
+          $transaction->transaction_type = "Advance";
+        }
+
+        $transaction->payment_type = $request->purchase_type;
+        $transaction->amount = $request->advance_amount;
+        $transaction->at_amount = $request->advance_amount;
+        $transaction->save();
+
+        $transaction->tran_id = 'PR' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
+        $transaction->save();
+
         return response()->json(['message' => 'Order created successfully!'], 201);
+    }
+
+    public function advancePayment(Request $request)
+    {
+        $request->validate([
+            'order_id' => 'required',
+            'paymentAmount' => 'required',
+            'payment_type' => 'required',
+            'paymentNote' => 'nullable',
+        ]);
+
+        $transaction = new Transaction();
+        $transaction->table_type = "Purchase";
+        $transaction->purchase_id = $request->order_id;
+
+        if ($request->hasFile('document')) {
+            $uploadedFile = $request->file('document');
+            $randomName = mt_rand(10000000, 99999999).'.'.$uploadedFile->getClientOriginalExtension();
+            $destinationPath = 'images/transaction/';
+            $uploadedFile->move(public_path($destinationPath), $randomName);
+            $transaction->document = '/' . $destinationPath . $randomName;
+        }
+
+        $transaction->amount = $request->paymentAmount;
+        $transaction->at_amount = $request->paymentAmount;
+        if($request->payment_type == "Due"){
+          $transaction->transaction_type = "Due";
+        } else {
+          $transaction->transaction_type = "Advance";
+        }
+        $transaction->payment_type = $request->payment_type;
+        $transaction->note = $request->paymentNote;
+        $transaction->date = date('Y-m-d');
+        $transaction->save();
+
+        $transaction->tran_id = 'PR' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
+        $transaction->save();
+
+        $purchase = Purchase::find($request->order_id);
+        $purchase->advance_amount += $request->paymentAmount;
+        $purchase->save();
+
+          return response()->json([
+            'status' => 'success',
+            'message' => 'Payment processed successfully!',
+        ]);
     }
 
     public function orderList()
@@ -1074,6 +1137,65 @@ class StockController extends Controller
 
         $data = Purchase::select('id', 'advance_date', 'consignment_number', 'mother_vassels_id', 'purchase_type', 'advance_amount', 'advance_quantity')->orderby('id','DESC')->get();
         return view('admin.stock.order_list', compact('data'));
+    }
+
+    public function advanceTransactions($id)
+    {
+        $transactions = Transaction::where('purchase_id', $id)->where('table_type', 'Purchase')->select('id', 'date', 'note', 'payment_type', 'table_type', 'at_amount', 'document')->get();
+
+        $totalDrAmount = 0;
+
+        $totalCrAmount = $transactions->sum('at_amount');
+
+        $totalBalance = $totalDrAmount - $totalCrAmount;
+
+        return view('admin.stock.advance_transactions', compact('transactions','totalBalance'));
+    }
+
+    public function advancePaymentUpdate(Request $request)
+    {
+        $request->validate([
+            'transactionId' => 'required|integer|exists:transactions,id',
+            'at_amount' => 'required|numeric|min:0',
+            'note' => 'nullable|string',
+            'document' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048'
+        ]);
+    
+        $transaction = Transaction::findOrFail($request->transactionId);
+    
+        $transaction->at_amount = $request->at_amount;
+        $transaction->amount = $request->amount;
+        $transaction->note = $request->note;
+    
+        if ($request->hasFile('document')) {
+            if ($transaction->document && file_exists(public_path($transaction->document))) {
+                unlink(public_path($transaction->document));
+            }
+  
+            $uploadedFile = $request->file('document');
+            $randomName = mt_rand(10000000, 99999999).'.'.$uploadedFile->getClientOriginalExtension();
+            $destinationPath = 'images/transaction/';
+            $uploadedFile->move(public_path($destinationPath), $randomName);
+            $transaction->document = '/' . $destinationPath . $randomName;
+
+        }
+
+        $transaction->updated_by = auth()->user()->id;
+
+        $transaction->save();
+
+        if ($transaction->purchase_id) {
+          $totalAdvance = Transaction::where('purchase_id', $transaction->purchase_id)->sum('at_amount');
+
+          $transaction->purchase->update([
+              'advance_amount' => $totalAdvance
+          ]);
+        }
+    
+        return response()->json([
+            'success' => true,
+            'message' => 'Transaction updated successfully!',
+        ]);
     }
 
 }

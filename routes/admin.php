@@ -261,6 +261,8 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
 
     Route::get('/admin/purchase-return/{purchase}', [StockController::class, 'returnProduct'])->name('returnProduct');
 
+    Route::get('/advance-transactions/{id}', [StockController::class, 'advanceTransactions'])->name('advance.transactions');
+
     Route::post('/purchases/update-status', [StockController::class, 'updateStatus'])->name('purchases.updateStatus');
 
     Route::post('/update-stock', [StockController::class, 'stockUpdate']);
@@ -271,6 +273,9 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::get('/create-order', [StockController::class, 'createOrder'])->name('createOrder');
 
     Route::post('/store-order', [StockController::class, 'storeOrder'])->name('storeOrder');
+
+    Route::post('/advance-payment', [StockController::class, 'advancePayment']);
+    Route::post('/advance-payment-update', [StockController::class, 'advancePaymentUpdate']);
 
     Route::get('/order-list', [StockController::class, 'orderList'])->name('orderList');
 

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('product_size')->nullable();
             $table->string('product_color')->nullable();
             $table->double('purchase_price',10,2)->nullable();
-            $table->double('scale_fee',10,2)->nullable();
+            $table->double('unloading_cost',10,2)->nullable();
             $table->string('vat_percent')->nullable();
             $table->double('vat_amount_per_unit',10,2)->nullable();
             $table->double('total_vat',10,2)->nullable();

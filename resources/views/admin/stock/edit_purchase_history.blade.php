@@ -14,13 +14,19 @@
                             @csrf
                             <input type="hidden" id="deleted_purchase_histories" name="deleted_purchase_histories" value="">
                             <div class="row">
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
                                     <div class="form-group">
                                         <label for="advance_date">Advance Date <span class="text-danger">*</span></label>
-                                        <input type="date" class="form-control" id="advance_date" name="advance_date" placeholder="Enter receiving date" value="{{ $purchase->advance_date }}">
+                                        <input type="date" class="form-control" id="advance_date" name="advance_date" placeholder="" value="{{ $purchase->advance_date }}">
                                     </div>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label for="purchase_date">Receiving Date <span class="text-danger">*</span></label>
+                                        <input type="date" class="form-control" id="purchase_date" name="purchase_date" placeholder="" value="{{ $purchase->purchase_date }}">
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
                                     <div class="form-group">
                                         <label for="mother_vessels_id">Mother Vessel<span class="text-danger">*</span></label>
                                         <select class="form-control" id="mother_vessels_id" name="mother_vessels_id">
@@ -33,41 +39,24 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
                                     <div class="form-group">
                                         <label for="purchase_type">Payment Type</label>
                                         <select class="form-control" id="purchase_type" name="purchase_type">
                                             <option value="">Select...</option>
                                             <option value="Cash" {{ $purchase->purchase_type == 'Cash' ? 'selected' : '' }}>Cash</option>
                                             <option value="Bank" {{ $purchase->purchase_type == 'Bank' ? 'selected' : '' }}>Bank</option>
+                                            <option value="Due" {{ $purchase->purchase_type == 'Due' ? 'selected' : '' }}>Due</option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-sm-3">
-                                    <div class="form-group">
-                                        <label for="advance_amount">Advance Amount <span class="text-danger">*</span></label>
-                                        <input type="number" class="form-control" id="advance_amount" name="advance_amount" placeholder="Enter receiving date" value="{{ $purchase->advance_amount }}">
-                                    </div>
-                                </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
                                     <div class="form-group">
                                         <label for="advance_amount">Advance Quantity <span class="text-danger">*</span></label>
-                                        <input type="number" class="form-control" id="advance_quantity" name="advance_quantity" placeholder="Enter advance quantity" value="{{ $purchase->advance_quantity }}">
+                                        <input type="number" class="form-control" id="advance_quantity" name="advance_quantity" placeholder="" value="{{ $purchase->advance_quantity }}">
                                     </div>
                                 </div>
-                                <div class="col-sm-3">
-                                    <div class="form-group">
-                                        <label for="purchase_date">Receiving Date <span class="text-danger">*</span></label>
-                                        <input type="date" class="form-control" id="purchase_date" name="purchase_date" placeholder="Enter receiving date" value="{{ $purchase->purchase_date }}">
-                                    </div>
-                                </div>
-                                <div class="col-sm-3">
-                                    <div class="form-group">
-                                        <label for="invoice">Invoice <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" id="invoice" name="invoice" placeholder="Enter invoice" value="{{ $purchase->invoice }}">
-                                    </div>
-                                </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
                                     <div class="form-group">
                                         <label for="supplier_id">Select Supplier <span class="text-danger">*</span></label>
                                         <select class="form-control" id="supplier_id" name="supplier_id">
@@ -89,7 +78,7 @@
                                 <div class="col-sm-3 d-none">
                                     <div class="form-group">
                                         <label for="supplier_balance">Supplier Balance</label>
-                                        <input type="text" class="form-control" id="supplier_balance" name="supplier_balance" placeholder="Enter supplier previous due" readonly>
+                                        <input type="text" class="form-control" id="supplier_balance" name="supplier_balance" placeholder="" readonly>
                                         <input type="hidden" id="previous_purchase_due" value="{{ $purchase->due_amount }}">
                                     </div>
                                 </div>
@@ -125,21 +114,21 @@
                                 <div class="col-sm-3 d-none">
                                     <div class="form-group">
                                         <label for="vat_reg">VAT Reg#</label>
-                                        <input type="text" class="form-control" id="vat_reg" name="vat_reg" placeholder="Enter VAT Reg#" value="{{ $purchase->vat_reg }}">
+                                        <input type="text" class="form-control" id="vat_reg" name="vat_reg" placeholder="" value="{{ $purchase->vat_reg }}">
                                     </div>
                                 </div>
 
-                                <div class="col-sm-6">
+                                <div class="col-sm-6 d-none">
                                     <div class="form-group">
                                         <label for="ref">Ref</label>
-                                        <input type="text" class="form-control" id="ref" name="ref" placeholder="Enter reference" value="{{ $purchase->ref }}">
+                                        <input type="text" class="form-control" id="ref" name="ref" placeholder="" value="{{ $purchase->ref }}">
                                     </div>
                                 </div>
 
-                                <div class="col-sm-6">
+                                <div class="col-sm-6 d-none">
                                     <div class="form-group">
                                         <label for="remarks">Remarks</label>
-                                        <textarea class="form-control" id="remarks" name="remarks" rows="1" placeholder="Enter remarks">{{ $purchase->remarks }}</textarea>
+                                        <textarea class="form-control" id="remarks" name="remarks" rows="1" placeholder="">{{ $purchase->remarks }}</textarea>
                                     </div>
                                 </div>
 
@@ -196,25 +185,25 @@
                                 <div class="col-sm-3">
                                     <div class="form-group">
                                         <label for="quantity">Quantity <span class="text-danger">*</span></label>
-                                        <input type="number" class="form-control" id="quantity" name="quantity" min="1" placeholder="Enter quantity" oninput="validateMinValue(this, 1)">
+                                        <input type="number" class="form-control" id="quantity" name="quantity" min="1" placeholder="" oninput="validateMinValue(this, 1)">
                                     </div>
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="form-group">
                                         <label for="scale_quantity">Scale Quantity <span class="text-danger">*</span></label>
-                                        <input type="number" class="form-control" id="scale_quantity" name="scale_quantity" min="1" placeholder="Enter scale quantity" oninput="validateMinValue(this, 1)">
+                                        <input type="number" class="form-control" id="scale_quantity" name="scale_quantity" min="1" placeholder="" oninput="validateMinValue(this, 1)">
                                     </div>
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="form-group">
-                                        <label for="scale_fee">Scale Fee <span class="text-danger">*</span></label>
-                                        <input type="number" class="form-control" id="scale_fee" name="scale_fee" min="1" placeholder="Enter scale fee" oninput="validateMinValue(this, 1)">
+                                        <label for="unloading_cost">Unloading Cost <span class="text-danger">*</span></label>
+                                        <input type="number" class="form-control" id="unloading_cost" name="unloading_cost" min="1" placeholder="" oninput="validateMinValue(this, 1)">
                                     </div>
                                 </div>
                                 <div class="col-sm-2">
                                     <div class="form-group">
                                         <label for="unit_price">Unit Price <span class="text-danger">*</span></label>
-                                        <input type="number" step="0.01" class="form-control" id="unit_price" name="unit_price" min="1" placeholder="Enter unit price" oninput="validateMinValue(this, 1)">
+                                        <input type="number" step="0.01" class="form-control" id="unit_price" name="unit_price" min="1" placeholder="" oninput="validateMinValue(this, 1)">
                                     </div>
                                 </div>
                                 <div class="col-sm-2 d-none">
@@ -258,7 +247,7 @@
                                                 <th>Warehouse</th>
                                                 <th>Ghat</th>
                                                 <th>Scale Quantity</th>
-                                                <th>Scale Fee</th>
+                                                <th>Unloading Cost</th>
                                                 <th>Quantity</th>
                                                 <th>Unit Price</th>
                                                 <th>Total Price</th>
@@ -277,7 +266,7 @@
                                                 <td>{{ $history->ghat->name }}</td>
                                                 <td>{{ $history->warehouse->name }}</td>
                                                 <td><input type="number" class="form-control scale_quantity" value="{{ $history->scale_quantity }}" /></td>
-                                                <td><input type="number" class="form-control scale_fee" value="{{ $history->scale_fee }}" /></td>
+                                                <td><input type="number" class="form-control unloading_cost" value="{{ $history->unloading_cost }}" /></td>
                                                 <td><input type="number" class="form-control quantity" value="{{ $history->quantity }}" /></td>
                                                 <td><input type="number" step="0.01" class="form-control unit_price" value="{{ $history->purchase_price }}" /></td>
                                                 <td>{{ $history->total_price }}</td>
@@ -330,73 +319,81 @@
 
                                 <div class="col-sm-6 mt-4 mb-5">
                                     <div class="row justify-content-end">
-                                        <div class="col-sm-6 d-flex align-items-center">
+                                        <div class="col-sm-8 d-flex align-items-center">
                                             <span class="">Item Total Amount:</span>
-                                            <input type="text" class="form-control" id="item_total_amount" readonly style="width: 100px; margin-left: auto;" value="{{ $purchase->item_total_amount }}">
+                                            <input type="text" class="form-control" id="item_total_amount" readonly style="width: 150px; margin-left: auto;" value="{{ $purchase->item_total_amount }}">
                                         </div>
                                     </div>
                                     <div class="row justify-content-end mt-1">
-                                        <div class="col-sm-6 d-flex align-items-center">
+                                        <div class="col-sm-8 d-flex align-items-center">
+                                              <a href="{{ route('advance.transactions', ['id' => $purchase->id]) }}" title="View Advance Transactions Details">
+                                                <span class="">Total Advance Amount:</span>
+                                              </a>
+                                              <input type="text" class="form-control" id="advance_amount" readonly style="width: 150px; margin-left: auto;" value="{{ $purchase->advance_amount }}">
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-end mt-1">
+                                        <div class="col-sm-8 d-flex align-items-center">
                                             <span class="">Discount Amount:</span>
-                                            <input type="number" step="0.01" class="form-control" id="discount" name="discount" style="width: 100px; margin-left: auto;" value="{{ $purchase->discount }}">
+                                            <input type="number" step="0.01" class="form-control" id="discount" name="discount" style="width: 150px; margin-left: auto;" value="{{ $purchase->discount }}">
                                             <input type="hidden" id="hidden_discount" value="{{ $purchase->discount }}" min="0">
                                         </div>
                                     </div>
                                     <div class="row justify-content-end mt-1">
-                                        <div class="col-sm-6 d-flex align-items-center">
+                                        <div class="col-sm-8 d-flex align-items-center">
                                             <span class="">VAT(%):</span>
-                                            <input type="text" class="form-control" id="vat_percent" style="width: 100px; margin-left: auto;" value="{{ $purchase->vat_percent }}">
+                                            <input type="text" class="form-control" id="vat_percent" style="width: 150px; margin-left: auto;" value="{{ $purchase->vat_percent }}">
                                         </div>
                                     </div>
                                     <div class="row justify-content-end mt-1">
-                                        <div class="col-sm-6 d-flex align-items-center">
+                                        <div class="col-sm-8 d-flex align-items-center">
                                             <span class="">Total VAT Amount:</span>
-                                            <input type="text" class="form-control" id="total_vat_amount" readonly style="width: 100px; margin-left: auto;" value="{{ $purchase->total_vat_amount }}">
+                                            <input type="text" class="form-control" id="total_vat_amount" readonly style="width: 150px; margin-left: auto;" value="{{ $purchase->total_vat_amount }}">
                                         </div>
                                     </div>
                                     <div class="row justify-content-end mt-1">
-                                        <div class="col-sm-6 d-flex align-items-center">
-                                            <span class="">Total Scale Fee:</span>
-                                            <input type="text" class="form-control" id="total_scale_fee" readonly style="width: 100px; margin-left: auto;" value="{{ $purchase->total_scale_fee }}">
+                                        <div class="col-sm-8 d-flex align-items-center">
+                                            <span class="">Total Unloading Cost:</span>
+                                            <input type="text" class="form-control" id="total_unloading_cost" readonly style="width: 150px; margin-left: auto;" value="{{ $purchase->total_unloading_cost }}">
                                         </div>
                                     </div>
                                     <div class="row justify-content-end mt-1">
-                                        <div class="col-sm-6 d-flex align-items-center">
+                                        <div class="col-sm-8 d-flex align-items-center">
                                             <span class="">Net Amount:</span>
-                                            <input type="text" class="form-control" id="net_amount" readonly style="width: 100px; margin-left: auto;" value="{{ $purchase->net_amount }}">
+                                            <input type="text" class="form-control" id="net_amount" readonly style="width: 150px; margin-left: auto;" value="{{ $purchase->net_amount }}">
                                         </div>
                                     </div>
                                     <div class="row justify-content-end mt-3 d-none">
                                         <div class="col-sm-3 d-flex align-items-center">
                                             <span class="">Paid Amount:</span>
-                                            <input type="number" step="0.01" class="form-control" id="paid_amount" name="paid_amount" style="width: 100px; margin-left: auto;" value="{{ $purchase->paid_amount }}">
+                                            <input type="number" step="0.01" class="form-control" id="paid_amount" name="paid_amount" style="width: 150px; margin-left: auto;" value="{{ $purchase->paid_amount }}">
                                             <input type="hidden" id="hidden_paid_amount" value="{{ $purchase->paid_amount }}">
                                         </div>
                                     </div>
                                     <div class="row justify-content-end mt-1 d-none">
                                         <div class="col-sm-6 d-flex align-items-center">
                                             <span class="">Cash Payment:</span>
-                                            <input type="number" step="0.01" class="form-control" id="cash_payment" name="cash_payment" style="width: 100px; margin-left: auto;" value="{{ $cashAmount ? $cashAmount->amount : 0 }}" min="0">
+                                            <input type="number" step="0.01" class="form-control" id="cash_payment" name="cash_payment" style="width: 150px; margin-left: auto;" value="{{ $cashAmount ? $cashAmount->amount : 0 }}" min="0">
                                         </div>
                                     </div>
                                     
                                     <div class="row justify-content-end mt-1 d-none">
                                         <div class="col-sm-6 d-flex align-items-center">
                                             <span class="">Bank Payment:</span>
-                                            <input type="number" step="0.01" class="form-control" id="bank_payment" name="bank_payment" style="width: 100px; margin-left: auto;" value="{{ $bankAmount ? $bankAmount->amount : 0 }}" min="0">
+                                            <input type="number" step="0.01" class="form-control" id="bank_payment" name="bank_payment" style="width: 150px; margin-left: auto;" value="{{ $bankAmount ? $bankAmount->amount : 0 }}" min="0">
                                         </div>
                                     </div>
                                     <div class="row justify-content-end mt-3 d-none">
                                         <div class="col-sm-3 d-flex align-items-center">
                                             <span class="">Due Amount:</span>
-                                            <input type="text" class="form-control" id="due_amount" readonly style="width: 100px; margin-left: auto;">
+                                            <input type="text" class="form-control" id="due_amount" readonly style="width: 150px; margin-left: auto;">
                                         </div>
                                     </div>
                                 </div>
 
                             </div>
                             <div class="card-footer">
-                                <button type="submit" id="addBtn" class="btn btn-secondary" value="Create"><i class="fas fa-sync-alt"></i> Update Order</button>    
+                                <button type="submit" id="addBtn" class="btn btn-secondary" value="Create"><i class="fas fa-sync-alt"></i> Add To Stock</button>    
                             </div>
                         </form>
                     </div>
@@ -426,12 +423,12 @@
         function updateSummary() {
             var itemTotalAmount = 0;
             var totalVatAmount = 0;
-            var totalScaleFee = 0;
+            var totalUnloadingCost = 0;
 
             $('#productTable tbody tr').each(function () {
                 var quantity = parseFloat($(this).find('input.quantity').val()) || 0;
                 var unitPrice = parseFloat($(this).find('input.unit_price').val()) || 0;
-                var scaleFee = parseFloat($(this).find('input.scale_fee').val()) || 0;
+                var unloadingCost = parseFloat($(this).find('input.unloading_cost').val()) || 0;
                 var scaleQuantity = parseFloat($(this).find('input.scale_quantity').val()) || 0;
 
                 var totalPrice = (quantity * unitPrice).toFixed(2);
@@ -442,17 +439,17 @@
                 var totalPriceWithVat = (parseFloat(totalPrice) + parseFloat(vatAmount)).toFixed(2);
 
                 $(this).find('td:eq(8)').text(totalPrice);
-                $(this).find('input.scale_fee').val(scaleFee.toFixed(2));
-                $(this).find('input.scale_quantity').val(scaleQuantity.toFixed(2));
+                $(this).find('input.unloading_cost').val(unloadingCost.toFixed(2));
+                $(this).find('input.scale_quantity').val(Math.round(scaleQuantity));
 
                 itemTotalAmount += parseFloat(totalPrice) || 0;
                 totalVatAmount += parseFloat(vatAmount) || 0;
-                totalScaleFee += parseFloat(scaleFee) || 0;
+                totalUnloadingCost += parseFloat(unloadingCost) || 0;
             });
 
             $('#item_total_amount').val(itemTotalAmount.toFixed(2) || '0.00');
             $('#total_vat_amount').val(totalVatAmount.toFixed(2) || '0.00');
-            $('#total_scale_fee').val(totalScaleFee.toFixed(2) || '0.00');
+            $('#total_unloading_cost').val(totalUnloadingCost.toFixed(2) || '0.00');
 
             var discount = parseFloat($('#discount').val()) || 0;
             var direct_cost = parseFloat($('#direct_cost').val()) || 0;
@@ -463,7 +460,7 @@
 
             var advanceAmount = parseFloat($('#advance_amount').val()) || 0;
 
-            var netAmount = itemTotalAmount + totalVatAmount + totalScaleFee - discount + direct_cost + cnf_cost + cost_b + cost_a + other_cost - advanceAmount;
+            var netAmount = itemTotalAmount + totalVatAmount + totalUnloadingCost - discount + direct_cost + cnf_cost + cost_b + cost_a + other_cost - advanceAmount;
             $('#net_amount').val(netAmount.toFixed(2) || '0.00');
 
             var paidAmount = parseFloat($('#paid_amount').val()) || 0;
@@ -490,7 +487,7 @@
             var ghatId = $('#ghat_id').val();
             var ghatName = $('#ghat_id option:selected').text();
             var scaleQuantity = $('#scale_quantity').val();
-            var scaleFee = $('#scale_fee').val();
+            var unloadingCost = $('#unloading_cost').val();
 
             if (!productId) {
                 alert('Please select a product.');
@@ -507,8 +504,8 @@
                 return;
             }
 
-            if (isNaN(scaleFee) || scaleFee < 0) {
-                alert('Scale fee must be a non-negative number.');
+            if (isNaN(unloadingCost) || unloadingCost < 0) {
+                alert('Unloading cost must be a non-negative number.');
                 return;
             }
 
@@ -545,7 +542,7 @@
                                 <td>${warehouseName}</td>
                                 <td>${ghatName}</td>
                                 <td><input type="number" class="form-control scale_quantity" value="${scaleQuantity}" /></td>
-                                <td><input type="number" class="form-control scale_fee" value="${scaleFee}" /></td>
+                                <td><input type="number" class="form-control unloading_cost" value="${unloadingCost}" /></td>
                                 <td><input type="number" class="form-control quantity" value="${quantity}" /></td>
                                 <td><input type="number" class="form-control unit_price" value="${unitPrice}" /></td>
                                 <td>${totalPrice}</td>
@@ -555,7 +552,7 @@
 
             $('#quantity').val('');
             $('#unit_price').val('');
-            $('#scale_fee').val('');
+            $('#unloading_cost').val('');
             $('#scale_quantity').val('');
             $('#product_size').val('');
             $('#product_color').val('');
@@ -576,7 +573,7 @@
             updateSummary();
         });
 
-        $(document).on('input', '#productTable input.quantity, #productTable input.unit_price, #productTable input.scale_fee, #productTable input.scale_quantity, #vat_percent, #discount, #direct_cost, #cost_a, #cost_b, #cnf_cost, #other_cost, #paid_amount', function() {
+        $(document).on('input', '#productTable input.quantity, #productTable input.unit_price, #productTable input.unloading_cost, #productTable input.scale_quantity, #vat_percent, #discount, #direct_cost, #cost_a, #cost_b, #cnf_cost, #other_cost, #paid_amount', function() {
             updateSummary();
         });
 
@@ -592,7 +589,6 @@
             formData.advance_amount = $('#advance_amount').val();
             formData.advance_quantity = $('#advance_quantity').val();
             formData.purchase_date = $('#purchase_date').val();
-            formData.invoice = $('#invoice').val();
             formData.supplier_id = $('#supplier_id').val();
             formData.vat_reg = $('#vat_reg').val();
             formData.ref = $('#ref').val();
@@ -601,7 +597,7 @@
             formData.discount = $('#discount').val();
             formData.vat_percent = $('#vat_percent').val();
             formData.total_vat_amount = $('#total_vat_amount').val();
-            formData.total_scale_fee = $('#total_scale_fee').val();
+            formData.total_unloading_cost = $('#total_unloading_cost').val();
             formData.direct_cost = $('#direct_cost').val();
             formData.cost_a = $('#cost_a').val();
             formData.cost_b = $('#cost_b').val();
@@ -623,7 +619,7 @@
                 var warehouse_id = $(this).find('input.warehouse_id').val();
                 var ghat_id = $(this).find('input.ghat_id').val();
                 var scale_quantity = $(this).find('input.scale_quantity').val();
-                var scale_fee = $(this).find('input.scale_fee').val();
+                var unloading_cost = $(this).find('input.unloading_cost').val();
                 var unitPrice = $(this).find('input.unit_price').val();
                 var totalPrice = $(this).find('td:eq(8)').text();
 
@@ -634,7 +630,7 @@
                     warehouse_id: warehouse_id,
                     ghat_id: ghat_id,
                     scale_quantity: scale_quantity,
-                    scale_fee: scale_fee,
+                    unloading_cost: unloading_cost,
                     quantity: quantity,
                     unit_price: unitPrice,
                     total_price: totalPrice

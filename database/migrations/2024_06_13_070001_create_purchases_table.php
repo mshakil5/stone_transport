@@ -24,7 +24,7 @@ return new class extends Migration
             $table->longText('remarks')->nullable();
             $table->decimal('total_amount',10,2)->nullable();
             $table->decimal('discount',10,2)->nullable();
-            $table->decimal('total_scale_fee',10,2)->nullable();
+            $table->decimal('total_unloading_cost',10,2)->nullable();
             $table->string('vat_percent')->nullable();
             $table->decimal('total_vat_amount',10,2)->nullable();
             $table->decimal('net_amount',10,2)->nullable();
@@ -38,7 +38,7 @@ return new class extends Migration
             $table->decimal('other_cost',10,2)->nullable();
             $table->decimal('advance_amount', 10, 2)->nullable();
             $table->string('consignment_number')->nullable();
-            $table->decimal('quantity', 10, 2)->nullable();
+            $table->integer('quantity')->nullable();
 
             $table->boolean('status')->default(1);
             // 1==Processing, 2==On The Way, 3==Customs, 4==Received

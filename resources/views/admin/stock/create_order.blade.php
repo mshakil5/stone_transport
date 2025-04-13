@@ -17,13 +17,13 @@
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="advance_date">Advance Date <span class="text-danger">*</span></label>
-                                        <input type="date" class="form-control" id="advance_date" name="advance_date" required>
+                                        <input type="date" class="form-control" id="advance_date" name="advance_date" required value="{{ date('Y-m-d') }}">
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="consignment_number">Consignment Number <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" id="consignment_number" name="consignment_number" placeholder="Enter consignment number" required>
+                                        <input type="text" class="form-control" id="consignment_number" name="consignment_number" required>
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
@@ -44,19 +44,20 @@
                                             <option value="">Select...</option>
                                             <option value="Cash">Cash</option>
                                             <option value="Bank">Bank</option>
+                                            <option value="Due">Due</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group">
-                                        <label for="advance_amount">Advance Amount <span class="text-danger">*</span></label>
-                                        <input type="number" step="0.01" class="form-control" id="advance_amount" name="advance_amount" placeholder="Enter advance amount" required>
+                                        <label for="advance_amount">Advance Amount</label>
+                                        <input type="number" step="0.01" class="form-control" id="advance_amount" name="advance_amount" placeholder="">
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group">
-                                        <label for="advance_quantity">Advance Quantity <span class="text-danger">*</span></label>
-                                        <input type="number" class="form-control" id="advance_quantity" name="advance_quantity" placeholder="Enter advance_quantity" min="1" required>
+                                        <label for="advance_quantity">Advance Quantity</label>
+                                        <input type="number" class="form-control" id="advance_quantity" name="advance_quantity" min="1">
                                     </div>
                                 </div>
                             </div>
@@ -96,6 +97,12 @@
                   swal("Error!", errorMessage, "error");
               }
           });
+      });
+
+      $('#advance_amount, #advance_quantity').on('input', function() {
+          if ($(this).val() < 0) {
+              $(this).val(0);
+          }
       });
   });
 </script>
