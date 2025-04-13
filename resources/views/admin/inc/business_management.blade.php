@@ -353,7 +353,7 @@
                 <li class="nav-item">
                     <a href="{{ route('inhousesell') }}" class="nav-link {{ (request()->is('admin/in-house-sell*') || request()->routeIs('order-edit')) ? 'active' : '' }}">
                         <i class="fas fa-industry nav-icon"></i>
-                        <p>In House Sale</p>
+                        <p>Sale</p>
                     </a>
                 </li>
                 @endif

@@ -18,13 +18,12 @@
                                     <th>Date</th>
                                     <th>Invoice</th>
                                     <th>Supplier</th>
-                                    <th>Ref</th>
                                     <th>Net Amount</th>
-                                    <th>Paid Amount</th>
+                                    {{-- <th>Paid Amount</th>
                                     <th>Due Amount</th>
                                     <th>Not Transferred Quantity</th>
                                     <th>Missing Quantity</th>
-                                    <th>Status</th>
+                                    <th>Status</th> --}}
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -41,9 +40,9 @@
                                         <br> {{ $purchase->supplier->phone }}
                                         @endif
                                     </td>
-                                    <td>{{ $purchase->ref }}</td>
+                                    {{-- <td>{{ $purchase->ref }}</td> --}}
                                     <td>{{ $purchase->net_amount }}</td>
-                                    <td>{{ $purchase->paid_amount }}</td>
+                                    {{-- <td>{{ $purchase->paid_amount }}</td>
                                     <td>
                                         <span  class="btn btn-sm btn-danger">£{{$purchase->due_amount }}</span>
 
@@ -76,22 +75,22 @@
                                             <option value="3" {{ $purchase->status == 3 ? 'selected' : '' }}>Customs</option>
                                             <option value="4" {{ $purchase->status == 4 ? 'selected' : '' }}>Received</option>
                                         </select>
-                                    </td>
+                                    </td> --}}
                                     <td>
                                         <a class="btn btn-sm btn-info" onclick="showViewPurchaseModal({{ $purchase->id }})">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        @if($purchase->status == 1)
+                                        {{-- @if($purchase->status == 1) --}}
                                         <a href="{{ route('purchase.edit', $purchase->id) }}" class="btn btn-sm btn-primary">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        @endif
-                                        @if($purchase->status == 4 && $totalNotReturnedQuantity > 0)
+                                        {{-- @endif --}}
+                                        {{-- @if($purchase->status == 4 && $totalNotReturnedQuantity > 0)
                                         <a href="{{ route('returnProduct', $purchase->id) }}" class="btn btn-sm btn-warning">
                                             <i class="fas fa-undo-alt"></i>
                                         </a>
-                                        @endif
-                                        @if ($totalRemainingQuantity > 1 && $purchase->status == 4)
+                                        @endif --}}
+                                        {{-- @if ($totalRemainingQuantity > 1 && $purchase->status == 4)
                                             <a href="{{ route('transferToWarehouse', $purchase->id) }}" class="btn btn-sm btn-success">
                                                 <i class="fas fa-arrow-right"></i>
                                             </a>
@@ -99,7 +98,7 @@
                                             <a href="{{ route('missingProduct', $purchase->id) }}" class="btn btn-sm btn-danger">
                                                 <i class="fas fa-arrow-right"></i>
                                             </a>
-                                         @endif   
+                                         @endif    --}}
                                     </td>
                                 </tr>
                                 @endforeach
@@ -121,36 +120,45 @@
             </div>
             <div class="modal-body">
                 <div class="row mb-3">
-                    <div class="col"><strong>Date:</strong> <span id="purchaseDate"></span></div>
-                    <div class="col"><strong>Invoice:</strong> <span id="purchaseInvoice"></span></div>
+                    <div class="col"><strong>Advance Date:</strong> <span id="advanceDate"></span></div>
+                    <div class="col"><strong>Receiving Date:</strong> <span id="receivingDate"></span></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col"><strong>Mother Vessel:</strong> <span id="motherVessel"></span></div>
+                    <div class="col"><strong>Payment Type:</strong> <span id="paymentType"></span></div>
                 </div>
                 <div class="row mb-3">
                     <div class="col"><strong>Supplier:</strong> <span id="supplierName"></span></div>
-                    <div class="col"><strong>Transaction Type:</strong> <span id="purchaseType"></span></div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col"><strong>Ref:</strong> <span id="purchaseRef"></span></div>
-                    <div class="col"><strong>Total Amount:</strong> <span id="purchaseNetAmount"></span></div>
+                    <div class="col"><strong>Total Advance Amount:</strong> <span id="totalAdvanceAmount"></span></div>
+                    <div class="col"><strong>Discount Amount:</strong> <span id="discountAmount"></span></div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col"><strong>Paid Amount:</strong> <span id="purchasePaidAmount"></span></div>
-                    <div class="col"><strong>Due Amount:</strong> <span id="purchaseDueAmount"></span></div>
+                    <div class="col"><strong>VAT(%):</strong> <span id="vatPercent"></span></div>
+                    <div class="col"><strong>Total VAT Amount:</strong> <span id="totalVatAmount"></span></div>
                 </div>
-
+                <div class="row mb-3">
+                    <div class="col"><strong>Total Unloading Cost:</strong> <span id="unloadingCost"></span></div>
+                    <div class="col"><strong>Net Amount:</strong> <span id="netAmount"></span></div>
+                </div>
+            
                 <div class="mb-3">
                     <h5>Purchase History</h5>
                     <table class="table table-bordered">
                         <thead>
                             <tr>
                                 <th>Product Name</th>
-                                <th>Quantity</th>
-                                <th>Price</th>
-                                <th>Total Vat</th>
-                                <th>Net Total</th>
+                                <th>Lighter Vessel</th>
+                                <th>Warehouse</th>
+                                <th>Ghat</th>
+                                <th>Scale Qty</th>
+                                <th>Qty</th>
+                                <th>Unit Price</th>
+                                <th>Total Price</th>
                             </tr>
                         </thead>
                         <tbody id="purchaseHistoryTableBody">
-                           
                         </tbody>
                     </table>
                 </div>
@@ -294,32 +302,38 @@
             type: 'GET',
             success: function(response) {
                 console.log(response);
-                var formattedDate = moment(response.purchase_date).format('DD-MM-YYYY');
-                $('#purchaseDate').text(formattedDate);
-                $('#purchaseInvoice').text(response.invoice);
-                $('#supplierName').text(response.supplier ? response.supplier.name : 'Unknown Supplier');
-                $('#purchaseType').text(response.purchase_type);
-                $('#purchaseRef').text(response.ref);
-                $('#purchaseNetAmount').text(response.net_amount);
-                $('#purchasePaidAmount').text(response.paid_amount);
-                $('#purchaseDueAmount').text(response.due_amount);
 
+                $('#advanceDate').text(moment(response.advance_date).format('DD-MM-YYYY'));
+                $('#receivingDate').text(moment(response.receiving_date).format('DD-MM-YYYY'));
+                $('#motherVessel').text(response.mother_vessel.name);
+                $('#paymentType').text(response.purchase_type);
+                $('#supplierName').text(response.supplier ? response.supplier.name : 'Unknown Supplier');
+                $('#totalAdvanceAmount').text(response.advance_amount);
+                $('#discountAmount').text(response.discount);
+                $('#vatPercent').text(response.vat_percent);
+                $('#totalVatAmount').text(response.total_vat_amount);
+                $('#unloadingCost').text(response.total_unloading_cost);
+                $('#netAmount').text(response.net_amount);
+
+                // Purchase history
                 if (response.purchase_history && response.purchase_history.length > 0) {
                     let purchaseHistoryHtml = '';
-                    response.purchase_history.forEach(function(history) {
+                    response.purchase_history.forEach(function(item) {
                         purchaseHistoryHtml += `
                             <tr>
-                                <td>${history.product.name}</td>
-                                <td>${history.quantity}</td>
-                                <td>${history.purchase_price}</td>
-                                <td>${history.total_vat}</td>
-                                <td>${history.total_amount_with_vat}</td>
+                                <td>${item.product?.name || ''}</td>
+                                <td>${item.lighter_vessel?.name || ''}</td>
+                                <td>${item.warehouse?.name || ''}</td>
+                                <td>${item.ghat?.name || ''}</td>
+                                <td>${item.scale_quantity}</td>
+                                <td>${item.quantity}</td>
+                                <td>${item.purchase_price}</td>
+                                <td>${item.total_amount}</td>
                             </tr>`;
                     });
-
                     $('#purchaseHistoryTableBody').html(purchaseHistoryHtml);
                 } else {
-                    $('#purchaseHistoryTableBody').html('<tr><td colspan="5">No purchase history found.</td></tr>');
+                    $('#purchaseHistoryTableBody').html('<tr><td colspan="8">No purchase history found.</td></tr>');
                 }
 
                 $('#viewPurchaseModal').modal('show');
