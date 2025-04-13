@@ -315,7 +315,7 @@ class StockController extends Controller
         $purchase->other_cost = $request->other_cost;
         $purchase->total_vat_amount = $request->total_vat_amount;
         $purchase->net_amount = $request->net_amount;
-        $purchase->paid_amount = $request->cash_payment + $request->bank_payment;
+        $purchase->paid_amount = ($request->cash_payment ?? 0) + ($request->bank_payment ?? 0);
         $purchase->due_amount = $request->net_amount - $request->cash_payment - $request->bank_payment;
         $purchase->created_by = Auth::user()->id;
         $purchase->save();
@@ -568,6 +568,8 @@ class StockController extends Controller
 
     public function stockUpdate(Request $request)
     {
+        DB::beginTransaction();
+    
         $validatedData = $request->validate([
             'purchase_id' => 'required|exists:purchases,id',
             'supplier_id' => 'required|exists:suppliers,id',
@@ -588,7 +590,7 @@ class StockController extends Controller
             'total_vat_amount' => 'required|numeric',
             'net_amount' => 'required|numeric',
             'due_amount' => 'required|numeric',
-            'products' => 'required|array',
+            'products' => 'required|array|min:1',
             'products.*.product_id' => 'required|exists:products,id',
             'products.*.quantity' => 'required|numeric|min:1',
             'products.*.lighter_vassel_id' => 'required',
@@ -596,8 +598,6 @@ class StockController extends Controller
             'products.*.ghat_id' => 'required',
             'products.*.scale_quantity' => 'required',
             'products.*.unloading_cost' => 'required',
-            // 'products.*.product_size' => 'nullable|string',
-            // 'products.*.product_color' => 'nullable|string',
             'products.*.unit_price' => 'required|numeric',
             'products.*.total_price' => 'required|numeric',
             'cash_payment' => 'nullable|numeric',
@@ -607,14 +607,17 @@ class StockController extends Controller
         $purchase = Purchase::find($request->purchase_id);
     
         if (!$purchase) {
+            DB::rollBack();
             return response()->json([
                 'status' => 'error',
                 'message' => 'Purchase not found.',
             ], 404);
         }
     
-        // Update Purchase Info
-        $purchase->invoice = rand(10000000, 99999999);
+        if(!$purchase->invoice){
+            $purchase->invoice = rand(10000000, 99999999);
+        }
+    
         $purchase->vat_percent = $request->vat_percent;
         $purchase->total_vat_amount = $request->total_vat_amount;
         $purchase->advance_quantity = $request->advance_quantity;
@@ -634,9 +637,8 @@ class StockController extends Controller
         $purchase->cost_b = $request->cost_b;
         $purchase->cost_a = $request->cost_a;
         $purchase->other_cost = $request->other_cost;
-        $purchase->total_vat_amount = $request->total_vat_amount;
         $purchase->net_amount = $request->net_amount;
-        $purchase->paid_amount = $request->cash_payment + $request->bank_payment;
+        $purchase->paid_amount = ($request->cash_payment ?? 0) + ($request->bank_payment ?? 0);
         $purchase->due_amount = $request->net_amount - $request->cash_payment - $request->bank_payment;
         $purchase->updated_by = Auth::user()->id;
         $purchase->save();
@@ -647,139 +649,168 @@ class StockController extends Controller
     
         $removedPurchaseHistoryIds = array_diff($existingPurchaseHistoryIds, $updatedPurchaseHistoryIds);
     
-        // Removing Deleted Purchase History
         foreach ($removedPurchaseHistoryIds as $removedId) {
             $purchaseHistory = PurchaseHistory::find($removedId);
+    
             if ($purchaseHistory) {
+                $stockKey = $purchaseHistory->product_id . '_' . $purchaseHistory->warehouse_id;
+    
+                $stock = Stock::where('warehouse_id', $purchaseHistory->warehouse_id)
+                              ->where('product_id', $purchaseHistory->product_id)
+                              ->first();
+    
+                if ($stock) {
+                    $stock->quantity = max($stock->quantity - $purchaseHistory->quantity, 0);
+                    $stock->updated_by = Auth::id();
+                    $stock->save();
+    
+                    $latestHistory = StockHistory::where('stock_id', $stock->id)
+                                                ->latest('id')
+                                                ->first();
+    
+                    if ($latestHistory) {
+                        $latestHistory->quantity = max($latestHistory->quantity - $purchaseHistory->quantity, 0);
+                        $latestHistory->available_qty = max($latestHistory->available_qty - $purchaseHistory->quantity, 0);
+                        $latestHistory->updated_by = Auth::id();
+                        $latestHistory->save();
+                    }
+                }
+    
                 $purchaseHistory->delete();
             }
         }
     
-        // Updating/Creating Purchase History
         foreach ($request->products as $product) {
+            $newQty = is_numeric($product['quantity']) ? (float)$product['quantity'] : 0;
+        
             if (isset($product['purchase_history_id'])) {
                 $purchaseHistory = PurchaseHistory::find($product['purchase_history_id']);
+        
                 if ($purchaseHistory) {
-                    $purchaseHistory->product_id = $product['product_id'];
-                    $purchaseHistory->quantity = $product['quantity'];
-                    $purchaseHistory->purchase_price = $product['unit_price'];
+                    $oldQty = $purchaseHistory->quantity;
+                    $qtyDiff = $newQty - $oldQty;
         
-                    $vatPercent = $request->vat_percent;
-                    $purchaseHistory->vat_percent = $vatPercent;
+                    $stock = Stock::where('warehouse_id', $product['warehouse_id'])
+                                  ->where('product_id', $product['product_id'])
+                                  ->first();
         
-                    $totalVatAmount = $request->total_vat_amount;
-                    $purchaseHistory->vat_amount_per_unit = $totalVatAmount / $product['quantity'];
-                    $purchaseHistory->total_vat = $totalVatAmount;
+                    if ($stock) {
+                        $stock->quantity = max($stock->quantity + $qtyDiff, 0);
+                        $stock->updated_by = Auth::id();
+                        $stock->save();
         
-                    $purchaseHistory->total_amount = $product['unit_price'] * $product['quantity'];
-                    $purchaseHistory->total_amount_with_vat = $purchaseHistory->total_amount + $totalVatAmount;
+                        $latestHistory = StockHistory::where('stock_id', $stock->id)->latest('id')->first();
+                        if ($latestHistory) {
+                            $latestHistory->quantity = max($latestHistory->quantity + $qtyDiff, 0);
+                            $latestHistory->available_qty = max($latestHistory->available_qty + $qtyDiff, 0);
+                            $latestHistory->updated_by = Auth::id();
+                            $latestHistory->save();
+                        }
+                    } else {
+                        $newStock = new Stock();
+                        $newStock->product_id = $product['product_id'];
+                        $newStock->warehouse_id = $product['warehouse_id'];
+                        $newStock->quantity = $newQty;
+                        $newStock->created_by = Auth::id();
+                        $newStock->save();
         
-                    $purchaseHistory->lighter_vassel_id = $product['lighter_vassel_id'];
-                    $purchaseHistory->warehouse_id = $product['warehouse_id'];
-                    $purchaseHistory->ghat_id = $product['ghat_id'];
-                    $purchaseHistory->scale_quantity = $product['scale_quantity'];
-                    $purchaseHistory->unloading_cost = $product['unloading_cost'];
+                        $newStockHistory = new StockHistory();
+                        $newStockHistory->product_id = $product['product_id'];
+                        $newStockHistory->warehouse_id = $product['warehouse_id'];
+                        $newStockHistory->date = date('Y-m-d');
+                        $newStockHistory->stock_id = $newStock->id;
+                        $newStockHistory->quantity = $newQty;
+                        $newStockHistory->available_qty = $newQty;
+                        $newStockHistory->created_by = Auth::id();
+                        $newStockHistory->save();
+                    }
+        
+                    $purchaseHistory->fill([
+                        'quantity' => $newQty,
+                        'purchase_price' => $product['unit_price'],
+                        'vat_percent' => $request->vat_percent,
+                        'vat_amount_per_unit' => $request->total_vat_amount / max($newQty, 1),
+                        'total_vat' => $request->total_vat_amount,
+                        'total_amount' => $product['unit_price'] * $newQty,
+                        'total_amount_with_vat' => ($product['unit_price'] * $newQty) + $request->total_vat_amount,
+                        'lighter_vassel_id' => $product['lighter_vassel_id'],
+                        'warehouse_id' => $product['warehouse_id'],
+                        'ghat_id' => $product['ghat_id'],
+                        'scale_quantity' => $product['scale_quantity'],
+                        'unloading_cost' => $product['unloading_cost'],
+                        'updated_by' => Auth::id(),
+                    ]);
         
                     if ($purchaseHistory->transferred_product_quantity > 0) {
                         $purchaseHistory->remaining_product_quantity = 0;
-                        $purchaseHistory->transferred_product_quantity = $product['quantity'];
+                        $purchaseHistory->transferred_product_quantity = $newQty;
                     } else {
-                        $purchaseHistory->remaining_product_quantity = $product['quantity'];
+                        $purchaseHistory->remaining_product_quantity = $newQty;
                         $purchaseHistory->transferred_product_quantity = 0;
                     }
-                    $purchaseHistory->updated_by = Auth::user()->id;
+        
                     $purchaseHistory->save();
                 }
             } else {
-                // New product, create new history entry
                 $purchaseHistory = new PurchaseHistory();
-                $purchaseHistory->purchase_id = $purchase->id;
-                $purchaseHistory->product_id = $product['product_id'];
-                $purchaseHistory->quantity = $product['quantity'];
-                $purchaseHistory->purchase_price = $product['unit_price'];
-        
-                $vatPercent = $request->vat_percent;
-                $purchaseHistory->vat_percent = $vatPercent;
-        
-                $totalVatAmount = $request->total_vat_amount;
-                $purchaseHistory->vat_amount_per_unit = $totalVatAmount / $product['quantity'];
-                $purchaseHistory->total_vat = $totalVatAmount;
-        
-                $purchaseHistory->total_amount = $product['unit_price'] * $product['quantity'];
-                $purchaseHistory->total_amount_with_vat = $purchaseHistory->total_amount + $totalVatAmount;
-        
-                $purchaseHistory->lighter_vassel_id = $product['lighter_vassel_id'];
-                $purchaseHistory->warehouse_id = $product['warehouse_id'];
-                $purchaseHistory->ghat_id = $product['ghat_id'];
-                $purchaseHistory->scale_quantity = $product['scale_quantity'];
-                $purchaseHistory->unloading_cost = $product['unloading_cost'];
-        
-                $purchaseHistory->created_by = Auth::user()->id;
+                $purchaseHistory->fill([
+                    'purchase_id' => $purchase->id,
+                    'product_id' => $product['product_id'],
+                    'quantity' => $newQty,
+                    'purchase_price' => $product['unit_price'],
+                    'vat_percent' => $request->vat_percent,
+                    'vat_amount_per_unit' => $request->total_vat_amount / max($newQty, 1),
+                    'total_vat' => $request->total_vat_amount,
+                    'total_amount' => $product['unit_price'] * $newQty,
+                    'total_amount_with_vat' => ($product['unit_price'] * $newQty) + $request->total_vat_amount,
+                    'lighter_vassel_id' => $product['lighter_vassel_id'],
+                    'warehouse_id' => $product['warehouse_id'],
+                    'ghat_id' => $product['ghat_id'],
+                    'scale_quantity' => $product['scale_quantity'],
+                    'unloading_cost' => $product['unloading_cost'],
+                    'created_by' => Auth::id(),
+                ]);
                 $purchaseHistory->save();
+        
+                $stock = Stock::where('warehouse_id', $product['warehouse_id'])
+                              ->where('product_id', $product['product_id'])
+                              ->first();
+        
+                if ($stock) {
+                    $stock->quantity = max($stock->quantity + $newQty, 0);
+                    $stock->updated_by = Auth::id();
+                    $stock->save();
+        
+                    $latestHistory = StockHistory::where('stock_id', $stock->id)->latest('id')->first();
+        
+                    if ($latestHistory) {
+                        $latestHistory->quantity = max($latestHistory->quantity + $newQty, 0);
+                        $latestHistory->available_qty = max($latestHistory->available_qty + $newQty, 0);
+                        $latestHistory->updated_by = Auth::id();
+                        $latestHistory->save();
+                    }
+                } else {
+                    $stock = new Stock();
+                    $stock->warehouse_id = $product['warehouse_id'];
+                    $stock->product_id = $product['product_id'];
+                    $stock->quantity = $newQty;
+                    $stock->updated_by = Auth::id();
+                    $stock->save();
+        
+                    $newStockHistory = new StockHistory();
+                    $newStockHistory->product_id = $product['product_id'];
+                    $newStockHistory->warehouse_id = $product['warehouse_id'];
+                    $newStockHistory->date = date('Y-m-d');
+                    $newStockHistory->stock_id = $stock->id;
+                    $newStockHistory->quantity = $newQty;
+                    $newStockHistory->available_qty = $newQty;
+                    $newStockHistory->created_by = Auth::id();
+                    $newStockHistory->save();
+                }
             }
         }
-    
-        // Update Transaction for Purchase
-        $transaction = Transaction::where('purchase_id', $purchase->id)->first();
-        if ($transaction) {
-            $transaction->amount = $request->total_amount;
-            $transaction->vat_amount = $request->total_vat_amount;
-            $transaction->discount = $request->discount;
-            $transaction->at_amount = $request->net_amount;
-            $transaction->save();
-        }
-    
-        // Update Cash Payment
-        // if ($request->cash_payment) {
-        //     $cashpayment = Transaction::where('purchase_id', $purchase->id)
-        //         ->where('payment_type', 'Cash')->first();
-    
-        //     if ($cashpayment) {
-        //         $cashpayment->amount = $request->cash_payment;
-        //         $cashpayment->at_amount = $request->cash_payment;
-        //         $cashpayment->save();
-        //     } else {
-        //         $cashpayment = new Transaction();
-        //         $cashpayment->date = $request->purchase_date;
-        //         $cashpayment->supplier_id = $request->supplier_id;
-        //         $cashpayment->purchase_id = $purchase->id;
-        //         $cashpayment->table_type = "Purchase";
-        //         $cashpayment->description = "Purchase";
-        //         $cashpayment->payment_type = "Cash";
-        //         $cashpayment->transaction_type = "Current";
-        //         $cashpayment->amount = $request->cash_payment;
-        //         $cashpayment->at_amount = $request->cash_payment;
-        //         $cashpayment->save();
-        //         $cashpayment->tran_id = 'SL' . date('ymd') . str_pad($cashpayment->id, 4, '0', STR_PAD_LEFT);
-        //         $cashpayment->save();
-        //     }
-        // }
-    
-        // Update Bank Payment
-        // if ($request->bank_payment) {
-        //     $bankpayment = Transaction::where('purchase_id', $purchase->id)
-        //         ->where('payment_type', 'Bank')->first();
-    
-        //     if ($bankpayment) {
-        //         $bankpayment->amount = $request->bank_payment;
-        //         $bankpayment->at_amount = $request->bank_payment;
-        //         $bankpayment->save();
-        //     } else {
-        //         $bankpayment = new Transaction();
-        //         $bankpayment->date = $request->purchase_date;
-        //         $bankpayment->supplier_id = $request->supplier_id;
-        //         $bankpayment->purchase_id = $purchase->id;
-        //         $bankpayment->table_type = "Purchase";
-        //         $bankpayment->description = "Purchase";
-        //         $bankpayment->payment_type = "Bank";
-        //         $bankpayment->transaction_type = "Current";
-        //         $bankpayment->amount = $request->bank_payment;
-        //         $bankpayment->at_amount = $request->bank_payment;
-        //         $bankpayment->save();
-        //         $bankpayment->tran_id = 'SL' . date('ymd') . str_pad($bankpayment->id, 4, '0', STR_PAD_LEFT);
-        //         $bankpayment->save();
-        //     }
-        // }
+
+        DB::commit();
     
         return response()->json([
             'status' => 'success',

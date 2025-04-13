@@ -31,9 +31,9 @@
                                         <label for="mother_vessels_id">Mother Vessel<span class="text-danger">*</span></label>
                                         <select class="form-control" id="mother_vessels_id" name="mother_vessels_id">
                                             <option value="">Select...</option>
-                                            @foreach($motherVassels as $mother_vessel)
-                                                <option value="{{ $mother_vessel->id }}" {{ $purchase->mother_vassels_id == $mother_vessel->id ? 'selected' : '' }}>
-                                                    {{ $mother_vessel->name }} - {{ $mother_vessel->code }}
+                                            @foreach($motherVassels as $mother_vassel)
+                                                <option value="{{ $mother_vassel->id }}" {{ $purchase->mother_vassels_id == $mother_vassel->id ? 'selected' : '' }}>
+                                                    {{ $mother_vassel->name }} - {{ $mother_vassel->code }}
                                                 </option>
                                             @endforeach
                                         </select>
@@ -197,7 +197,7 @@
                                 <div class="col-sm-3">
                                     <div class="form-group">
                                         <label for="unloading_cost">Unloading Cost <span class="text-danger">*</span></label>
-                                        <input type="number" class="form-control" id="unloading_cost" name="unloading_cost" min="1" placeholder="" oninput="validateMinValue(this, 1)">
+                                        <input type="number" step="0.01" class="form-control" id="unloading_cost" name="unloading_cost" min="1" placeholder="" oninput="validateMinValue(this, 1)">
                                     </div>
                                 </div>
                                 <div class="col-sm-2">
@@ -326,7 +326,7 @@
                                     </div>
                                     <div class="row justify-content-end mt-1">
                                         <div class="col-sm-8 d-flex align-items-center">
-                                              <a href="{{ route('advance.transactions', ['id' => $purchase->id]) }}" title="View Advance Transactions Details">
+                                              <a href="{{ route('advance.transactions', ['id' => $purchase->id]) }}" title="View Advance Transactions Details" target="_blank">
                                                 <span class="">Total Advance Amount:</span>
                                               </a>
                                               <input type="text" class="form-control" id="advance_amount" readonly style="width: 150px; margin-left: auto;" value="{{ $purchase->advance_amount }}">
@@ -439,7 +439,7 @@
                 var totalPriceWithVat = (parseFloat(totalPrice) + parseFloat(vatAmount)).toFixed(2);
 
                 $(this).find('td:eq(8)').text(totalPrice);
-                $(this).find('input.unloading_cost').val(unloadingCost.toFixed(2));
+                $(this).find('input.unloading_cost').val(unloadingCost);
                 $(this).find('input.scale_quantity').val(Math.round(scaleQuantity));
 
                 itemTotalAmount += parseFloat(totalPrice) || 0;
@@ -559,7 +559,7 @@
             $('#lighter_vassel_id').val('');
             $('#warehouse_id').val('');
             $('#ghat_id').val('');
-            $('#product_id, #mother_vessels_id, #lighter_vessel_id, #warehouse_id, #ghat_id').val(null).trigger('change');
+            $('#product_id, #lighter_vassel_id, #warehouse_id, #ghat_id').val(null).trigger('change');
             updateSummary();
         });
 
@@ -650,14 +650,14 @@
                 },
                 success: function(response) {
                     swal({
-                        text: "Updated successfully",
+                        text: "Sent To Stock successfully",
                         icon: "success",
                         button: {
                             text: "OK",
                             className: "swal-button--confirm"
                         }
                     }).then(() => {
-                        location.reload();
+                        location.href = '/admin/order-list';
                     });
                 },
                 error: function(xhr, status, error) {
@@ -670,7 +670,7 @@
                         });
 
                         swal({
-                            title: "Validation Error",
+                            title: "Error",
                             text: errorMessage,
                             icon: "error",
                             button: {
