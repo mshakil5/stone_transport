@@ -33,6 +33,8 @@ return new class extends Migration
             $table->decimal('discount_amount', 10, 2)->nullable();
             $table->decimal('net_amount', 10, 2)->nullable();
             $table->string('payment_method')->nullable();
+            $table->string('vehicle_number')->nullable();
+            $table->string('destination')->nullable();
             $table->string('ref')->nullable();
             $table->string('remarks')->nullable();
             $table->boolean('order_type')->default(0);  //0==ecommerce, 1==in_house, 2==quotation

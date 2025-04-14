@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="newWholeSalerModalLabel">Add New WholeSaler</h5>
+                <h5 class="modal-title" id="newWholeSalerModalLabel">Add New Customer</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -50,7 +50,7 @@
                         </div>
                     </div>
                     <!-- Submit Button -->
-                    <button type="button" class="btn btn-success" id="saveWholeSalerBtn">Save WholeSaler</button>
+                    <button type="button" class="btn btn-success" id="saveWholeSalerBtn">Save</button>
                 </form>
             </div>
         </div>

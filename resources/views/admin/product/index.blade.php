@@ -17,7 +17,7 @@
                                     <th>Sl</th>
                                     <th>Product</th>
                                     <!-- <th>Image</th> -->
-                                    <th>Price</th>
+                                    {{-- <th>Price</th> --}}
                                     <th>Category</th>
                                     <th>Unit</th>
                                     <th>Group</th>
@@ -52,7 +52,7 @@
                                             <img src="" alt="No Image Available" style="width: 50px; height: 50px; object-fit: cover;">
                                         @endif
                                     </td> -->
-                                    <td>
+                                    <td class="d-none">
                                         {{ number_format($price ? $price->selling_price : 0, 2) }}
                                     </td>
                                     <td>@if ($data->category) {{ $data->category->name }} @endif</td>

@@ -157,7 +157,7 @@
 
                 @if(in_array('11', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
-                    <a href="{{ route('stockReturnHistory') }}" class="nav-link {{ (request()->is('admin/purchase-return-history') || request()->routeIs('stockReturnHistory')) ? 'active' : '' }}">
+                    <a href="{{ route('stockReturnHistory') }}" class="nav-link d-none {{ (request()->is('admin/purchase-return-history') || request()->routeIs('stockReturnHistory')) ? 'active' : '' }}">
                         <i class="fas fa-undo nav-icon"></i>
                         <p>Return History</p>
                     </a>
@@ -284,10 +284,28 @@
                 </p>
             </a>
             <ul class="nav nav-treeview">
+
+                @if(in_array('24', json_decode(auth()->user()->role->permission)))
+                <li class="nav-item">
+                    <a href="{{ route('inhousesell') }}" class="nav-link {{ (request()->is('admin/in-house-sell*') || request()->routeIs('order-edit')) ? 'active' : '' }}">
+                        <i class="fas fa-industry nav-icon"></i>
+                        <p>Sale</p>
+                    </a>
+                </li>
+                @endif
+
+                @if(in_array('25', json_decode(auth()->user()->role->permission)))
+                <li class="nav-item">
+                    <a href="{{ route('getinhouseorder') }}" class="nav-link {{ (request()->is('admin/all-inhouse-orders*')) ? 'active' : '' }}">
+                        <i class="fas fa-industry nav-icon"></i>
+                        <p>Sales List</p>
+                    </a>
+                </li>
+                @endif
                 
                 @if(in_array('20', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
-                    <a href="{{ route('getallorder') }}" class="nav-link {{ request()->is('admin/all-order*') ? 'active' : '' }}">
+                    <a href="{{ route('getallorder') }}" class="nav-link d-none {{ request()->is('admin/all-order*') ? 'active' : '' }}">
                         <i class="fas fa-list nav-icon"></i>
                         <p>All Orders</p>
                     </a>
@@ -349,27 +367,9 @@
                 </li>
                 @endif
 
-                @if(in_array('24', json_decode(auth()->user()->role->permission)))
-                <li class="nav-item">
-                    <a href="{{ route('inhousesell') }}" class="nav-link {{ (request()->is('admin/in-house-sell*') || request()->routeIs('order-edit')) ? 'active' : '' }}">
-                        <i class="fas fa-industry nav-icon"></i>
-                        <p>Sale</p>
-                    </a>
-                </li>
-                @endif
-
-                @if(in_array('25', json_decode(auth()->user()->role->permission)))
-                <li class="nav-item">
-                    <a href="{{ route('getinhouseorder') }}" class="nav-link {{ (request()->is('admin/all-inhouse-orders*')) ? 'active' : '' }}">
-                        <i class="fas fa-industry nav-icon"></i>
-                        <p>In House Sales List</p>
-                    </a>
-                </li>
-                @endif
-
                 @if(in_array('26', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
-                    <a href="{{ route('allquotations') }}" class="nav-link {{ (request()->is('admin/quotations*')) ? 'active' : '' }}">
+                    <a href="{{ route('allquotations') }}" class="nav-link {{ (request()->is('admin/quotations*')) ? 'active' : '' }} d-none">
                         <i class="fas fa-box nav-icon"></i>
                         <p>Quotation List</p>
                     </a>
@@ -381,7 +381,7 @@
                 <li class="nav-item">
                     <a href="{{ route('allcustomer') }}" class="nav-link {{ (request()->is('admin/whole-saler*')) ? 'active' : '' }}">
                         <i class="nav-icon fas fa-user"></i>
-                        <p>Whole Saler</p>
+                        <p>Customers</p>
                     </a>
                 </li>
                 @endif

@@ -119,11 +119,12 @@
 @section('script')
 <script>
     $(document).ready(function () {
-        function openLossModal(productId, size, color) {
+        function openLossModal(productId, size, color, warehouse) {
             // console.log(productId, size, color);
 
             $('#systemLossForm')[0].reset();
             $('#lossProductId').val(productId);
+            $('#warehouse').val(warehouse).prop('disabled', true);
             $('#systemLossModal').modal('show');
 
             $('#systemLossForm').submit(function (e) {
@@ -226,7 +227,8 @@
             let productId = $(this).data('id');
             let size = $(this).data('size');
             let color = $(this).data('color');
-            openLossModal(productId, size, color);
+            let warehouse = $(this).data('warehouse');
+            openLossModal(productId, size, color, warehouse);
         });
 
         $('#systemLossModal').on('hidden.bs.modal', function () {

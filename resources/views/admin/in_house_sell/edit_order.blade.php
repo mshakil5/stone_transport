@@ -21,7 +21,7 @@
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="form-group">
-                                        <label for="user_id">Select Wholesaler 
+                                        <label for="user_id">Customer/Party
                                         @if($order->user_id)
                                             <span class="text-danger">*</span>
                                         @endif
@@ -34,12 +34,17 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-sm-1">
+                                <div class="col-sm-3">
                                     <div class="form-group">
-                                        <label>New</label>
-                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#newWholeSalerModal">
-                                            <i class="fas fa-plus"></i> Add
-                                        </button>
+                                        <label for="vehicle_number">Vehicle Number <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="vehicle_number" name="vehicle_number" value="{{ $order->vehicle_number }}">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="destination">Destination <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="destination" name="destination" value="{{ $order->destination }}">
                                     </div>
                                 </div>
 
@@ -53,13 +58,13 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-sm-2">
+                                <div class="col-sm-2 d-none">
                                     <div class="form-group">
                                         <label for="ref">Ref</label>
                                         <input type="text" class="form-control" id="ref" name="ref" placeholder="Enter reference" value="{{ $order->ref }}">
                                     </div>
                                 </div>
-                                <div class="col-sm-4">
+                                <div class="col-sm-4 d-none">
                                     <div class="form-group">
                                         <label for="remarks">Remarks</label>
                                         <textarea class="form-control" id="remarks" name="remarks" rows="1" placeholder="Enter remarks"> {{ $order->remarks }}</textarea>
@@ -303,7 +308,7 @@
                     if (Array.isArray(response.stockHistories) && response.stockHistories.length > 0) {
                         response.stockHistories.forEach(function (stock) {
                             var stockHistoryId = stock.id;
-                            var sellingPrice = parseFloat(stock.selling_price).toFixed(2);
+                            var sellingPrice = !isNaN(parseFloat(stock.selling_price)) ? parseFloat(stock.selling_price).toFixed(2) : '0.00';
                             var availableQty = stock.available_qty;
 
                             var productExists = false;
@@ -386,6 +391,8 @@
             
             formData.push({ name: 'purchase_date', value: $('#purchase_date').val() });
             formData.push({ name: 'user_id', value: $('#user_id').val() });
+            formData.push({ name: 'vehicle_number', value: $('#vehicle_number').val() });
+            formData.push({ name: 'destination', value: $('#destination').val() });
             formData.push({ name: 'warehouse_id', value: $('#warehouse_id').val() });
             formData.push({ name: 'payment_method', value: $('#payment_method').val() });
             formData.push({ name: 'ref', value: $('#ref').val() });

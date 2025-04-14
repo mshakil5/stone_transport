@@ -12,29 +12,53 @@
                         <form id="createThisForm">
                             @csrf
                             <div class="row">
+
                                 <div class="col-sm-2">
                                     <div class="form-group">
                                         <label for="purchase_date">Selling Date <span class="text-danger">*</span></label>
-                                        <input type="date" class="form-control" id="purchase_date" name="purchase_date" placeholder="Enter date" value="{{ now()->format('Y-m-d') }}">
+                                        <input type="date" class="form-control" id="purchase_date" name="purchase_date" value="{{ now()->format('Y-m-d') }}">
                                     </div>
                                 </div>
+                                
                                 <div class="col-sm-3">
                                     <div class="form-group">
-                                        <label for="user_id">Select Wholesaler <span class="text-danger">*</span></label>
+                                        <label for="user_id">Customer/Party <span class="text-danger">*</span>
+                                            <span class="badge bg-success" style="cursor: pointer;" data-toggle="modal" data-target="#newWholeSalerModal">
+                                                <i class="fas fa-plus"></i> Add
+                                            </span>
+                                        </label>
                                         <select class="form-control" id="user_id" name="user_id">
-                                            <option value="" >Select...</option>
+                                            <option value="">Select...</option>
                                             @foreach($customers as $customer)
                                                 <option value="{{ $customer->id }}">{{ $customer->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-sm-1">
+                                
+                                <div class="col-sm-3">
                                     <div class="form-group">
-                                        <label>New</label>
-                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#newWholeSalerModal">
-                                            <i class="fas fa-plus"></i> Add
-                                        </button>
+                                        <label for="vehicle_number">Vehicle Number <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="vehicle_number" name="vehicle_number">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="destination">Destination <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="destination" name="destination">
+                                    </div>
+                                </div>
+                            
+                                <div class="col-sm-5">
+                                    <div class="form-group">
+                                        <label for="warehouse_id">Warehouse <span class="text-danger">*</span></label>
+                                        <select name="warehouse_id" id="warehouse_id" class="form-control">
+                                            <option value="">Select</option>
+                                            @foreach ($warehouses as $warehouse)
+                                            <option value="{{$warehouse->id}}">{{$warehouse->name}}-{{$warehouse->location}}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
 
@@ -48,29 +72,21 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-sm-2">
+
+                                <div class="col-sm-2 d-none">
                                     <div class="form-group">
                                         <label for="ref">Ref</label>
                                         <input type="text" class="form-control" id="ref" name="ref" placeholder="Enter reference">
                                     </div>
                                 </div>
-                                <div class="col-sm-4">
+
+                                <div class="col-sm-4 d-none">
                                     <div class="form-group">
                                         <label for="remarks">Remarks</label>
                                         <textarea class="form-control" id="remarks" name="remarks" rows="1" placeholder="Enter remarks"></textarea>
                                     </div>
                                 </div>
-                                <div class="col-sm-5">
-                                    <div class="form-group">
-                                        <label for="warehouse_id">Warehouse <span class="text-danger">*</span></label>
-                                        <select name="warehouse_id" id="warehouse_id" class="form-control">
-                                            <option value="">Select</option>
-                                            @foreach ($warehouses as $warehouse)
-                                            <option value="{{$warehouse->id}}">{{$warehouse->name}}-{{$warehouse->location}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
+
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label for="product_id">Choose Product <span class="text-danger">*</span></label>
@@ -88,12 +104,14 @@
                                         </select>
                                     </div>
                                 </div>
+
                                 <div class="col-sm-1">
                                     <label for="addProductBtn">Action</label>
                                     <div class="col-auto d-flex align-items-end">
                                         <button type="button" id="addProductBtn" class="btn btn-secondary">Add</button>
                                      </div>
                                 </div>
+
                                 <div class="col-sm-12 mt-3">
                                     <h2>Product List:</h2>
                                     <table class="table table-bordered" id="productTable">
@@ -172,7 +190,7 @@
                                             
                                             <div class="row mb-3">
                                                 <div class="col-sm-6 d-flex align-items-center justify-content-end">
-                                                    <span>Cash Payment:</span>
+                                                    <span>Cash Received:</span>
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <input type="number" class="form-control" id="cash_payment" name="cash_payment">
@@ -183,7 +201,7 @@
                                             
                                             <div class="row">
                                                 <div class="col-sm-6 d-flex align-items-center justify-content-end">
-                                                    <span>Bank Payment:</span>
+                                                    <span>Bank Received:</span>
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <input type="text" class="form-control" id="bank_payment" name="bank_payment">
@@ -198,7 +216,7 @@
                             </div>
                             <div class="card-footer">
                                 <button id="addBtn" class="btn btn-success" value="Create"><i class="fas fa-cart-plus"></i> Make Sales</button>  
-                                <button id="quotationBtn" class="btn btn-secondary" value="Create"><i class="fas fa-file-invoice"></i> Make Quotation</button>  
+                                <button id="quotationBtn" class="btn btn-secondary d-none" value="Create"><i class="fas fa-file-invoice"></i> Make Quotation</button>  
                                 <div id="loader" style="display: none;">
                                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                                     Loading...
@@ -220,6 +238,19 @@
 
 @section('script')
 
+<script>
+  $(document).on('input', '.quantity', function () {
+      var max = parseInt($(this).data('max-quantity'));
+      var val = parseInt($(this).val());
+  
+      if (val > max) {
+          $(this).val(max);
+      } else if (val < 1 ) {
+          $(this).val(1);
+      }
+  });
+</script>
+  
 <script>
     $(document).ready(function() {
         function updateSummary() {
@@ -284,7 +315,8 @@
                     if (Array.isArray(response.stockHistories) && response.stockHistories.length > 0) {
                         response.stockHistories.forEach(function (stock) {
                             var stockHistoryId = stock.id;
-                            var sellingPrice = parseFloat(stock.selling_price).toFixed(2);
+                            var sellingPrice = !isNaN(parseFloat(stock.selling_price)) ? parseFloat(stock.selling_price).toFixed(2) : '0.00';
+
                             var availableQty = stock.available_qty;
 
                             var productExists = false;
@@ -367,6 +399,8 @@
             
             formData.push({ name: 'purchase_date', value: $('#purchase_date').val() });
             formData.push({ name: 'user_id', value: $('#user_id').val() });
+            formData.push({ name: 'vehicle_number', value: $('#vehicle_number').val() });
+            formData.push({ name: 'destination', value: $('#destination').val() });
             formData.push({ name: 'warehouse_id', value: $('#warehouse_id').val() });
             formData.push({ name: 'payment_method', value: $('#payment_method').val() });
             formData.push({ name: 'ref', value: $('#ref').val() });
@@ -540,17 +574,15 @@
         });
 
         function paymentCheck(payment, paymentType) {
-            var netAmount = parseFloat($('#net_amount').val());
-            var paymentValue = parseFloat(payment);
+            var netAmount = parseFloat($('#net_amount').val()) || 0;
+            var paymentValue = parseFloat(payment) || 0;
 
-            if (!isNaN(netAmount) && !isNaN(paymentValue)) {
-                if (paymentValue > netAmount) {
-                    $('.errmsg').text(paymentType + ' is greater than Net Amount');
-                    $('#cash_payment').val('0.00');
-                    $('#bank_payment').val('0.00');
-                }
+            if (paymentValue > netAmount) {
+                $('.errmsg').text(paymentType + ' is greater than Net Amount');
+                $('#cash_payment').val('0.00');
+                $('#bank_payment').val('0.00');
             } else {
-                $('.errmsg').text('Please enter valid numbers.');
+                $('.errmsg').text('');
             }
         }
 

@@ -21,7 +21,7 @@
                                     <th>Payment Type</th>
                                     <th>Advance Amount</th>
                                     <th>Advance Quantity</th>
-                                    <th>Advance Pay</th>
+                                    <th>Payment</th>
                                     <th>Purchase</th>
                                 </tr>
                             </thead>
@@ -36,14 +36,18 @@
                                     <td>{{ $order->advance_amount }}</td>
                                     <td>{{ $order->advance_quantity }}</td>
                                     <td>
-                                        <button class="btn btn-sm btn-warning pay-btn" data-id="{{ $order->id }}">Advance Pay</button>
+                                        <button class="btn btn-sm btn-warning pay-btn mb-2" data-id="{{ $order->id }}">
+                                            <i class="fas fa-money-bill-wave"></i> Advance Pay
+                                        </button>
+                                        <a href="{{ route('advance.transactions', $order->id) }}" class="btn btn-sm btn-info">
+                                            <i class="fas fa-history"></i> Payment History
+                                        </a>
                                     </td>
                                     <td>
-                                      @if(in_array('9', json_decode(auth()->user()->role->permission)))
-                                        <a href="{{ route('purchase.edit', $order->id) }}" class="btn btn-sm btn-info">
-                                            Add To Stock
-                                        </a>
-                                      @endif
+                                        @if(in_array('9', json_decode(auth()->user()->role->permission)))
+                                            <a href="{{ route('purchase.edit', $order->id) }}" class="btn btn-sm btn-info"></i> Add To Stock
+                                            </a>
+                                        @endif
                                     </td>
                                 </tr>
                                 @endforeach
@@ -92,7 +96,7 @@
               </div>
               <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                  <button type="submit" class="btn btn-warning">Receive</button>
+                  <button type="submit" class="btn btn-warning">Pay</button>
               </div>
           </form>
       </div>

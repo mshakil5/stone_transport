@@ -19,37 +19,23 @@ use App\Models\Transaction;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\OrderConfirmation;
 use App\Models\ContactEmail;
+use App\Models\LighterVassel;
 
 class InHouseSellController extends Controller
 {
-    public function inHouseSell()
-    {
-        if (!(in_array('24', json_decode(auth()->user()->role->permission)))) {
-          return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
-        }
-
-        return view('admin.in_house_sell.select_type');
-    }
-
-    public function inHouseSellPage(Request $request)
+    public function inHouseSell(Request $request)
     {
 
         if (!(in_array('24', json_decode(auth()->user()->role->permission)))) {
           return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
         }
 
-        $type = $request->sale_type;
-
-        if ($type === '1' || $type === '2') {
-            $products = Product::orderby('id', 'DESC')->select('id', 'name', 'price', 'product_code')->get();
-            $colors = Color::where('status', 1)->select('id', 'color')->orderby('id', 'DESC')->get();
-            $sizes = Size::where('status', 1)->select('id', 'size')->orderby('id', 'DESC')->get();
-            $warehouses = Warehouse::select('id', 'name', 'location')->where('status', 1)->get();
-            $customers = User::where('is_type', '0')->where('status', 1)->orderby('id', 'DESC')->get();
-            return view('admin.in_house_sell.create', compact('customers', 'products', 'colors', 'sizes', 'warehouses', 'type'));
-        } else {
-            return redirect()->back()->with('error', 'Invalid sale type.');
-        }
+        $products = Product::orderby('id', 'DESC')->select('id', 'name', 'price', 'product_code')->get();
+        $colors = Color::where('status', 1)->select('id', 'color')->orderby('id', 'DESC')->get();
+        $sizes = Size::where('status', 1)->select('id', 'size')->orderby('id', 'DESC')->get();
+        $warehouses = Warehouse::select('id', 'name', 'location')->where('status', 1)->get();
+        $customers = User::where('is_type', '0')->where('status', 1)->orderby('id', 'DESC')->get();
+        return view('admin.in_house_sell.create', compact('customers', 'products', 'colors', 'sizes', 'warehouses'));
     }
 
     public function inHouseSellStore(Request $request)
@@ -57,6 +43,8 @@ class InHouseSellController extends Controller
         $validated = $request->validate([
             'purchase_date' => 'required|date',
             'user_id' => 'required|exists:users,id',
+            'vehicle_number' => 'required|string',
+            'destination' => 'required|string',
             'payment_method' => 'required|string',
             'ref' => 'nullable|string',
             'remarks' => 'nullable|string',
@@ -81,6 +69,8 @@ class InHouseSellController extends Controller
         $order->invoice = random_int(100000, 999999);
         $order->warehouse_id = $request->warehouse_id;
         $order->purchase_date = $validated['purchase_date'];
+        $order->vehicle_number = $validated['vehicle_number'];
+        $order->destination = $validated['destination'];
         $order->user_id = $validated['user_id'];
         $order->payment_method = $validated['payment_method'];
         $order->ref = $validated['ref'];
@@ -396,6 +386,8 @@ class InHouseSellController extends Controller
         $validated = $request->validate([
             'id' => 'required|exists:orders,id',
             'purchase_date' => 'required|date',
+            'vehicle_number' => 'required|string',
+            'destination' => 'required|string',
             'warehouse_id' => 'required|exists:warehouses,id',
             'payment_method' => 'required|string',
             'ref' => 'nullable|string',
@@ -420,6 +412,8 @@ class InHouseSellController extends Controller
         $netAmount = $itemTotalAmount - $validated['discount'] + $request->vat;
 
         $order->purchase_date = $validated['purchase_date'];
+        $order->vehicle_number = $validated['vehicle_number'];
+        $order->destination = $validated['destination'];
         $order->user_id = $validated['user_id'];
         $order->payment_method = $validated['payment_method'];
         $order->ref = $validated['ref'];

@@ -57,11 +57,12 @@
                                         <th>Date</th>
                                         <th>Product Name</th>
                                         <th>Product Code</th>
-                                        <th>Stock Qty</th>
-                                        <th>Available Qty</th>
-                                        <th>Selling Qty</th>
-                                        <th>Selling Price</th>
-                                        <th>Purchase Price</th>
+                                        <th>Stock</th>
+                                        <th>Available</th>
+                                        <th>Sold</th>
+                                        <th>Damaged</th>
+                                        {{-- <th>Selling Price</th> --}}
+                                        {{-- <th>Purchase Price</th> --}}
                                         <th>Warehouse</th>
                                         <th>Action</th>
                                     </tr>
@@ -206,8 +207,9 @@
                 { data: 'quantity_formatted', name: 'quantity' },
                 { data: 'available_qty', name: 'available_qty' },
                 { data: 'selling_qty', name: 'selling_qty' },
-                { data: 'selling_price', name: 'selling_price' },
-                { data: 'purchase_price', name: 'purchase_price' },
+                { data: 'systemloss_qty', name: 'systemloss_qty' },
+                // { data: 'selling_price', name: 'selling_price' },
+                // { data: 'purchase_price', name: 'purchase_price' },
                 { data: 'warehouse', name: 'warehouse' },
                 {data: 'action', name: 'action', orderable: false, searchable: false}
             ],
