@@ -52,13 +52,19 @@
                                 </div>
                                 <div class="col-sm-2">
                                     <div class="form-group">
-                                        <label for="advance_amount">Advance Quantity <span class="text-danger">*</span></label>
+                                        <label for="bill_number">Bill No.</label>
+                                        <input type="text" class="form-control" id="bill_number" name="bill_number" placeholder="" value="{{ $purchase->bill_number }}">
+                                    </div>
+                                </div>
+                                <div class="col-sm-1">
+                                    <div class="form-group">
+                                        <label for="advance_amount">Adv. Qty</label>
                                         <input type="number" class="form-control" id="advance_quantity" name="advance_quantity" placeholder="" value="{{ $purchase->advance_quantity }}">
                                     </div>
                                 </div>
-                                <div class="col-sm-2">
+                                <div class="col-sm-1">
                                     <div class="form-group">
-                                        <label for="supplier_id">Select Supplier <span class="text-danger">*</span></label>
+                                        <label for="supplier_id">Supplier <span class="text-danger">*</span></label>
                                         <select class="form-control" id="supplier_id" name="supplier_id">
                                             <option value="">Select...</option>
                                             @foreach($suppliers as $supplier)
@@ -610,6 +616,7 @@
             formData.due_amount = $('#due_amount').val();
             formData.bank_payment = $('#bank_payment').val();
             formData.cash_payment = $('#cash_payment').val();
+            formData.bill_number = $('#bill_number').val();
 
             $('#productTable tbody tr').each(function() {
                 var purchaseHistoryId = $(this).data('id');

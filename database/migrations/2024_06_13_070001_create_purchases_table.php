@@ -30,7 +30,6 @@ return new class extends Migration
             $table->decimal('net_amount',10,2)->nullable();
             $table->decimal('paid_amount',10,2)->nullable();
             $table->decimal('due_amount',10,2)->nullable();
-
             $table->decimal('direct_cost',10,2)->nullable();
             $table->decimal('cost_a',10,2)->nullable();
             $table->decimal('cost_b',10,2)->nullable();
@@ -45,6 +44,7 @@ return new class extends Migration
             $table->string('payment_status')->nullable();
             $table->string('updated_by')->nullable();
             $table->string('created_by')->nullable();
+            $table->string('bill_number')->nullable();
             $table->timestamps();
         });
     }

@@ -628,6 +628,7 @@ class StockController extends Controller
         $purchase->net_amount = $request->net_amount;
         $purchase->paid_amount = ($request->cash_payment ?? 0) + ($request->bank_payment ?? 0);
         $purchase->due_amount = $request->net_amount - $request->cash_payment - $request->bank_payment;
+        $purchase->bill_number = $request->bill_number;
         $purchase->updated_by = Auth::user()->id;
         $purchase->save();
     

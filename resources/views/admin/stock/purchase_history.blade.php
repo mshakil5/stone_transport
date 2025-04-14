@@ -129,6 +129,7 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col"><strong>Supplier:</strong> <span id="supplierName"></span></div>
+                    <div class="col"><strong>Bill Number:</strong> <span id="billNumber"></span></div>
                 </div>
                 <div class="row mb-3">
                     <div class="col"><strong>Total Advance Amount:</strong> <span id="totalAdvanceAmount"></span></div>
@@ -308,6 +309,7 @@
                 $('#motherVessel').text(response.mother_vessel.name);
                 $('#paymentType').text(response.purchase_type);
                 $('#supplierName').text(response.supplier ? response.supplier.name : 'Unknown Supplier');
+                $('#billNumber').text(response.bill_number);
                 $('#totalAdvanceAmount').text(response.advance_amount);
                 $('#discountAmount').text(response.discount);
                 $('#vatPercent').text(response.vat_percent);
