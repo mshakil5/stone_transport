@@ -530,7 +530,7 @@ class StockController extends Controller
           return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
         }
 
-        $purchases = Purchase::with('purchaseHistory.product','supplier')->orderby('id','DESC')->get();
+        $purchases = Purchase::whereNotNull('invoice')->with('purchaseHistory.product','supplier')->orderby('id','DESC')->get();
         return view('admin.stock.purchase_history', compact('purchases'));
     }
 
