@@ -28,7 +28,7 @@ class ReportController extends Controller
     public function dailySalesDataTable()
     {
         $orders = Order::with('user')
-            ->whereDate('created_at', today())
+            ->whereDate('purchase_date', today())
             ->orderBy('id', 'desc');
 
         return DataTables::of($orders)
@@ -75,7 +75,7 @@ class ReportController extends Controller
         $startDate = Carbon::now()->subDays(6)->startOfDay();
 
         $orders = Order::with('user')
-            ->whereBetween('created_at', [$startDate, $endDate])
+            ->whereBetween('purchase_date', [$startDate, $endDate])
             ->orderBy('id', 'desc');
 
         return DataTables::of($orders)
@@ -170,7 +170,7 @@ class ReportController extends Controller
             'due_amount'
         ])
         ->with('supplier')
-        ->whereDate('created_at', today())
+        ->whereDate('purchase_date', today())
         ->get();
 
         return DataTables::of($dailyPurchases)
@@ -203,7 +203,7 @@ class ReportController extends Controller
             'due_amount'
         ])
         ->with('supplier')
-        ->whereBetween('created_at', [$startDate, $endDate])
+        ->whereBetween('purchase_date', [$startDate, $endDate])
         ->orderBy('id', 'desc')
         ->get();
 
@@ -237,7 +237,7 @@ class ReportController extends Controller
             'due_amount'
         ])
         ->with('supplier')
-        ->whereBetween('created_at', [$startDate, $endDate])
+        ->whereBetween('purchase_date', [$startDate, $endDate])
         ->orderBy('id', 'desc')
         ->get();
 

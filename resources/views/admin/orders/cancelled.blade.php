@@ -32,7 +32,7 @@
                                     <td>{{ number_format($order->subtotal_amount, 2) }}</td>
                                     <td>{{ number_format($order->net_amount, 2) }}</td>
                                     <td>{{ $order->order_type == 0 ? 'Frontend' : 'In-house Sale' }}</td>
-                                    <td>{!! ($order->cancelledOrder->reason) !!}</td>
+                                    <td>{!! ($order->cancelledOrder->reason ?? '') !!}</td>
                                     <td>
                                         <a href="{{ route('admin.orders.details', ['orderId' => $order->id]) }}" class="btn btn-primary">Details</a>
                                     </td>

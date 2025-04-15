@@ -25,7 +25,7 @@
             <div class="row">
               <div class="col-12">
                 <h4>
-                  <i class="fas fa-globe"></i> Whole Saler Information
+                   Customer Information
                   <small class="float-right">Date: {{ \Carbon\Carbon::parse($order->purchase_date)->format('d-m-Y') }}</small>
                 </h4>
               </div>
@@ -34,7 +34,6 @@
             <!-- info row -->
             <div class="row invoice-info">
               <div class="col-sm-4 invoice-col">
-                Wholesaler
                 <address>
                     <strong>Name:</strong> {{ $order->user->name ?? $order->name }} {{ $order->user->surname ?? '' }}<br>
                     <strong>Email:</strong> {{ $order->user->email ?? $order->email }}<br>
@@ -61,7 +60,7 @@
                 <h4 class="mb-3">Order Information</h4>
                 <strong>Invoice:</strong> {{ $order->invoice }} <br>
                 <strong>Purchase Date:</strong> {{ \Carbon\Carbon::parse($order->purchase_date)->format('d-m-Y') }} <br>
-                <strong>Payment Method:</strong> 
+                {{-- <strong>Payment Method:</strong> 
                     @if($order->payment_method === 'paypal')
                         PayPal
                     @elseif($order->payment_method === 'stripe')
@@ -71,7 +70,7 @@
                     @else
                         {{ ucfirst($order->payment_method) }}
                     @endif
-                    <br>
+                    <br> --}}
                 <strong>Status:</strong> 
                     @if ($order->status === 1)
                         Pending
@@ -91,8 +90,8 @@
                         Unknown
                     @endif
                     <br>
-                <strong>Order Type:</strong> {{ $order->order_type === 1 ? 'In House' : 'Frontend' }} <br>
-                <strong>Note:</strong> {!! $order->note !!}
+                {{-- <strong>Order Type:</strong> {{ $order->order_type === 1 ? 'In House' : 'Frontend' }} <br> --}}
+                {{-- <strong>Note:</strong> {!! $order->note !!} --}}
               </div>
               <!-- /.col -->
             </div>

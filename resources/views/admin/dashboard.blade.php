@@ -16,17 +16,17 @@
 
     $userCount = User::where('is_type', 0)->count();
 
-    $today = Carbon::today()->toDateString();
-    $ordersCount = Order::select('id')
-      ->whereDate('created_at', $today)
+    $today = today()->format('Y-m-d');
+    $todayOrdersCount = Order::select('id')
+      ->where('purchase_date', $today)
       ->count();
 
     $totalQty = Stock::sum('quantity');
 
     $currentMonth = Carbon::now()->month;
     $currentYear = Carbon::now()->year;
-    $ordersCount = Order::whereMonth('created_at', $currentMonth)
-    ->whereYear('created_at', $currentYear)
+    $ordersCount = Order::whereMonth('purchase_date', $currentMonth)
+    ->whereYear('purchase_date', $currentYear)
     ->count();
 @endphp
 
@@ -68,13 +68,13 @@
       <div class="col-lg-3 col-6">
         <div class="small-box bg-info">
           <div class="inner">
-            <h3>{{$ordersCount}}</h3>
+            <h3>{{$todayOrdersCount}}</h3>
             <p>Today's Orders</p>
           </div>
           <div class="icon">
             <i class="ion ion-bag"></i>
           </div>
-          <a href="{{ route('getallorder') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          <a href="{{ route('getinhouseorder') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
       </div>
       <!-- ./col -->
@@ -105,7 +105,7 @@
           <div class="icon">
             <i class="ion ion-clipboard"></i>
           </div>
-          <a href="{{ route('getallorder') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          <a href="{{ route('getinhouseorder') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
       </div>
       <!-- ./col -->
