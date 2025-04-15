@@ -16,18 +16,15 @@
                                 <tr>
                                     <th>Sl</th>
                                     <th>Product</th>
-                                    <!-- <th>Image</th> -->
-                                    {{-- <th>Price</th> --}}
+                                    <th class="d-none">Image</th>
+                                    <th class="d-none">Price</th>
                                     <th>Category</th>
                                     <th>Unit</th>
                                     <th>Group</th>
-                                    <!-- <th>Sub Category</th>
-                                    <th>Brand</th>
-                                    <th>Model</th>
-                                    <th>Featured</th>
-                                    <th>Recent</th>
-                                    <th>Popular</th>
-                                    <th>Trending</th> -->
+                                    <th class="d-none">Featured</th>
+                                    <th class="d-none">Recent</th>
+                                    <th class="d-none">Popular</th>
+                                    <th class="d-none">Trending</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -39,7 +36,7 @@
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
                                     <td>{{ $data->product_code }} - {{ $data->name }}</td>
-                                    <!-- <td>
+                                    <td class="d-none">
                                         @php
                                             $imagePath = public_path('images/products/' . $data->feature_image);
                                         @endphp
@@ -51,53 +48,53 @@
                                         @else
                                             <img src="" alt="No Image Available" style="width: 50px; height: 50px; object-fit: cover;">
                                         @endif
-                                    </td> -->
+                                    </td>
                                     <td class="d-none">
                                         {{ number_format($price ? $price->selling_price : 0, 2) }}
                                     </td>
                                     <td>@if ($data->category) {{ $data->category->name }} @endif</td>
                                     <td>@if ($data->unit) {{ $data->unit->name }} @endif</td>
                                     <td>@if ($data->group) {{ $data->group->name }} @endif</td>
-                                    <!-- <td>
+                                    <td class="d-none">
                                         <div class="custom-control custom-switch">
                                             <input type="checkbox" class="custom-control-input toggle-featured" id="customSwitch{{ $data->id }}" data-id="{{ $data->id }}" {{ $data->is_featured == 1 ? 'checked' : '' }}>
                                             <label class="custom-control-label" for="customSwitch{{ $data->id }}"></label>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td class="d-none">
                                         <div class="custom-control custom-switch">
                                             <input type="checkbox" class="custom-control-input toggle-recent" id="customSwitchRecent{{ $data->id }}" data-id="{{ $data->id }}" {{ $data->is_recent == 1 ? 'checked' : '' }}>
                                             <label class="custom-control-label" for="customSwitchRecent{{ $data->id }}"></label>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td class="d-none">
                                         <div class="custom-control custom-switch">
                                             <input type="checkbox" class="custom-control-input toggle-popular" id="customSwitchPopular{{ $data->id }}" data-id="{{ $data->id }}" {{ $data->is_popular == 1 ? 'checked' : '' }}>
                                             <label class="custom-control-label" for="customSwitchPopular{{ $data->id }}"></label>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td class="d-none">
                                         <div class="custom-control custom-switch">
                                             <input type="checkbox" class="custom-control-input toggle-trending" id="customSwitchTrending{{ $data->id }}" data-id="{{ $data->id }}" {{ $data->is_trending == 1 ? 'checked' : '' }}>
                                             <label class="custom-control-label" for="customSwitchTrending{{ $data->id }}"></label>
                                         </div>
-                                    </td> -->
+                                    </td>
 
                                     <td>
-                                        <a id="viewBtn" href="{{ route('product.show.admin', $data->id) }}">
+                                        <a id="viewBtn" href="{{ route('product.show.admin', $data->id) }}" class="d-none">
                                             <i class="fa fa-eye" style="color: #4CAF50; font-size:16px; margin-right: 10px;"></i>
                                         </a>
-                                        <!-- <a href="{{ route('product.reviews.show', $data->id) }}" class="reviewBtn">
+                                        <a href="{{ route('product.reviews.show', $data->id) }}" class="reviewBtn d-none">
                                             <i class="fa fa-comments" style="color: #FF5722; font-size:16px; margin-right: 10px;" title="View Reviews"></i>
                                         </a>
-                                        <a href="{{ route('product.prices.show', $data->id) }}">
+                                        <a href="{{ route('product.prices.show', $data->id) }}" class="d-none">
                                             <i class="fa fa-money" style="color: #FF9800; font-size:16px; margin-right: 10px;"></i>
-                                        </a> -->
-                                        @if(in_array('47', json_decode(auth()->user()->role->permission)))
+                                        </a>
+                                        @if(in_array('4', json_decode(auth()->user()->role->permission)))
                                         <a href="{{ route('product.edit', $data->id) }}" id="EditBtn" rid="{{ $data->id }}">
                                             <i class="fa fa-edit" style="color: #2196f3; font-size:16px; margin-right: 10px;"></i>
                                         </a>
-                                        <a class="deleteBtn" rid="{{ $data->id }}">
+                                        <a class="deleteBtn" rid="{{ $data->id }}" class="d-none">
                                             <i class="fa fa-trash-o" style="color: red; font-size:16px;"></i>
                                         </a>
                                         @endif
@@ -119,13 +116,9 @@
 
 <!-- Data Table and Select2 -->
 <script>
-    $(function () {
-      $("#example1").DataTable({
-        "responsive": true, "lengthChange": false, "autoWidth": false,
-        "buttons": ["copy", "csv", "excel", "pdf", "print"],
-        "lengthMenu": [[100, "All", 50, 25], [100, "All", 50, 25]]
-      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-    });
+  $(document).ready(function () {
+      $('#example1').DataTable();
+  });
 </script>
 
 <!-- Toggle Status Change and Delete -->

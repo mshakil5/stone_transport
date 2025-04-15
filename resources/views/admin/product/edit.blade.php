@@ -26,7 +26,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="product_code">Product Code <span style="color: red;">*</span></label>
-                                    <input type="text" class="form-control" id="product_code" name="product_code" placeholder="Ex. PRD-12345" value="{{ $product->product_code }}">
+                                    <input type="text" class="form-control" id="product_code" name="product_code" placeholder="Ex. PRD-12345" value="{{ $product->product_code }}" readonly>
                                     <input type="hidden" id="product_id" value="{{ $product->id }}">
                                     <span id="productCodeError" class="text-danger"></span>
                                 </div>
