@@ -77,7 +77,7 @@ class StockController extends Controller
             ->addColumn('action', function ($data) {
                 $btn = '<div class="table-actions"> <button class="btn btn-sm btn-danger btn-open-loss-modal" data-size="'.$data->size.'" data-color="'.$data->color.'" data-warehouse="'.$data->warehouse_id.'" data-id="'.$data->product->id.'" >System Loss</button> ';  
                 if (Auth::user()) {
-                    $url = route('admin.product.purchasehistory', ['id' => $data->product->id, 'size' => $data->size, 'color' => $data->color]);
+                    $url = route('admin.product.purchasehistory', ['id' => $data->product->id,'warehouse_id' => $data->warehouse_id]);
                     $btn .= '<a href="'.$url.'" class="btn btn-sm btn-primary">History</a>';
                 }
                 $btn .= '</div>';
@@ -207,7 +207,7 @@ class StockController extends Controller
     }
 
     
-    public function getsingleProductHistory(Request $request, $id, $size = null, $color = null)
+    public function getsingleProductHistory(Request $request, $id, $warehouse_id = null)
     {
         if ($request->fromDate || $request->toDate) {
             $request->validate([
@@ -229,8 +229,8 @@ class StockController extends Controller
                             ->when($fromDate, function ($query) use ($fromDate, $toDate) {
                                 $query->whereBetween('created_at', [$fromDate, $toDate]);
                             })
-                            ->where('product_size', $size)
-                            ->where('product_color', $color)
+                            // ->where('product_size', $size)
+                            // ->where('product_color', $color)
                             ->orderby('id','DESC')
                             ->get();
 
@@ -241,15 +241,15 @@ class StockController extends Controller
                             ->when($request->input('warehouse_id'), function ($query) use ($request) {
                                 $query->where("warehouse_id",$request->input('warehouse_id'));
                             })
-                            ->where('size', $size)
-                            ->where('color', $color)
+                            // ->where('size', $size)
+                            // ->where('color', $color)
                             ->orderby('id','DESC')
                             ->whereHas('order', function ($query) {
                                 $query->whereIn('order_type', ['0','1']);
                             })->get();
 
 
-        return view('admin.stock.single_product_history', compact('purchaseHistories','salesHistories','product','warehouses', 'id', 'size', 'color'));
+        return view('admin.stock.single_product_history', compact('purchaseHistories','salesHistories','product','warehouses', 'id', 'warehouse_id'));
     }
 
     public function addstock()
@@ -932,7 +932,7 @@ class StockController extends Controller
           return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
         }
 
-        $systemLosses = SystemLose::with('product')->latest()->get();
+        $systemLosses = SystemLose::with(['product', 'warehouse'])->latest()->get();
         return view('admin.stock.system_losses', compact('systemLosses'));
     }
 

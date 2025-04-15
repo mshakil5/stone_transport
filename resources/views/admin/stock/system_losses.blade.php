@@ -17,6 +17,7 @@
                                     <tr>
                                         <th>Date</th>
                                         <th>Product Name</th>
+                                        <th>Warehouse</th>
                                         <th>Quantity</th>
                                         <th>Reason</th>
                                     </tr>
@@ -26,6 +27,7 @@
                                     <tr>
                                         <td>{{ \Carbon\Carbon::parse($systemLoss->created_at)->format('d-m-Y') }}</td>
                                         <td>{{ $systemLoss->product->name }}</td>
+                                        <td>{{ $systemLoss->warehouse->name }}</td> 
                                         <td>{{ $systemLoss->quantity }}</td>
                                         <td>{!! $systemLoss->reason !!}</td>
                                     </tr>

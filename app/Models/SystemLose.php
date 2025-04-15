@@ -16,4 +16,14 @@ class SystemLose extends Model
         return $this->belongsTo(Product::class, 'product_id');
     }
 
+    public function warehouse()
+    {
+        return $this->belongsTo(Warehouse::class, 'warehouse_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
 }

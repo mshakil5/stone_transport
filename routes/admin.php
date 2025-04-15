@@ -244,8 +244,8 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::get('/product-stock-history', [StockController::class, 'getproductHistory'])->name('productHistory');
     // stock ledger end
     Route::get('/add-stock', [StockController::class, 'addstock'])->name('addStock');
-    Route::get('/product-history/{id}/{size?}/{color?}', [StockController::class, 'getsingleProductHistory'])->name('admin.product.purchasehistory');
-    Route::post('/product-history/{id}/{size?}/{color?}', [StockController::class, 'getsingleProductHistory'])->name('admin.product.purchasehistorysearch');
+    Route::get('/product-history/{id}/{warehouse_id?}', [StockController::class, 'getsingleProductHistory'])->name('admin.product.purchasehistory');
+    Route::post('/product-history/{id}/{warehouse_id?}', [StockController::class, 'getsingleProductHistory'])->name('admin.product.purchasehistorysearch'); 
     Route::post('/process/system-loss', [StockController::class, 'processSystemLoss'])->name('process.system.loss');
     Route::get('/system-losses', [StockController::class, 'systemLosses'])->name('system-losses.index');
     Route::post('/add-stock', [StockController::class, 'stockStore']);

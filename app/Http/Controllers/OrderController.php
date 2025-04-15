@@ -1471,16 +1471,56 @@ class OrderController extends Controller
                 $transaction->save();
             }
 
+            if ($request->status == 7) {
+                $orderDetails = OrderDetails::where('order_id', $order->id)->get();
+            
+                foreach ($orderDetails as $detail) {
+                    $stock = Stock::where('product_id', $detail->product_id)
+                        ->where('warehouse_id', $detail->warehouse_id)
+                        ->first();
+            
+                    if ($stock) {
+                        $stock->quantity += $detail->quantity;
+                        $stock->save();
+                    }
+            
+                    $remainingQty = $detail->quantity; // Quantity to reverse
+                    $stockHistories = StockHistory::where('stock_id', $stock->id)
+                        ->orderBy('created_at', 'desc') // Start from the most recent history
+                        ->get();
+            
+                    foreach ($stockHistories as $history) {
+                        if ($remainingQty > 0) {
+                            if ($history->selling_qty >= $remainingQty) {
+                                // Partially reverse this history
+                                $history->selling_qty -= $remainingQty;
+                                $history->available_qty += $remainingQty;
+                                $history->save();
+                                $remainingQty = 0;
+                            } else {
+                                // Fully reverse this history and move to the next one
+                                $remainingQty -= $history->selling_qty;
+                                $history->available_qty += $history->selling_qty;
+                                $history->selling_qty = 0;
+                                $history->save();
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+                }
+            }    
+
             $emailToSend = $order->email ?? $order->user->email;
 
             if ($emailToSend) {
-                Mail::to($emailToSend)->send(new OrderStatusChangedMail($order));
+                // Mail::to($emailToSend)->send(new OrderStatusChangedMail($order));
             }
 
             $contactEmails = ContactEmail::where('status', 1)->pluck('email');
 
             foreach ($contactEmails as $email) {
-                Mail::to($email)->send(new OrderStatusChangedMail($order));
+                // Mail::to($email)->send(new OrderStatusChangedMail($order));
             }
 
 

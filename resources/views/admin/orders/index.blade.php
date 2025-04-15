@@ -76,7 +76,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a href="{{ route('in-house-sell.generate-pdf', ['encoded_order_id' => base64_encode($order->id)]) }}" class="btn btn-success btn-round btn-shadow" target="_blank">
+                                        <a href="{{ route('in-house-sell.generate-pdf', ['encoded_order_id' => base64_encode($order->id)]) }}" class="btn btn-success btn-round btn-shadow mb-1" target="_blank">
                                             <i class="fas fa-receipt"></i> Invoice
                                         </a>
                                         <a href="{{ route('admin.orders.details', ['orderId' => $order->id]) }}" class="btn btn-info btn-round btn-shadow">
@@ -129,7 +129,7 @@
             "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
         }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
-        $('.order-status').change(function() {
+        $('.order-status').on('change', function() {
             const orderId = $(this).data('order-id');
             const status = $(this).val();
 
@@ -145,6 +145,7 @@
                     $('#loading').show();
                 },
                 success: function(response) {
+                  console.log(response);
                     swal({
                         text: "Status Changed",
                         icon: "success",
