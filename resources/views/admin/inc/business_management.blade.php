@@ -147,7 +147,7 @@
                 </li>
 
                 @if(in_array('10', json_decode(auth()->user()->role->permission)))
-                <li class="nav-item">
+                <li class="nav-item d-none">
                     <a href="{{ route('productPurchaseHistory') }}" class="nav-link {{ (request()->is('admin/purchase-history*') || request()->routeIs('purchase.edit')) ? 'active' : '' }}">
                         <i class="fas fa-file-invoice-dollar nav-icon"></i>
                         <p>Purchase History</p>

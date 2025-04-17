@@ -31,6 +31,7 @@ return new class extends Migration
             $table->string('systemloss_qty')->nullable();
             $table->double('purchase_price',10,2)->nullable();
             $table->double('selling_price',10,2)->nullable();
+            $table->double('unit_cost',10,2)->nullable();
             $table->string('sl_start')->nullable();
             $table->string('sl_end')->nullable();
             $table->string('exp_date')->nullable();

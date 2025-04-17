@@ -61,6 +61,9 @@ class StockController extends Controller
             ->addColumn('product_name', function ($row) {
                 return $row->product ? $row->product->name : 'N/A';
             })
+            ->addColumn('warehouse', function ($row) {
+                return $row->warehouse ? $row->warehouse->name : 'N/A';
+            })
             ->addColumn('product_code', function ($row) {
                 return $row->product ? $row->product->product_code : 'N/A';
             })
@@ -671,10 +674,16 @@ class StockController extends Controller
                 $purchaseHistory->delete();
             }
         }
-    
+
+        $totalCost = $request->total_unloading_cost + $request->total_lighter_rent;
+        $totalQuantity = 0;
         foreach ($request->products as $product) {
-            $newQty = is_numeric($product['quantity']) ? (float)$product['quantity'] : 0;
-        
+          $newQty = is_numeric($product['quantity']) ? (float)$product['quantity'] : 0;
+          $totalQuantity += $newQty;
+        }
+        $unitCost = $totalCost/$totalQuantity;
+
+        foreach ($request->products as $product) {
             if (isset($product['purchase_history_id'])) {
                 $purchaseHistory = PurchaseHistory::find($product['purchase_history_id']);
         
@@ -695,6 +704,7 @@ class StockController extends Controller
                         if ($latestHistory) {
                             $latestHistory->quantity = max($latestHistory->quantity + $qtyDiff, 0);
                             $latestHistory->available_qty = max($latestHistory->available_qty + $qtyDiff, 0);
+                            $latestHistory->unit_cost = $unitCost;
                             $latestHistory->updated_by = Auth::id();
                             $latestHistory->save();
                         }
@@ -714,6 +724,7 @@ class StockController extends Controller
                         $newStockHistory->quantity = $newQty;
                         $newStockHistory->available_qty = $newQty;
                         $newStockHistory->created_by = Auth::id();
+                        $newStockHistory->unit_cost = $unitCost;
                         $newStockHistory->save();
                     }
         
@@ -781,6 +792,7 @@ class StockController extends Controller
                         $latestHistory->quantity = max($latestHistory->quantity + $newQty, 0);
                         $latestHistory->available_qty = max($latestHistory->available_qty + $newQty, 0);
                         $latestHistory->updated_by = Auth::id();
+                        $latestHistory->unit_cost = $unitCost;
                         $latestHistory->save();
                     }
                 } else {
@@ -799,6 +811,7 @@ class StockController extends Controller
                     $newStockHistory->quantity = $newQty;
                     $newStockHistory->available_qty = $newQty;
                     $newStockHistory->created_by = Auth::id();
+                    $newStockHistory->unit_cost = $unitCost;
                     $newStockHistory->save();
                 }
             }
@@ -1176,7 +1189,7 @@ class StockController extends Controller
           return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
         }
 
-        $data = Purchase::select('id', 'advance_date', 'consignment_number', 'mother_vassels_id', 'purchase_type', 'advance_amount', 'advance_quantity', 'invoice')->orderby('id','DESC')->get();
+        $data = Purchase::latest()->get();
         return view('admin.stock.order_list', compact('data'));
     }
 

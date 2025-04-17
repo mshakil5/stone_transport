@@ -232,10 +232,9 @@
               type: 'POST',
               data: formData,
               success: function(response) {
-                  swal("Success!", "Order created successfully!", "success")
-                      .then((value) => {
-                          $('#createThisForm')[0].reset();
-                      });
+                  swal("Success!", "Order created successfully!", "success").then(() => {
+                      window.location.href = "{{ route('orderList') }}";
+                  });
               },
               error: function(xhr, status, error) {
                   console.error(xhr.responseText);

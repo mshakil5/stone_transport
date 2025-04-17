@@ -22,7 +22,7 @@
                     <div class="card-body">
 
                     <!-- Filter Form Section -->
-                    <form action="#" method="GET" class="">
+                    <form action="#" method="GET" class="d-none">
                         <div class="row mb-3">
                             
                             <div class="col-md-2">

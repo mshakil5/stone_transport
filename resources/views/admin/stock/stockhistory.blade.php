@@ -54,17 +54,17 @@
                                 <thead>
                                     <tr>
                                         <th>Sl</th>
-                                        <th>Date</th>
-                                        <th>Product Name</th>
+                                        <th>Stocking Date</th>
                                         <th>Product Code</th>
-                                        <th>Stock</th>
-                                        <th>Available</th>
+                                        <th>Product Name</th>
+                                        <th>Purchased</th>
                                         <th>Sold</th>
                                         <th>Damaged</th>
+                                        <th>Available</th>
                                         {{-- <th>Selling Price</th> --}}
                                         {{-- <th>Purchase Price</th> --}}
                                         <th>Warehouse</th>
-                                        <th>Action</th>
+                                        {{-- <th>Action</th> --}}
                                     </tr>
                                 </thead>
                             </table>
@@ -202,16 +202,16 @@
             columns: [
                 { data: 'sl', name: 'sl', orderable: false, searchable: false },
                 { data: 'date', name: 'date' },
-                { data: 'product_name', name: 'product_name' },
                 { data: 'product_code', name: 'product_code' },
+                { data: 'product_name', name: 'product_name' },
                 { data: 'quantity_formatted', name: 'quantity' },
-                { data: 'available_qty', name: 'available_qty' },
                 { data: 'selling_qty', name: 'selling_qty' },
-                { data: 'systemloss_qty', name: 'systemloss_qty' },
+                { data: 'systemloss_qty', name: 'systemloss_qty' },     
+                { data: 'available_qty', name: 'available_qty' },
                 // { data: 'selling_price', name: 'selling_price' },
                 // { data: 'purchase_price', name: 'purchase_price' },
                 { data: 'warehouse', name: 'warehouse' },
-                {data: 'action', name: 'action', orderable: false, searchable: false}
+                // {data: 'action', name: 'action', orderable: false, searchable: false}
             ],
             // columnDefs: [
             //     {

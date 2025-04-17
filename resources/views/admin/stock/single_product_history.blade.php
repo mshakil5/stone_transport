@@ -89,11 +89,12 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped" id="p-table">
+                            <table class="table table-bordered table-striped p-table">
                                 <thead>
                                     <tr>
                                         <th>Date</th>
                                         <th>Supplier</th>
+                                        <th>Warehouse</th>
                                         <th>Quantity</th>
                                         <th>Price</th>
                                         <th>Vat Amount</th>
@@ -113,6 +114,7 @@
                                                 </a>
                                                 @endif
                                             </td>
+                                            <td>{{ $data->warehouse->name}}</td>
                                             <td>{{ $data->quantity}}</td>
                                             <td>{{ number_format($data->purchase_price, 2) }}</td>
                                             <td>{{ number_format($data->total_vat, 2) }}</td>
@@ -140,7 +142,7 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped" id="p-table">
+                            <table class="table table-bordered table-striped p-table">
                                 <thead>
                                     <tr>
                                         <th>Date</th>

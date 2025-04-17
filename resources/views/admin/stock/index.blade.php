@@ -56,7 +56,8 @@
                                         <th>Sl</th>
                                         <th>Product Name</th>
                                         <th>Product Code</th>
-                                        <th>Quantity</th>
+                                        <th>Warehouse</th>
+                                        <th>Available Qty</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -197,6 +198,7 @@
                 { data: 'sl', name: 'sl', orderable: false, searchable: false },
                 { data: 'product_name', name: 'product_name' },
                 { data: 'product_code', name: 'product_code' },
+                { data: 'warehouse', name: 'warehouse' },
                 { data: 'quantity_formatted', name: 'quantity' },
                 {data: 'action', name: 'action', orderable: false, searchable: false}
             ],

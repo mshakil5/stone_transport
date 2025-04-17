@@ -307,6 +307,7 @@
                                                     <input type="hidden" class="lighter_vessel_id" value="{{ $history->lighter_vassel_id }}" />
                                                     <input type="hidden" class="warehouse_id" value="{{ $history->warehouse_id  }}" />
                                                     <input type="hidden" class="ghat_id" value="{{ $history->ghat_id  }}" />
+                                                    <input type="hidden" class="quantity_type" value="{{ $history->quantity_type  }}" />
                                                 </td>
                                                 <td>{{ $history->lighterVessel->name }}</td>                                  
                                                 <td>{{ $history->warehouse->name }}</td>
@@ -449,7 +450,7 @@
 
                             </div>
                             <div class="card-footer">
-                                <button type="submit" id="addBtn" class="btn btn-secondary" value="Create"><i class="fas fa-sync-alt"></i> Add To Stock</button>    
+                                <button type="submit" id="addBtn" class="btn btn-secondary" value="Create"><i class="fas fa-sync-alt"></i> @if($purchase->invoice)Update Stock @else Add To Stock @endif</button>    
                             </div>
                         </form>
                     </div>

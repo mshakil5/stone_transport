@@ -678,8 +678,9 @@ class InHouseSellController extends Controller
         $stockHistories = StockHistory::where('warehouse_id', $request->warehouse_id)
             ->where('product_id', $request->product_id)
             ->where('available_qty', '>', 0)
-            ->orderBy('id', 'asc')
-            ->get(['id', 'selling_price', 'available_qty']);
+            ->latest()
+            ->select('id', 'selling_price', 'available_qty', 'unit_cost')
+            ->get();
 
         return response()->json([
             'success' => true,

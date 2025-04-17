@@ -215,7 +215,7 @@
 
                             </div>
                             <div class="card-footer">
-                                <button id="addBtn" class="btn btn-success" value="Create"><i class="fas fa-cart-plus"></i> Make Sales</button>  
+                                <button id="addBtn" class="btn btn-success" value="Create"><i class="fas fa-cart-plus"></i> Make Order</button>  
                                 <button id="quotationBtn" class="btn btn-secondary d-none" value="Create"><i class="fas fa-file-invoice"></i> Make Quotation</button>  
                                 <div id="loader" style="display: none;">
                                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -316,21 +316,28 @@
                         response.stockHistories.forEach(function (stock) {
                             var stockHistoryId = stock.id;
                             var sellingPrice = !isNaN(parseFloat(stock.selling_price)) ? parseFloat(stock.selling_price).toFixed(2) : '0.00';
+                            var unitCost = !isNaN(parseFloat(stock.unit_cost)) ? parseFloat(stock.unit_cost).toFixed(2) : '0.00';
 
                             var availableQty = stock.available_qty;
 
-                            var productExists = false;
-                            $('#productTable tbody tr').each(function () {
-                                var existingProductId = $(this).data('product-id');
-                                var existingStockHistoryId = $(this).find('input[name="stock_history_id[]"]').data('stock-history-id');
-                                if (productId == existingProductId && stockHistoryId == existingStockHistoryId) {
-                                    productExists = true;
-                                    return false;
-                                }
-                            });
+                            // var productExists = false;
+                            // $('#productTable tbody tr').each(function () {
+                            //     var existingProductId = $(this).data('product-id');
+                            //     var existingStockHistoryId = $(this).find('input[name="stock_history_id[]"]').data('stock-history-id');
+                            //     if (productId == existingProductId && stockHistoryId == existingStockHistoryId) {
+                            //         productExists = true;
+                            //         return false;
+                            //     }
+                            // });
 
-                            if (productExists) {
-                                return;
+                            // if (productExists) {
+                            //     return;
+                            // }
+
+                            if (unitCost > 0.00) {
+                                productName = productName + `<br> <span class="bg-warning p-1">Unit Cost: ${unitCost}</span>`;
+                            } else {
+                                productName = productName;
                             }
 
                             var productRow = `<tr data-product-id="${productId}">
@@ -447,7 +454,7 @@
                 },
                 success: function(response) {
                     swal({
-                        text: "Created Successfully",
+                        text: "Sold Successfully",
                         icon: "success",
                         button: {
                             text: "OK",
