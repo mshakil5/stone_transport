@@ -45,7 +45,12 @@
                                     </td>
                                     <td>
                                         @if(in_array('9', json_decode(auth()->user()->role->permission)))
-                                            <a href="{{ route('purchase.edit', $order->id) }}" class="btn btn-sm btn-info"></i> Add To Stock
+                                            <a href="{{ route('purchase.edit', $order->id) }}" class="btn btn-sm btn-info"></i> 
+                                              @if($order->invoice)
+                                                Update Stock
+                                              @else 
+                                                Add To Stock
+                                              @endif
                                             </a>
                                         @endif
                                     </td>

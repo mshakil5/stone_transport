@@ -1176,7 +1176,7 @@ class StockController extends Controller
           return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
         }
 
-        $data = Purchase::select('id', 'advance_date', 'consignment_number', 'mother_vassels_id', 'purchase_type', 'advance_amount', 'advance_quantity')->orderby('id','DESC')->get();
+        $data = Purchase::select('id', 'advance_date', 'consignment_number', 'mother_vassels_id', 'purchase_type', 'advance_amount', 'advance_quantity', 'invoice')->orderby('id','DESC')->get();
         return view('admin.stock.order_list', compact('data'));
     }
 

@@ -133,14 +133,18 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col"><strong>Total Advance Amount:</strong> <span id="totalAdvanceAmount"></span></div>
-                    <div class="col"><strong>Discount Amount:</strong> <span id="discountAmount"></span></div>
+                    <div class="col"><strong>Advance Qty:</strong> <span id="totalAdvanceQty"></span></div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col"><strong>Total Unloading Cost:</strong> <span id="unloadingCost"></span></div>
+                  <div class="col"><strong>Total Lighter Rent:</strong> <span id="lighterRent"></span></div>
                 </div>
                 <div class="row mb-3">
                     <div class="col"><strong>VAT(%):</strong> <span id="vatPercent"></span></div>
                     <div class="col"><strong>Total VAT Amount:</strong> <span id="totalVatAmount"></span></div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col"><strong>Total Unloading Cost:</strong> <span id="unloadingCost"></span></div>
+                    <div class="col"><strong>Discount Amount:</strong> <span id="discountAmount"></span></div>
                     <div class="col"><strong>Net Amount:</strong> <span id="netAmount"></span></div>
                 </div>
             
@@ -149,14 +153,13 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Product Name</th>
-                                <th>Lighter Vessel</th>
+                                <th>Product</th>
+                                <th>L. Vessel</th>
                                 <th>Warehouse</th>
                                 <th>Ghat</th>
-                                <th>Scale Qty</th>
                                 <th>Qty</th>
-                                <th>Unit Price</th>
-                                <th>Total Price</th>
+                                <th>Unit</th>
+                                <th>Total</th>
                             </tr>
                         </thead>
                         <tbody id="purchaseHistoryTableBody">
@@ -312,9 +315,11 @@
                 $('#billNumber').text(response.bill_number);
                 $('#totalAdvanceAmount').text(response.advance_amount);
                 $('#discountAmount').text(response.discount);
+                $('#totalAdvanceQty').text(response.advance_quantity);
                 $('#vatPercent').text(response.vat_percent);
                 $('#totalVatAmount').text(response.total_vat_amount);
                 $('#unloadingCost').text(response.total_unloading_cost);
+                $('#lighterRent').text(response.total_lighter_rent);
                 $('#netAmount').text(response.net_amount);
 
                 // Purchase history
@@ -327,7 +332,6 @@
                                 <td>${item.lighter_vessel?.name || ''}</td>
                                 <td>${item.warehouse?.name || ''}</td>
                                 <td>${item.ghat?.name || ''}</td>
-                                <td>${item.scale_quantity}</td>
                                 <td>${item.quantity}</td>
                                 <td>${item.purchase_price}</td>
                                 <td>${item.total_amount}</td>

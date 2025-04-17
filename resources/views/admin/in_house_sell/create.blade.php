@@ -24,7 +24,7 @@
                                     <div class="form-group">
                                         <label for="user_id">Customer/Party <span class="text-danger">*</span>
                                             <span class="badge bg-success" style="cursor: pointer;" data-toggle="modal" data-target="#newWholeSalerModal">
-                                                <i class="fas fa-plus"></i> Add
+                                                Add New
                                             </span>
                                         </label>
                                         <select class="form-control" id="user_id" name="user_id">
