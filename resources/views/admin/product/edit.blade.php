@@ -20,15 +20,25 @@
                             <input type="hidden" name="id" value="{{ $product->id }}">
 
                             <div class="form-row">
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-4">
                                     <label for="name">Product Name <span style="color: red;">*</span></label>
                                     <input type="text" class="form-control" id="name" name="name" placeholder="Ex. Stylish Running Shoes" value="{{ $product->name }}">
                                 </div>
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-4">
                                     <label for="product_code">Product Code <span style="color: red;">*</span></label>
                                     <input type="text" class="form-control" id="product_code" name="product_code" placeholder="Ex. PRD-12345" value="{{ $product->product_code }}" readonly>
                                     <input type="hidden" id="product_id" value="{{ $product->id }}">
                                     <span id="productCodeError" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <label for="category">Category <span class="badge badge-success" style="cursor: pointer;" data-toggle="modal" data-target="#addCategoryModal">Add New</span></label>
+                                    <select class="form-control" id="category" name="category_id">
+                                        <option value="">Select Category</option>
+                                        @foreach($categories as $category)
+                                        <option value="{{ $category->id }}" {{ $category->id == $product->category_id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                                 <div class="form-group col-md-2 d-none">
                                     <label for="price">Price</label>
@@ -63,15 +73,7 @@
                             </div>
 
                             <div class="form-row">
-                                <div class="form-group col-md-4">
-                                    <label for="category">Category <span class="badge badge-success" style="cursor: pointer;" data-toggle="modal" data-target="#addCategoryModal">Add New</span></label>
-                                    <select class="form-control" id="category" name="category_id">
-                                        <option value="">Select Category</option>
-                                        @foreach($categories as $category)
-                                        <option value="{{ $category->id }}" {{ $category->id == $product->category_id ? 'selected' : '' }}>{{ $category->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+
 
                                 <div class="form-group col-md-4 d-none">
                                     <label for="subcategory">Sub Category <span class="badge badge-success" style="cursor: pointer;" data-toggle="modal" data-target="#addSubCategoryModal">Add New</span></label>
@@ -103,7 +105,7 @@
                                     </select>
                                 </div>
 
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-4 d-none">
                                     <label for="unit">Unit <span class="badge badge-success" style="cursor: pointer;" data-toggle="modal" data-target="#addUnitModal">Add New</span></label>
                                     <select class="form-control" id="unit" name="unit_id">
                                         <option value="">Select Unit</option>
@@ -113,7 +115,7 @@
                                     </select>
                                 </div>
 
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-4 d-none">
                                     <label for="group">Group <span class="badge badge-success" style="cursor: pointer;" data-toggle="modal" data-target="#addGroupModal">Add New</span></label>
                                     <select class="form-control" id="group" name="group_id">
                                         <option value="">Select Group</option>

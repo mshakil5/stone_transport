@@ -545,7 +545,7 @@ class StockController extends Controller
     {
         $purchase = Purchase::with('supplier', 'purchaseHistory.product', 'transactions')->findOrFail($purchase->id);
         $products = Product::orderby('id','DESC')->get();
-        $suppliers = Supplier::orderby('id','DESC')->get();
+        $suppliers = Supplier::orderby('id','DESC')->where('status', 1)->get();
         $warehouses = Warehouse::select('id', 'name','location')->where('status', 1)->get();
         $cashAmount = $purchase->transactions->where('payment_type', 'Cash')->first();
         $bankAmount = $purchase->transactions->where('payment_type', 'Bank')->first();
@@ -587,8 +587,7 @@ class StockController extends Controller
             'products.*.lighter_vassel_id' => 'required',
             'products.*.warehouse_id' => 'required',
             'products.*.ghat_id' => 'required',
-            'products.*.scale_quantity' => 'required',
-            'products.*.unloading_cost' => 'required',
+            'products.*.unloading_cost' => 'nullable',
             'products.*.unit_price' => 'required|numeric',
             'products.*.total_price' => 'required|numeric',
             'cash_payment' => 'nullable|numeric',
@@ -613,6 +612,7 @@ class StockController extends Controller
         $purchase->total_vat_amount = $request->total_vat_amount;
         $purchase->advance_quantity = $request->advance_quantity;
         $purchase->total_unloading_cost = $request->total_unloading_cost;
+        $purchase->total_lighter_rent = $request->total_lighter_rent;
         $purchase->supplier_id = $request->supplier_id;
         $purchase->mother_vassels_id = $request->mother_vassels_id;
         $purchase->purchase_date = $request->purchase_date;
@@ -728,8 +728,9 @@ class StockController extends Controller
                         'lighter_vassel_id' => $product['lighter_vassel_id'],
                         'warehouse_id' => $product['warehouse_id'],
                         'ghat_id' => $product['ghat_id'],
-                        'scale_quantity' => $product['scale_quantity'],
                         'unloading_cost' => $product['unloading_cost'],
+                        'lighter_rent' => $product['lighter_rent'],
+                        'quantity_type' => $product['quantity_type'],
                         'updated_by' => Auth::id(),
                     ]);
         
@@ -758,7 +759,8 @@ class StockController extends Controller
                     'lighter_vassel_id' => $product['lighter_vassel_id'],
                     'warehouse_id' => $product['warehouse_id'],
                     'ghat_id' => $product['ghat_id'],
-                    'scale_quantity' => $product['scale_quantity'],
+                    'lighter_rent' => $product['lighter_rent'],
+                    'quantity_type' => $product['quantity_type'],
                     'unloading_cost' => $product['unloading_cost'],
                     'created_by' => Auth::id(),
                 ]);
@@ -1075,7 +1077,8 @@ class StockController extends Controller
         }
 
         $motherVassels = MotherVassel::select('id', 'name','code')->orderby('id','DESC')->get();
-        return view('admin.stock.create_order', compact('motherVassels'));
+        $suppliers = Supplier::orderby('id','DESC')->where('status', 1)->get();
+        return view('admin.stock.create_order', compact('motherVassels', 'suppliers'));
     }
 
     public function storeOrder(Request $request)
@@ -1096,6 +1099,7 @@ class StockController extends Controller
         $purchase->purchase_type = $request->purchase_type;
         $purchase->advance_amount = $request->advance_amount;
         $purchase->advance_quantity = $request->advance_quantity;
+        $purchase->cost_per_unit = $request->cost_per_unit;
         $purchase->created_by = auth()->user()->id;
         $purchase->save();
 
@@ -1178,7 +1182,7 @@ class StockController extends Controller
 
     public function advanceTransactions($id)
     {
-        $transactions = Transaction::where('purchase_id', $id)->where('table_type', 'Purchase')->select('id', 'date', 'note', 'payment_type', 'table_type', 'at_amount', 'document')->get();
+        $transactions = Transaction::where('purchase_id', $id)->where('table_type', 'Purchase')->select('id', 'date', 'note', 'payment_type', 'table_type', 'at_amount', 'document', 'tran_id')->latest()->get();
 
         $totalDrAmount = 0;
 

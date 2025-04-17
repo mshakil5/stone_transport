@@ -157,6 +157,16 @@
 <script src="{{ asset('assets/admin/moment/moment.min.js')}}"></script>
 <script src="{{ asset('assets/admin/summernote/summernote.min.js')}}"></script>
 
+<script>
+  $(document).ready(function() {
+      $('.select2').select2({
+          placeholder: "Select...",
+          allowClear: true,
+          width: '100%'
+      });
+  });
+</script>
+
 @yield('script')
 
 <script>

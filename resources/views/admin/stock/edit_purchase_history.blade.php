@@ -14,22 +14,41 @@
                             @csrf
                             <input type="hidden" id="deleted_purchase_histories" name="deleted_purchase_histories" value="">
                             <div class="row">
-                                <div class="col-sm-2">
+                                <div class="col-sm-3">
                                     <div class="form-group">
                                         <label for="advance_date">Advance Date <span class="text-danger">*</span></label>
                                         <input type="date" class="form-control" id="advance_date" name="advance_date" placeholder="" value="{{ $purchase->advance_date }}">
                                     </div>
                                 </div>
-                                <div class="col-sm-2">
+                                <div class="col-sm-3">
                                     <div class="form-group">
                                         <label for="purchase_date">Receiving Date <span class="text-danger">*</span></label>
-                                        <input type="date" class="form-control" id="purchase_date" name="purchase_date" placeholder="" value="{{ $purchase->purchase_date }}">
+                                        <input type="date" class="form-control" id="purchase_date" name="purchase_date" placeholder="" value="{{ $purchase->purchase_date ?? date('Y-m-d') }}">
                                     </div>
                                 </div>
-                                <div class="col-sm-2">
+                                <div class="col-sm-3">
                                     <div class="form-group">
-                                        <label for="mother_vessels_id">Mother Vessel<span class="text-danger">*</span></label>
-                                        <select class="form-control" id="mother_vessels_id" name="mother_vessels_id">
+                                        <label for="supplier_id">Supplier <span class="text-danger">*</span>
+                                          <span class="badge badge-success" style="cursor: pointer;" data-toggle="modal" data-target="#newSupplierModal">
+                                              Add New
+                                          </span>
+                                        </label>
+                                        <select class="form-control select2" id="supplier_id" name="supplier_id">
+                                            <option value="">Select...</option>
+                                            @foreach($suppliers as $supplier)
+                                                <option value="{{ $supplier->id }}" data-balance="{{ $supplier->balance }}" {{ $purchase->supplier_id == $supplier->id ? 'selected' : '' }}>{{ $supplier->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label for="mother_vessels_id">Mother Vessel<span class="text-danger">*</span>
+                                          <span class="badge badge-success" style="cursor: pointer;" data-toggle="modal" data-target="#newMotherVesselModal">
+                                            Add New
+                                          </span>
+                                         </label>
+                                        <select class="form-control select2" id="mother_vessels_id" name="mother_vessels_id">
                                             <option value="">Select...</option>
                                             @foreach($motherVassels as $mother_vassel)
                                                 <option value="{{ $mother_vassel->id }}" {{ $purchase->mother_vassels_id == $mother_vassel->id ? 'selected' : '' }}>
@@ -38,8 +57,14 @@
                                             @endforeach
                                         </select>
                                     </div>
+                                </div>                                
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label for="bill_number">Bill Number</label>
+                                        <input type="text" class="form-control" id="bill_number" name="bill_number" placeholder="" value="{{ $purchase->bill_number }}">
+                                    </div>
                                 </div>
-                                <div class="col-sm-2">
+                                <div class="col-sm-3">
                                     <div class="form-group">
                                         <label for="purchase_type">Payment Type</label>
                                         <select class="form-control" id="purchase_type" name="purchase_type">
@@ -50,27 +75,16 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-sm-2">
+                                <div class="col-sm-3">
                                     <div class="form-group">
-                                        <label for="bill_number">Bill No.</label>
-                                        <input type="text" class="form-control" id="bill_number" name="bill_number" placeholder="" value="{{ $purchase->bill_number }}">
-                                    </div>
-                                </div>
-                                <div class="col-sm-1">
-                                    <div class="form-group">
-                                        <label for="advance_amount">Adv. Qty</label>
+                                        <label for="advance_amount">Advance Qty</label>
                                         <input type="number" class="form-control" id="advance_quantity" name="advance_quantity" placeholder="" value="{{ $purchase->advance_quantity }}">
                                     </div>
                                 </div>
-                                <div class="col-sm-1">
+                                <div class="col-sm-3">
                                     <div class="form-group">
-                                        <label for="supplier_id">Supplier <span class="text-danger">*</span></label>
-                                        <select class="form-control" id="supplier_id" name="supplier_id">
-                                            <option value="">Select...</option>
-                                            @foreach($suppliers as $supplier)
-                                                <option value="{{ $supplier->id }}" data-balance="{{ $supplier->balance }}" {{ $purchase->supplier_id == $supplier->id ? 'selected' : '' }}>{{ $supplier->name }}</option>
-                                            @endforeach
-                                        </select>
+                                        <label for="cost_per_unit">Cost Per Unit</label>
+                                        <input type="number" class="form-control" id="cost_per_unit" name="cost_per_unit" placeholder="" value="{{ $purchase->cost_per_unit }}">
                                     </div>
                                 </div>
                                 <div class="col-sm-1 d-none">
@@ -138,10 +152,16 @@
                                     </div>
                                 </div>
 
+                                <div class="col-sm-12"><hr></div>
+
                                 <div class="col-sm-3">
                                     <div class="form-group">
-                                        <label for="product_id">Choose Product <span class="text-danger">*</span></label>
-                                        <select class="form-control" id="product_id" name="product_id">
+                                        <label for="product_id">Choose Product <span class="text-danger">*</span>
+                                          <span class="badge badge-success" style="cursor: pointer;" data-toggle="modal" data-target="#newProductModal">
+                                              Add New
+                                          </span>
+                                        </label>
+                                        <select class="form-control select2" id="product_id" name="product_id">
                                             <option value="">Select...</option>
                                             @foreach($products as $product)
                                                 <option value="{{ $product->id }}" data-name="{{ $product->name }}">{{ $product->name }}</option>
@@ -151,12 +171,16 @@
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="form-group">
-                                        <label for="lighter_vassel_id ">Choose Lighter Vessel<span class="text-danger">*</span></label>
-                                            <select class="form-control" id="lighter_vassel_id" name="lighter_vassel_id">
+                                        <label for="lighter_vassel_id ">Choose Lighter Vessel<span class="text-danger">*</span>
+                                          <span class="badge badge-success" style="cursor: pointer;" data-toggle="modal" data-target="#newLighterVesselModal">
+                                                Add New
+                                            </span>
+                                          </label>
+                                            <select class="form-control select2" id="lighter_vassel_id" name="lighter_vassel_id">
                                             <option value="">Select...</option>
                                             @foreach($lighterVassels as $lighter_vassel)
                                                 <option value="{{ $lighter_vassel->id }}">
-                                                    {{ $lighter_vassel->name }} - {{ $lighter_vassel->code }}
+                                                    {{ $lighter_vassel->name }}
                                                 </option>
                                             @endforeach
                                         </select>
@@ -164,12 +188,16 @@
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="form-group">
-                                        <label for="warehouse_id">Choose Warehouse<span class="text-danger">*</span></label>
-                                        <select class="form-control" id="warehouse_id" name="warehouse_id">
+                                        <label for="warehouse_id">Choose Warehouse<span class="text-danger">*</span>
+                                          <span class="badge badge-success" style="cursor: pointer;" data-toggle="modal" data-target="#newWarehouseModal">
+                                              Add New
+                                          </span>
+                                        </label>
+                                        <select class="form-control select2" id="warehouse_id" name="warehouse_id">
                                             <option value="">Select...</option>
                                             @foreach($warehouses as $warehouse)
                                                 <option value="{{ $warehouse->id }}">
-                                                    {{ $warehouse->name }} - {{ $warehouse->location }}
+                                                    {{ $warehouse->name }}
                                                 </option>
                                             @endforeach
                                         </select>
@@ -177,39 +205,51 @@
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="form-group">
-                                        <label for="ghat_id">Choose Ghat<span class="text-danger">*</span></label>
-                                        <select class="form-control" id="ghat_id" name="ghat_id">
+                                        <label for="ghat_id">Choose Ghat<span class="text-danger">*</span>
+                                          <span class="badge badge-success" style="cursor: pointer;" data-toggle="modal" data-target="#newGhatModal">
+                                              Add New
+                                        </label>
+                                        <select class="form-control select2" id="ghat_id" name="ghat_id">
                                             <option value="">Select...</option>
                                             @foreach($ghats as $ghat)
                                                 <option value="{{ $ghat->id }}">
-                                                    {{ $ghat->name }} - {{ $ghat->location }}
+                                                    {{ $ghat->name }}
                                                 </option>
                                             @endforeach
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label for="quantity_type">Quantity Type</label>
+                                        <select class="form-control" id="quantity_type" name="quantity_type">
+                                            <option value="Survey Quantity">Survey Quantity</option>
+                                            <option value="Scale Quantity">Scale Quantity</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
                                     <div class="form-group">
                                         <label for="quantity">Quantity <span class="text-danger">*</span></label>
                                         <input type="number" class="form-control" id="quantity" name="quantity" min="1" placeholder="" oninput="validateMinValue(this, 1)">
                                     </div>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
                                     <div class="form-group">
-                                        <label for="scale_quantity">Scale Quantity <span class="text-danger">*</span></label>
-                                        <input type="number" class="form-control" id="scale_quantity" name="scale_quantity" min="1" placeholder="" oninput="validateMinValue(this, 1)">
-                                    </div>
-                                </div>
-                                <div class="col-sm-3">
-                                    <div class="form-group">
-                                        <label for="unloading_cost">Unloading Cost <span class="text-danger">*</span></label>
+                                        <label for="unloading_cost">Unloading Cost Per Unit</label>
                                         <input type="number" step="0.01" class="form-control" id="unloading_cost" name="unloading_cost" min="1" placeholder="" oninput="validateMinValue(this, 1)">
                                     </div>
                                 </div>
                                 <div class="col-sm-2">
                                     <div class="form-group">
-                                        <label for="unit_price">Unit Price <span class="text-danger">*</span></label>
-                                        <input type="number" step="0.01" class="form-control" id="unit_price" name="unit_price" min="1" placeholder="" oninput="validateMinValue(this, 1)">
+                                        <label for="lighter_rent">Lighter Rent Per Unit</label>
+                                        <input type="number" step="0.01" class="form-control" id="lighter_rent" name="lighter_rent" min="1" placeholder="" oninput="validateMinValue(this, 1)">
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label for="unit_price">Purchase Price Per Unit<span class="text-danger">*</span></label>
+                                        <input type="number" step="0.01" class="form-control" id="unit_price" name="unit_price" min="1" placeholder="" oninput="validateMinValue(this, 1)" value="{{ $purchase->cost_per_unit }}">
                                     </div>
                                 </div>
                                 <div class="col-sm-2 d-none">
@@ -238,7 +278,7 @@
                                 </div>
                                 <div class="col-sm-1">
                                     <label for="addProductBtn">Action</label>
-                                    <div class="col-auto d-flex align-items-end">
+                                    <div class="col-auto d-flex align-items-center">
                                         <button type="button" id="addProductBtn" class="btn btn-secondary">Add</button>
                                      </div>
                                 </div>
@@ -249,14 +289,14 @@
                                         <thead>
                                             <tr>
                                                 <th>Product</th>
-                                                <th>Lighter Vessel</th>
+                                                <th>L. Vessel</th>
                                                 <th>Warehouse</th>
                                                 <th>Ghat</th>
-                                                <th>Scale Quantity</th>
                                                 <th>Unloading Cost</th>
+                                                <th>Lighter Rent</th>
                                                 <th>Quantity</th>
-                                                <th>Unit Price</th>
-                                                <th>Total Price</th>
+                                                <th>Unit</th>
+                                                <th>Total</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -268,15 +308,19 @@
                                                     <input type="hidden" class="warehouse_id" value="{{ $history->warehouse_id  }}" />
                                                     <input type="hidden" class="ghat_id" value="{{ $history->ghat_id  }}" />
                                                 </td>
-                                                <td>{{ $history->lighterVessel->name }}</td>
-                                                <td>{{ $history->ghat->name }}</td>
+                                                <td>{{ $history->lighterVessel->name }}</td>                                  
                                                 <td>{{ $history->warehouse->name }}</td>
-                                                <td><input type="number" class="form-control scale_quantity" value="{{ $history->scale_quantity }}" /></td>
+                                                <td>{{ $history->ghat->name }}</td>
                                                 <td><input type="number" class="form-control unloading_cost" value="{{ $history->unloading_cost }}" /></td>
+                                                <td><input type="number" class="form-control lighter_rent" value="{{ $history->lighter_rent }}" /></td>
                                                 <td><input type="number" class="form-control quantity" value="{{ $history->quantity }}" /></td>
                                                 <td><input type="number" step="0.01" class="form-control unit_price" value="{{ $history->purchase_price }}" /></td>
                                                 <td>{{ $history->total_price }}</td>
-                                                <td><button type="button" class="btn btn-sm btn-danger remove-product">Remove</button></td>
+                                                <td>
+                                                    <button type="button" class="btn btn-sm btn-danger remove-product" title="Remove">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </td>
                                             </tr>
                                             @endforeach
                                         </tbody>
@@ -365,6 +409,12 @@
                                     </div>
                                     <div class="row justify-content-end mt-1">
                                         <div class="col-sm-8 d-flex align-items-center">
+                                            <span class="">Total Lighter Rent:</span>
+                                            <input type="text" class="form-control" id="total_lighter_rent" readonly style="width: 150px; margin-left: auto;" value="{{ $purchase->total_lighter_rent }}">
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-end mt-1">
+                                        <div class="col-sm-8 d-flex align-items-center">
                                             <span class="">Net Amount:</span>
                                             <input type="text" class="form-control" id="net_amount" readonly style="width: 150px; margin-left: auto;" value="{{ $purchase->net_amount }}">
                                         </div>
@@ -409,6 +459,13 @@
     </div>
 </section>
 
+@include('admin.inc.modal.mother_vessel_modal')
+@include('admin.inc.modal.supplier_modal')
+@include('admin.inc.modal.product_modal')
+@include('admin.inc.modal.lighter_vessel_modal')
+@include('admin.inc.modal.warehouse_modal')
+@include('admin.inc.modal.ghat_modal')
+
 <script>
     function validateMinValue(input, minValue) {
         if (parseFloat(input.value) < minValue) {
@@ -422,6 +479,298 @@
 @section('script')
 
 <script>
+  $(document).ready(function() {
+
+    $('#saveSupplierBtn').on('click', function() {
+
+      let password = $('#password').val();
+      let confirmPassword = $('#confirm_password').val();
+      let name = $('#supplier_name').val();
+      let email = $('#supplier_email').val();
+
+      if (name == '' || email == '') {
+        swal({
+          text: "Name and Email are required !",
+          icon: "error",
+          button: {
+              text: "OK",
+              className: "swal-button--confirm"
+          }
+        })
+
+        return false;
+      }
+
+      if (password !== confirmPassword) {
+          
+          swal({
+              text: "Passwords do not match !",
+              icon: "error",
+              button: {
+                  text: "OK",
+                  className: "swal-button--confirm"
+              }
+          });
+
+          return false;
+      }
+
+      let formData = {
+          id_number: $('#supplier_id_number').val(),
+          name: $('#supplier_name').val(),
+          email: $('#supplier_email').val(),
+          phone: $('#supplier_phone').val(),
+          password: $('#password').val(),
+          vat_reg: $('#vat_reg1').val(),
+          contract_date: $('#contract_date').val(),
+          address: $('#address').val(),
+          company: $('#company').val(),
+          _token: '{{ csrf_token() }}'
+      };
+
+      $.ajax({
+          url: '{{ route('supplier.store') }}',
+          type: 'POST',
+          data: formData,
+          success: function(response) {
+              if (response.success) {
+                  let newOption = new Option(response.data.name, response.data.id, false, true);
+                  $('#supplier_id').append(newOption).trigger('change');
+                  $('#newSupplierModal').modal('hide');
+                  $('#newSupplierForm')[0].reset();
+                  swal({
+                      text: "Created successfully",
+                      icon: "success",
+                      button: {
+                          text: "OK",
+                          className: "swal-button--confirm"
+                      }
+                  });
+              } else {
+                  alert('Failed to add supplier.');
+              }
+          },
+          error: function(xhr, status, error) {
+              // console.log(xhr.responseText);
+              alert('Error adding supplier. Please try again.');
+          }
+      });
+    });
+
+    $('#saveMotherVesselBtn').on('click', function () {
+        let formData = {
+            name: $('#name').val(),
+            code: $('#code').val(),
+            description: $('#description').val(),
+            _token: '{{ csrf_token() }}'
+        };
+
+        $.ajax({
+            url: '/admin/mother-vassel',
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                if (response.status === 300) {
+                  let newOption = new Option(`${response.data.name} - ${response.data.code ?? ''}`, response.data.id, true, true);
+                  $('#mother_vessels_id').append(newOption).trigger('change');
+
+                    $('#newMotherVesselModal').modal('hide');
+                    $('#motherVesselForm')[0].reset();
+                    swal({
+                        text: "Mother Vessel created successfully",
+                        icon: "success",
+                        button: {
+                            text: "OK",
+                            className: "swal-button--confirm"
+                        }
+                    });
+                } else {
+                    swal({
+                        html: true,
+                        text: $(response.message).text(),
+                        icon: "warning"
+                    });
+                }
+            },
+            error: function (xhr) {
+                alert('Server Error. Try again.');
+            }
+        });
+    });
+
+    $('#saveProductBtn').on('click', function () {
+        let formData = {
+            name: $('#product_name').val(),
+            product_code: $('#product_code').val(),
+            category_id: $('#category').val(),
+            _token: '{{ csrf_token() }}'
+        };
+
+        $.ajax({
+            url: '/admin/product',
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                if (response.product) {
+                  let newOption = $('<option>', {
+                        value: response.product.id,
+                        text: response.product.name,
+                        'data-name': response.product.name,
+                        selected: true
+                    });
+                    $('#product_id').append(newOption).trigger('change');
+
+                    $('#newProductModal').modal('hide');
+                    $('#productForm')[0].reset();
+
+                    swal({
+                        text: response.message,
+                        icon: "success",
+                        button: {
+                            text: "OK",
+                            className: "swal-button--confirm"
+                        }
+                    });
+                } else {
+                    swal({
+                        html: true,
+                        text: response.message,
+                        icon: "warning"
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+                alert('Server Error. Try again.');
+            }
+        });
+    });
+
+    $('#saveLighterVesselBtn').on('click', function () {
+        let formData = {
+            name: $('#lighter_name').val(),
+            code: $('#lighter_code').val(),
+            description: $('#lighter_description').val(),
+            _token: '{{ csrf_token() }}'
+        };
+
+        $.ajax({
+            url: '/admin/lighter-vassel',
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                if (response.status === 300) {
+                    let newOption = new Option(`${response.data.name} - ${response.data.code ?? ''}`, response.data.id, true, true);
+                    $('#lighter_vassel_id').append(newOption).trigger('change');
+
+                    $('#newLighterVesselModal').modal('hide');
+                    $('#lighterVesselForm')[0].reset();
+
+                    swal({
+                        text: "Lighter Vessel created successfully",
+                        icon: "success",
+                        button: {
+                            text: "OK",
+                            className: "swal-button--confirm"
+                        }
+                    });
+                } else {
+                    swal({
+                        html: true,
+                        text: $(response.message).text(),
+                        icon: "warning"
+                    });
+                }
+            },
+            error: function (xhr) {
+                alert('Server Error. Try again.');
+            }
+        });
+    });
+
+    $('#saveWarehouseBtn').on('click', function () {
+        let formData = {
+            name: $('#warehouse_name').val(),
+            _token: '{{ csrf_token() }}'
+        };
+
+        $.ajax({
+            url: '/admin/warehouse', 
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                if (response.status === 300) {
+                    let newOption = new Option(response.data.name, response.data.id, true, true);
+                    $('#warehouse_id').append(newOption).trigger('change');
+                    $('#newWarehouseModal').modal('hide');
+                    $('#warehouseForm')[0].reset();
+
+                    swal({
+                        text: "Warehouse created successfully",
+                        icon: "success",
+                        button: {
+                            text: "OK",
+                            className: "swal-button--confirm"
+                        }
+                    });
+                } else {
+                    swal({
+                        html: true,
+                        text: $(response.message).text(),
+                        icon: "warning"
+                    });
+                }
+            },
+            error: function (xhr) {
+                alert('Server Error. Try again.');
+            }
+        });
+    });
+
+    $('#saveGhatBtn').on('click', function () {
+        let formData = {
+            name: $('#ghat_name').val(),
+            _token: '{{ csrf_token() }}'
+        };
+
+        $.ajax({
+            url: '/admin/ghat',
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                if (response.status === 300) {
+                    let newOption = new Option(response.data.name, response.data.id, true, true);
+                    $('#ghat_id').append(newOption).trigger('change');
+
+                    $('#newGhatModal').modal('hide');
+                    $('#ghatForm')[0].reset();
+
+                    swal({
+                        text: "Ghat created successfully",
+                        icon: "success",
+                        button: {
+                            text: "OK",
+                            className: "swal-button--confirm"
+                        }
+                    });
+                } else {
+                    swal({
+                        html: true,
+                        text: $(response.message).text(),
+                        icon: "warning"
+                    });
+                }
+            },
+            error: function (xhr) {
+                alert('Server Error. Try again.');
+            }
+        });
+    });
+
+  });
+</script>
+
+<script>
     $(document).ready(function() {
 
         var deletedPurchaseHistories = [];
@@ -430,12 +779,13 @@
             var itemTotalAmount = 0;
             var totalVatAmount = 0;
             var totalUnloadingCost = 0;
+            var totalLighterRent = 0;
 
             $('#productTable tbody tr').each(function () {
                 var quantity = parseFloat($(this).find('input.quantity').val()) || 0;
                 var unitPrice = parseFloat($(this).find('input.unit_price').val()) || 0;
                 var unloadingCost = parseFloat($(this).find('input.unloading_cost').val()) || 0;
-                var scaleQuantity = parseFloat($(this).find('input.scale_quantity').val()) || 0;
+                var lighterRent = parseFloat($(this).find('input.lighter_rent').val()) || 0;
 
                 var totalPrice = (quantity * unitPrice).toFixed(2);
 
@@ -446,16 +796,18 @@
 
                 $(this).find('td:eq(8)').text(totalPrice);
                 $(this).find('input.unloading_cost').val(unloadingCost);
-                $(this).find('input.scale_quantity').val(Math.round(scaleQuantity));
+                $(this).find('input.lighter_rent').val(lighterRent);
 
                 itemTotalAmount += parseFloat(totalPrice) || 0;
                 totalVatAmount += parseFloat(vatAmount) || 0;
-                totalUnloadingCost += parseFloat(unloadingCost) || 0;
+                totalUnloadingCost += parseFloat(unloadingCost) * quantity || 0;
+                totalLighterRent += parseFloat(lighterRent) * quantity || 0;
             });
 
             $('#item_total_amount').val(itemTotalAmount.toFixed(2) || '0.00');
             $('#total_vat_amount').val(totalVatAmount.toFixed(2) || '0.00');
             $('#total_unloading_cost').val(totalUnloadingCost.toFixed(2) || '0.00');
+            $('#total_lighter_rent').val(totalLighterRent.toFixed(2) || '0.00');
 
             var discount = parseFloat($('#discount').val()) || 0;
             var direct_cost = parseFloat($('#direct_cost').val()) || 0;
@@ -466,7 +818,7 @@
 
             var advanceAmount = parseFloat($('#advance_amount').val()) || 0;
 
-            var netAmount = itemTotalAmount + totalVatAmount + totalUnloadingCost - discount + direct_cost + cnf_cost + cost_b + cost_a + other_cost - advanceAmount;
+            var netAmount = itemTotalAmount + totalVatAmount - discount + direct_cost + cnf_cost + cost_b + cost_a + other_cost - advanceAmount;
             $('#net_amount').val(netAmount.toFixed(2) || '0.00');
 
             var paidAmount = parseFloat($('#paid_amount').val()) || 0;
@@ -492,8 +844,9 @@
             var warehouseName = $('#warehouse_id option:selected').text();
             var ghatId = $('#ghat_id').val();
             var ghatName = $('#ghat_id option:selected').text();
-            var scaleQuantity = $('#scale_quantity').val();
+            var quantityType = $('#quantity_type').val();
             var unloadingCost = $('#unloading_cost').val();
+            var lighterRent = $('#lighter_rent').val();
 
             if (!productId) {
                 alert('Please select a product.');
@@ -515,26 +868,21 @@
                 return;
             }
 
-            if (isNaN(scaleQuantity) || scaleQuantity < 0) {
-                alert('Scale quantity must be a non-negative number.');
-                return;
-            }
-
             var totalPrice = (quantity * unitPrice).toFixed(2);
 
-            var productExists = false;
-            $('#productTable tbody tr').each(function () {
-                var existingProductId = $(this).data('product-id');
-                if (productId == existingProductId) {
-                    productExists = true;
-                    return false;
-                }
-            });
+            // var productExists = false;
+            // $('#productTable tbody tr').each(function () {
+            //     var existingProductId = $(this).data('product-id');
+            //     if (productId == existingProductId) {
+            //         productExists = true;
+            //         return false;
+            //     }
+            // });
 
-            if (productExists) {
-                alert('This product is already in the table.');
-                return;
-            }
+            // if (productExists) {
+            //     alert('This product is already in the table.');
+            //     return;
+            // }
 
             var productRow = `<tr data-id="" data-product-id="${productId}">
                                 <td>
@@ -543,23 +891,28 @@
                                     <input type="hidden" class="lighter_vessel_id" value="${lighterVesselId}" />
                                     <input type="hidden" class="warehouse_id" value="${warehouseId}" />
                                     <input type="hidden" class="ghat_id" value="${ghatId}" />
+                                    <input type="hidden" class="quantity_type" value="${quantityType}" />
                                 </td>
                                 <td>${lighterVesselName}</td>
                                 <td>${warehouseName}</td>
                                 <td>${ghatName}</td>
-                                <td><input type="number" class="form-control scale_quantity" value="${scaleQuantity}" /></td>
                                 <td><input type="number" class="form-control unloading_cost" value="${unloadingCost}" /></td>
+                                <td><input type="number" class="form-control lighter_rent" value="${lighterRent}" /></td>
                                 <td><input type="number" class="form-control quantity" value="${quantity}" /></td>
                                 <td><input type="number" class="form-control unit_price" value="${unitPrice}" /></td>
                                 <td>${totalPrice}</td>
-                                <td><button type="button" class="btn btn-sm btn-danger remove-product">Remove</button></td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-danger remove-product" title="Remove">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
                             </tr>`;
             $('#productTable tbody').append(productRow);
 
             $('#quantity').val('');
-            $('#unit_price').val('');
+            // $('#unit_price').val('');
             $('#unloading_cost').val('');
-            $('#scale_quantity').val('');
+            $('#lighter_rent').val('');
             $('#product_size').val('');
             $('#product_color').val('');
             $('#lighter_vassel_id').val('');
@@ -579,7 +932,7 @@
             updateSummary();
         });
 
-        $(document).on('input', '#productTable input.quantity, #productTable input.unit_price, #productTable input.unloading_cost, #productTable input.scale_quantity, #vat_percent, #discount, #direct_cost, #cost_a, #cost_b, #cnf_cost, #other_cost, #paid_amount', function() {
+        $(document).on('input', '#productTable input.quantity, #productTable input.unit_price, #productTable input.unloading_cost, #productTable input.lighter_rent, #vat_percent, #discount, #direct_cost, #cost_a, #cost_b, #cnf_cost, #other_cost, #paid_amount', function() {
             updateSummary();
         });
 
@@ -594,6 +947,7 @@
             formData.purchase_type = $('#purchase_type').val();
             formData.advance_amount = $('#advance_amount').val();
             formData.advance_quantity = $('#advance_quantity').val();
+            formData.cost_per_unit = $('#cost_per_unit').val();
             formData.purchase_date = $('#purchase_date').val();
             formData.supplier_id = $('#supplier_id').val();
             formData.vat_reg = $('#vat_reg').val();
@@ -604,6 +958,7 @@
             formData.vat_percent = $('#vat_percent').val();
             formData.total_vat_amount = $('#total_vat_amount').val();
             formData.total_unloading_cost = $('#total_unloading_cost').val();
+            formData.total_lighter_rent = $('#total_lighter_rent').val();
             formData.direct_cost = $('#direct_cost').val();
             formData.cost_a = $('#cost_a').val();
             formData.cost_b = $('#cost_b').val();
@@ -625,8 +980,9 @@
                 var lighter_vassel_id = $(this).find('input.lighter_vessel_id').val();
                 var warehouse_id = $(this).find('input.warehouse_id').val();
                 var ghat_id = $(this).find('input.ghat_id').val();
-                var scale_quantity = $(this).find('input.scale_quantity').val();
+                var quantity_type = $(this).find('input.quantity_type').val();
                 var unloading_cost = $(this).find('input.unloading_cost').val();
+                var lighter_rent = $(this).find('input.lighter_rent').val();
                 var unitPrice = $(this).find('input.unit_price').val();
                 var totalPrice = $(this).find('td:eq(8)').text();
 
@@ -636,11 +992,12 @@
                     lighter_vassel_id: lighter_vassel_id,
                     warehouse_id: warehouse_id,
                     ghat_id: ghat_id,
-                    scale_quantity: scale_quantity,
                     unloading_cost: unloading_cost,
                     quantity: quantity,
                     unit_price: unitPrice,
-                    total_price: totalPrice
+                    total_price: totalPrice,
+                    quantity_type: quantity_type,
+                    lighter_rent: lighter_rent
                 });
             });
 
@@ -689,13 +1046,6 @@
                 }
             });
         });
-
-        $('#product_id, #mother_vessels_id, #lighter_vassel_id, #warehouse_id, #ghat_id').select2({
-            placeholder: "Select...",
-            allowClear: true,
-            width: '100%'
-        });
-
     });
 </script>
 

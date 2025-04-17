@@ -19,15 +19,27 @@
                         <form id="createThisForm">
                             @csrf
                             <div class="form-row">
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-4">
                                     <label for="name">Product Name <span style="color: red;">*</span></label>
                                     <input type="text" class="form-control" id="name" name="name" placeholder="Ex. Stylish Running Shoes">
                                 </div>
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-4">
                                     <label for="price">Product Code <span style="color: red;">*</span></label>
                                     <input type="text" class="form-control" id="product_code" name="product_code" placeholder="Ex. PRD-12345">
                                     <span id="productCodeError" class="text-danger"></span>
                                 </div>
+                                <div class="form-group col-md-4">
+                                    <label for="category">Category
+                                        <span class="badge badge-success" style="cursor: pointer;" data-toggle="modal" data-target="#addCategoryModal">Add New</span>
+                                    </label>
+                                    <select class="form-control" id="category" name="category_id">
+                                        <option value="">Select Category</option>
+                                        @foreach($categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
                                 <div class="form-group col-md-2 d-none">
                                     <label for="price">Price</label>
                                     <input type="number" class="form-control" id="price" name="price" placeholder="Ex. 1000">
@@ -59,17 +71,6 @@
                             </div>
 
                             <div class="form-row">
-                                <div class="form-group col-md-4">
-                                    <label for="category">Category
-                                        <span class="badge badge-success" style="cursor: pointer;" data-toggle="modal" data-target="#addCategoryModal">Add New</span>
-                                    </label>
-                                    <select class="form-control" id="category" name="category_id">
-                                        <option value="">Select Category</option>
-                                        @foreach($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
 
                                 <div class="form-group col-md-4 d-none">
                                     <label for="subcategory">
@@ -109,7 +110,7 @@
                                     </select>
                                 </div>
 
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-4 d-none">
                                     <label for="unit">
                                         Unit <span class="badge badge-success" style="cursor: pointer;" data-toggle="modal" data-target="#addUnitModal">Add New</span>
                                     </label>
@@ -121,7 +122,7 @@
                                     </select>
                                 </div>
 
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-4 d-none">
                                     <label for="group">
                                         Group <span class="badge badge-success" style="cursor: pointer;" data-toggle="modal" data-target="#addGroupModal">Add New</span>
                                     </label>

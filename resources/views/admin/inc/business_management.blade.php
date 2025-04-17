@@ -74,7 +74,7 @@
 
                 @if(in_array('30', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
-                    <a href="{{ route('allunit') }}" class="nav-link {{ (request()->is('admin/unit*')) ? 'active' : '' }}">
+                    <a href="{{ route('allunit') }}" class="nav-link d-none {{ (request()->is('admin/unit*')) ? 'active' : '' }}">
                         <i class="fas fa-ruler nav-icon"></i>
                         <p>Units</p>
                     </a>
@@ -83,7 +83,7 @@
 
                 @if(in_array('6', json_decode(auth()->user()->role->permission)))
                 <li class="nav-item">
-                    <a href="{{ route('allgroup') }}" class="nav-link {{ (request()->is('admin/group*')) ? 'active' : '' }}">
+                    <a href="{{ route('allgroup') }}" class="nav-link d-none {{ (request()->is('admin/group*')) ? 'active' : '' }}">
                         <i class="fas fa-object-group nav-icon"></i>
                         <p>Groups</p>
                     </a>

@@ -40,7 +40,7 @@ class LighterVasselController extends Controller
         $data->created_by = Auth::user()->id;
         if ($data->save()) {
             $message ="<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><b>Data Create Successfully.</b></div>";
-            return response()->json(['status'=> 300,'message'=>$message]);
+            return response()->json(['status'=> 300,'message'=>$message,'data'=>$data]);
         }else{
             return response()->json(['status'=> 303,'message'=>'Server Error!!']);
         }

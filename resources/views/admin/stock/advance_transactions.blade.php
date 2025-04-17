@@ -25,6 +25,7 @@
                 <thead>
                 <tr>
                   <th>Sl</th>
+                  <th>ID</th>
                   <th>Date</th>
                   <th>Description</th>
                   <th>Payment Type</th>
@@ -44,6 +45,7 @@
                   @foreach ($transactions as $key => $data)
                   <tr>
                     <td>{{ $key + 1 }}</td>
+                    <td>{{ $data->tran_id }}</td>
                    <td>{{ \Carbon\Carbon::parse($data->date)->format('d-m-Y') }}</td>
                     <td>{{ $data->table_type }}</td>
                     <td>{{ $data->payment_type }}</td>

@@ -25,6 +25,7 @@ return new class extends Migration
             $table->decimal('total_amount',10,2)->nullable();
             $table->decimal('discount',10,2)->nullable();
             $table->decimal('total_unloading_cost',10,2)->nullable();
+            $table->decimal('total_lighter_rent',10,2)->nullable();
             $table->string('vat_percent')->nullable();
             $table->decimal('total_vat_amount',10,2)->nullable();
             $table->decimal('net_amount',10,2)->nullable();
@@ -36,6 +37,7 @@ return new class extends Migration
             $table->decimal('cnf_cost',10,2)->nullable();
             $table->decimal('other_cost',10,2)->nullable();
             $table->decimal('advance_amount', 10, 2)->nullable();
+            $table->decimal('cost_per_unit', 10, 2)->nullable();
             $table->string('consignment_number')->nullable();
             $table->integer('quantity')->nullable();
 

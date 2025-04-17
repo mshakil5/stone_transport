@@ -19,8 +19,8 @@
                                     <th class="d-none">Image</th>
                                     <th class="d-none">Price</th>
                                     <th>Category</th>
-                                    <th>Unit</th>
-                                    <th>Group</th>
+                                    <th class="d-none">Unit</th>
+                                    <th class="d-none">Group</th>
                                     <th class="d-none">Featured</th>
                                     <th class="d-none">Recent</th>
                                     <th class="d-none">Popular</th>
@@ -53,8 +53,8 @@
                                         {{ number_format($price ? $price->selling_price : 0, 2) }}
                                     </td>
                                     <td>@if ($data->category) {{ $data->category->name }} @endif</td>
-                                    <td>@if ($data->unit) {{ $data->unit->name }} @endif</td>
-                                    <td>@if ($data->group) {{ $data->group->name }} @endif</td>
+                                    <td class="d-none">@if ($data->unit) {{ $data->unit->name }} @endif</td>
+                                    <td class="d-none">@if ($data->group) {{ $data->group->name }} @endif</td>
                                     <td class="d-none">
                                         <div class="custom-control custom-switch">
                                             <input type="checkbox" class="custom-control-input toggle-featured" id="customSwitch{{ $data->id }}" data-id="{{ $data->id }}" {{ $data->is_featured == 1 ? 'checked' : '' }}>
