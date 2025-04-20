@@ -23,6 +23,10 @@ return new class extends Migration
             $table->foreign('stock_id')->references('id')->on('stocks')->onDelete('cascade'); 
             $table->unsignedBigInteger('warehouse_id')->nullable();
             $table->foreign('warehouse_id')->references('id')->on('warehouses')->onDelete('cascade'); 
+            $table->unsignedBigInteger('mother_vassels_id ')->nullable();
+            $table->foreign('mother_vassels_id ')->references('id')->on('mother_vassels')->onDelete('cascade'); 
+            $table->unsignedBigInteger('lighter_vassels_id')->nullable();
+            $table->foreign('lighter_vassels_id ')->references('id')->on('lighter_vassels')->onDelete('cascade'); 
             $table->string('quantity')->nullable();
             $table->string('size')->nullable();
             $table->string('color')->nullable();

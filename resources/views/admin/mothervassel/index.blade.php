@@ -99,6 +99,7 @@
                 <tr>
                   <th>Sl</th>
                   <th>Name</th>
+                  <th>Code</th>
                   <th>Description</th>
                   <th>Action</th>
                 </tr>
@@ -108,6 +109,7 @@
                   <tr>
                     <td>{{ $key + 1 }}</td>
                     <td>{{$data->name}}</td>
+                    <td>{{$data->code}}</td>
                     <td>{{$data->description}}</td>
                     <td>
                       <a id="EditBtn" rid="{{$data->id}}"><i class="fa fa-edit" style="color: #2196f3;font-size:16px;"></i></a>
