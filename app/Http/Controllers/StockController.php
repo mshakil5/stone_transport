@@ -667,6 +667,7 @@ class StockController extends Controller
                         $latestHistory->quantity = max($latestHistory->quantity - $purchaseHistory->quantity, 0);
                         $latestHistory->available_qty = max($latestHistory->available_qty - $purchaseHistory->quantity, 0);
                         $latestHistory->updated_by = Auth::id();
+                        $latestHistory->mother_vassels_id = $request->mother_vassels_id ?? null;
                         $latestHistory->save();
                     }
                 }
@@ -796,6 +797,8 @@ class StockController extends Controller
                         $latestHistory->quantity = max($latestHistory->quantity + $newQty, 0);
                         $latestHistory->available_qty = max($latestHistory->available_qty + $newQty, 0);
                         $latestHistory->updated_by = Auth::id();
+                        $latestHistory->lighter_vassels_id = $product['lighter_vassel_id'] ?? null;
+                        $latestHistory->mother_vassels_id = $request->mother_vassels_id ?? null;
                         $latestHistory->unit_cost = $unitCost;
                         $latestHistory->save();
                     }
@@ -816,6 +819,8 @@ class StockController extends Controller
                     $newStockHistory->available_qty = $newQty;
                     $newStockHistory->created_by = Auth::id();
                     $newStockHistory->unit_cost = $unitCost;
+                    $newStockHistory->lighter_vassels_id = $product['lighter_vassel_id'] ?? null;
+                    $newStockHistory->mother_vassels_id = $request->mother_vassels_id ?? null;
                     $newStockHistory->save();
                 }
             }

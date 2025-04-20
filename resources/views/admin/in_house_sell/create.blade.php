@@ -27,7 +27,7 @@
                                                 Add New
                                             </span>
                                         </label>
-                                        <select class="form-control" id="user_id" name="user_id">
+                                        <select class="form-control select2" id="user_id" name="user_id">
                                             <option value="">Select...</option>
                                             @foreach($customers as $customer)
                                                 <option value="{{ $customer->id }}">{{ $customer->name }}</option>
@@ -50,10 +50,31 @@
                                     </div>
                                 </div>
                             
-                                <div class="col-sm-5">
+                                <div class="col-sm-4">
                                     <div class="form-group">
-                                        <label for="warehouse_id">Warehouse <span class="text-danger">*</span></label>
-                                        <select name="warehouse_id" id="warehouse_id" class="form-control">
+                                        <label for="mother_vessel_id">Choose Mother Vessel <span class="text-danger">*</span></label>
+                                        <select name="mother_vessel_id" id="mother_vessel_id" class="form-control select2">
+                                            <option value="">Select</option>
+                                            @foreach ($motherVessels as $motherVessel)
+                                            <option value="{{$motherVessel->id}}">{{$motherVessel->name}}-{{$motherVessel->code}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="product_id">Choose Product <span class="text-danger">*</span></label>
+                                        <select class="form-control select2" id="product_id" name="product_id">
+                                            <option value="">Select...</option>             
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label for="warehouse_id">Choose Warehouse <span class="text-danger">*</span></label>
+                                        <select name="warehouse_id" id="warehouse_id" class="form-control select2">
                                             <option value="">Select</option>
                                             @foreach ($warehouses as $warehouse)
                                             <option value="{{$warehouse->id}}">{{$warehouse->name}}-{{$warehouse->location}}</option>
@@ -84,24 +105,6 @@
                                     <div class="form-group">
                                         <label for="remarks">Remarks</label>
                                         <textarea class="form-control" id="remarks" name="remarks" rows="1" placeholder="Enter remarks"></textarea>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label for="product_id">Choose Product <span class="text-danger">*</span></label>
-                                        <select class="form-control" id="product_id" name="product_id">
-                                            <option value="">Select...</option>
-                                            @foreach($products as $product)
-                                            @php
-                                                $sellingPrice = $product->stockhistory()
-                                                            ->where('available_qty', '>', 0)
-                                                            ->orderBy('id', 'asc')
-                                                            ->value('selling_price');
-                                            @endphp         
-                                                <option value="{{ $product->id }}" data-name="{{ $product->name }}" data-price="{{ $sellingPrice }}">{{ $product->name }} - {{ $product->product_code }}</option>
-                                            @endforeach
-                                        </select>
                                     </div>
                                 </div>
 
@@ -230,6 +233,12 @@
     </div>
 </section>
 
+<div id="stockBox" class="bg-success text-white" 
+     style="position: fixed; bottom: 20px; right: 20px; border: 1px solid #c3e6cb; padding: 15px 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); display: none; z-index: 9999;">
+  <strong id="stockWarehouse"></strong><br>
+  <span id="stockQty"></span>
+</div>
+
 @include('admin.inc.modal.whole_saler_modal')
 @include('admin.inc.modal.size_modal')
 @include('admin.inc.modal.color_modal')
@@ -249,6 +258,70 @@
           $(this).val(1);
       }
   });
+
+  $('#mother_vessel_id').on('change', function () {
+      let mvId = $(this).val();
+      if (!mvId) return;
+
+      $.ajax({
+          url: '/admin/get-products-by-mv/' + mvId,
+          method: 'GET',
+          beforeSend: function () {
+              $('#product_id').html('<option>Loading...</option>');
+          },
+          success: function (res) {
+              let options = '<option value="">Select...</option>';
+              
+              if (res.products && res.products.length > 0) {
+                  res.products.forEach(p => {
+                      let name = p.name ?? '';
+                      let code = p.product_code ?? '';
+                      options += `<option value="${p.id}" data-name="${name}">${name} - ${code}</option>`;
+                  });
+              } else {
+                  options = '<option value="">No products found</option>';
+              }
+
+              $('#product_id').html(options);
+          }
+      });
+  });
+
+  $('#product_id, #mother_vessel_id').change(function () {
+      var productId = $('#product_id').val();
+      var motherVesselId = $('#mother_vessel_id').val();
+
+      if (!productId || !motherVesselId) {
+          $('#stockBox').hide();
+          return;
+      }
+
+      $.ajax({
+          url: '/admin/get-product-stock',
+          type: 'POST',
+          data: {
+              product_id: productId,
+              mother_vessel_id: motherVesselId,
+              _token: '{{ csrf_token() }}'
+          },
+          success: function (response) {
+              if (response.count > 0) {
+                  $('#stockWarehouse').html(response.html);
+                  $('#stockQty').text(`Total Quantity: ${response.count}`);
+                  $('#stockBox').fadeIn();
+              } else {
+                  $('#stockWarehouse').html('');
+                  $('#stockQty').text('No stock available');
+                  $('#stockBox').fadeIn();
+              }
+          },
+          error: function (xhr) {
+              console.error(xhr.responseText);
+              $('#stockBox').hide();
+          }
+      });
+  });
+
 </script>
   
 <script>
@@ -279,6 +352,7 @@
 
         $('#addProductBtn').click(function () {
             var warehouseId = $('#warehouse_id').val();
+            var motherVesselId = $('#mother_vessel_id').val();
             var selectedProduct = $('#product_id option:selected');
             var productId = selectedProduct.val();
             var productName = selectedProduct.data('name');
@@ -286,6 +360,14 @@
             if (!warehouseId) {
                 swal({
                     text: 'Please select a warehouse.',
+                    icon: "error",
+                    button: "OK"
+                });
+                return;
+            }
+            if (!motherVesselId) {
+                swal({
+                    text: 'Please select a mother vessel.',
                     icon: "error",
                     button: "OK"
                 });
@@ -309,64 +391,54 @@
                 },
                 data: {
                     warehouse_id: warehouseId,
-                    product_id: productId
+                    product_id: productId,
+                    mother_vessel_id: motherVesselId
                 },
                 success: function (response) {
-                    if (Array.isArray(response.stockHistories) && response.stockHistories.length > 0) {
-                        response.stockHistories.forEach(function (stock) {
-                            var stockHistoryId = stock.id;
-                            var sellingPrice = !isNaN(parseFloat(stock.selling_price)) ? parseFloat(stock.selling_price).toFixed(2) : '0.00';
-                            var unitCost = !isNaN(parseFloat(stock.unit_cost)) ? parseFloat(stock.unit_cost).toFixed(2) : '0.00';
+                  console.log(response);
+                  if (response.stock) {
+                      var stock = response.stock;
 
-                            var availableQty = stock.available_qty;
+                      var stockHistoryId = stock.id;
+                      var sellingPrice = !isNaN(parseFloat(stock.selling_price)) ? parseFloat(stock.selling_price).toFixed(2) : '0.00';
+                      var unitCost = !isNaN(parseFloat(stock.unit_cost)) ? parseFloat(stock.unit_cost).toFixed(2) : '0.00';
+                      var availableQty = stock.available_qty;
 
-                            // var productExists = false;
-                            // $('#productTable tbody tr').each(function () {
-                            //     var existingProductId = $(this).data('product-id');
-                            //     var existingStockHistoryId = $(this).find('input[name="stock_history_id[]"]').data('stock-history-id');
-                            //     if (productId == existingProductId && stockHistoryId == existingStockHistoryId) {
-                            //         productExists = true;
-                            //         return false;
-                            //     }
-                            // });
+                      if (unitCost > 0.00) {
+                          productName = productName + `<br> <span class="bg-warning p-1">Unit Cost: ${unitCost}</span>`;
+                      }
 
-                            // if (productExists) {
-                            //     return;
-                            // }
+                      var productRow = `<tr data-product-id="${productId}">
+                          <td>${productName}
+                              <input type="hidden" name="product_id[]" value="${productId}">
+                              <input type="hidden" name="stock_history_id[]" value="${stockHistoryId}" data-stock-history-id="${stockHistoryId}">
+                              <input type="hidden" name="mother_vassel_id[]" value="${motherVesselId}">
+                          </td>
+                          <td><input type="number" class="form-control quantity" name="quantity[]" value="1" min="1" max="${availableQty}" data-max-quantity="${availableQty}" /></td>
+                          <td><input type="number" class="form-control price_per_unit" name="price_per_unit[]" value="${sellingPrice}" step="0.01" /></td>
+                          <td class="total_price">${sellingPrice}</td>
+                          <td>
+                            <button type="button" class="btn btn-sm btn-danger remove-product" title="Remove">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                          </td>
+                      </tr>`;
 
-                            if (unitCost > 0.00) {
-                                productName = productName + `<br> <span class="bg-warning p-1">Unit Cost: ${unitCost}</span>`;
-                            } else {
-                                productName = productName;
-                            }
+                      $('#productTable tbody').append(productRow);
 
-                            var productRow = `<tr data-product-id="${productId}">
-                                <td>${productName}
-                                    <input type="hidden" name="product_id[]" value="${productId}">
-                                    <input type="hidden" name="stock_history_id[]" value="${stockHistoryId}" data-stock-history-id="${stockHistoryId}">
-                                </td>
-                                <td><input type="number" class="form-control quantity" name="quantity[]" value="1" min="1" max="${availableQty}" data-max-quantity="${availableQty}" /></td>
-                                <td><input type="number" class="form-control price_per_unit" name="price_per_unit[]" value="${sellingPrice}" step="0.01" /></td>
-                                <td class="total_price">${sellingPrice}</td>
-                                <td><button type="button" class="btn btn-sm btn-danger remove-product">Remove</button></td>
-                            </tr>`;
+                      $('#product_id').val(null).trigger('change');
+                      $('#stock_history').val('').prop('disabled', true);
+                      $('#quantity').val('');
+                      $('#price_per_unit').val('');
 
-                            $('#productTable tbody').append(productRow);
-                        });
-
-                        $('#product_id').val(null).trigger('change');
-                        $('#stock_history').val('').prop('disabled', true);
-                        $('#quantity').val('');
-                        $('#price_per_unit').val('');
-
-                        updateSummary();
-                    } else {
-                        swal({
-                            text: 'No stock history found for the selected product in this warehouse.',
-                            icon: "warning",
-                            button: "OK"
-                        });
-                    }
+                      updateSummary();
+                  } else {
+                      swal({
+                          text: 'No stock history found for the selected product in this warehouse.',
+                          icon: "warning",
+                          button: "OK"
+                      });
+                  }
                 },
                 error: function () {
                     swal({
@@ -423,6 +495,7 @@
             $('#productTable tbody tr').each(function() {
                 var productId = $(this).find('input[name="product_id[]"]').val();
                 var stockHistoryId = $(this).find('input[name="stock_history_id[]"]').val();
+                var motherVasselId = $(this).find('input[name="mother_vassel_id[]"]').val();
                 var quantity = parseFloat($(this).find('input.quantity').val()) || 0;
                 var unitPrice = parseFloat($(this).find('input.price_per_unit').val()) || 0;
                 var totalPrice = (quantity * unitPrice).toFixed(2);
@@ -430,6 +503,7 @@
                 products.push({
                     product_id: productId,
                     stock_history_id: stockHistoryId,
+                    mother_vassel_id: motherVasselId,
                     quantity: quantity,
                     unit_price: unitPrice,
                     total_price: totalPrice
@@ -592,12 +666,6 @@
                 $('.errmsg').text('');
             }
         }
-
-        $('#warehouse_id, #user_id, #product_id').select2({
-            placeholder: "Select...",
-            allowClear: true,
-            width: '100%'
-        });
     });
 </script>
 
@@ -631,7 +699,7 @@
                 processData: false,
                 contentType: false,
                 success: function(response) {
-                    console.log(response);
+                    // console.log(response);
                     $('#user_id').append(`<option value="${response.id}" selected>${$('#name').val()} ${$('#surname').val() || ''}</option>`);
                     $('#newWholeSalerForm')[0].reset();
                     $('#newWholeSalerModal').modal('hide');

@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\OrderConfirmation;
 use App\Models\ContactEmail;
 use App\Models\LighterVassel;
+use App\Models\MotherVassel;
+use App\Models\Purchase;
 
 class InHouseSellController extends Controller
 {
@@ -30,13 +32,68 @@ class InHouseSellController extends Controller
           return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
         }
 
-        $products = Product::orderby('id', 'DESC')->select('id', 'name', 'price', 'product_code')->get();
         $colors = Color::where('status', 1)->select('id', 'color')->orderby('id', 'DESC')->get();
         $sizes = Size::where('status', 1)->select('id', 'size')->orderby('id', 'DESC')->get();
         $warehouses = Warehouse::select('id', 'name', 'location')->where('status', 1)->get();
         $customers = User::where('is_type', '0')->where('status', 1)->orderby('id', 'DESC')->get();
-        return view('admin.in_house_sell.create', compact('customers', 'products', 'colors', 'sizes', 'warehouses'));
+        $motherVessels = MotherVassel::select('id', 'name', 'code')->where('status', 1)->orderby('id', 'DESC')->get();
+        return view('admin.in_house_sell.create', compact('customers', 'colors', 'sizes', 'warehouses', 'motherVessels'));
     }
+
+    public function getProductsByMotherVessel($id)
+    {
+        $products = Purchase::select('id')
+            ->where('mother_vassels_id', $id)
+            ->with(['purchaseHistory.product:id,name,product_code'])
+            ->get()
+            ->pluck('purchaseHistory')
+            ->flatten()
+            ->pluck('product')
+            ->unique('id')
+            ->values()
+            ->map(function ($product) {
+                return [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'product_code' => $product->product_code,
+                ];
+            });
+    
+        return response()->json(['products' => $products]);
+    }    
+
+    public function getStock(Request $request)
+    {
+        $productId = $request->input('product_id');
+        $motherVesselId = $request->input('mother_vessel_id');
+    
+        if (!$productId || !$motherVesselId) {
+            return response()->json(['count' => 0, 'html' => '']);
+        }
+    
+        $stocks = StockHistory::with(['warehouse:id,name'])
+            ->select('warehouse_id', 'available_qty')
+            ->where('product_id', $productId)
+            ->where('mother_vassels_id', $motherVesselId)
+            ->where('available_qty', '>', 0)
+            ->latest()
+            ->get()
+            ->groupBy('warehouse_id');
+    
+        $html = '';
+        foreach ($stocks as $warehouseId => $entries) {
+            $warehouseName = $entries->first()->warehouse->name ?? 'N/A';
+            $qty = $entries->sum('available_qty');
+            $html .= '<div>' . $warehouseName . ' - ' . intval($qty) . ' pcs</div>';
+        }
+
+        $totalQty = $stocks->flatten()->sum('available_qty');
+
+        return response()->json([
+            'count' => $totalQty,
+            'html' => $html,
+        ]);
+    }    
 
     public function inHouseSellStore(Request $request)
     {
@@ -67,7 +124,7 @@ class InHouseSellController extends Controller
 
         $order = new Order();
         $order->invoice = random_int(100000, 999999);
-        $order->warehouse_id = $request->warehouse_id;
+        // $order->warehouse_id = $request->warehouse_id;
         $order->purchase_date = $validated['purchase_date'];
         $order->vehicle_number = $validated['vehicle_number'];
         $order->destination = $validated['destination'];
@@ -150,6 +207,7 @@ class InHouseSellController extends Controller
             $orderDetail->warehouse_id = $request->warehouse_id;
             $orderDetail->product_id = $product['product_id'];
             $orderDetail->stock_history_id = $product['stock_history_id'];
+            $orderDetail->mother_vassels_id = $product['mother_vassel_id'];
             $orderDetail->quantity = $quantity;
             $orderDetail->price_per_unit = $unitPrice;
             $orderDetail->total_price = $product['total_price'];
@@ -374,7 +432,8 @@ class InHouseSellController extends Controller
         $colors = Color::orderby('id', 'DESC')->where('status', 1)->get();
         $sizes = Size::orderby('id', 'DESC')->where('status', 1)->get();
         $warehouses = Warehouse::select('id', 'name', 'location')->where('status', 1)->get();
-        return view('admin.in_house_sell.edit_order', compact('customers', 'products', 'colors', 'sizes', 'warehouses', 'order', 'cashAmount', 'bankAmount', 'discountAmount'));
+        $motherVessels = MotherVassel::select('id', 'name', 'code')->where('status', 1)->orderby('id', 'DESC')->get();
+        return view('admin.in_house_sell.edit_order', compact('customers', 'products', 'colors', 'sizes', 'warehouses', 'order', 'cashAmount', 'bankAmount', 'discountAmount', 'motherVessels'));
     }
 
     public function updateOrder(Request $request)
@@ -388,7 +447,7 @@ class InHouseSellController extends Controller
             'purchase_date' => 'required|date',
             'vehicle_number' => 'required|string',
             'destination' => 'required|string',
-            'warehouse_id' => 'required|exists:warehouses,id',
+            // 'warehouse_id' => 'required|exists:warehouses,id',
             'payment_method' => 'required|string',
             'ref' => 'nullable|string',
             'remarks' => 'nullable|string',
@@ -475,7 +534,7 @@ class InHouseSellController extends Controller
 
             $orderDetail = new OrderDetails();
             $orderDetail->order_id = $order->id;
-            $orderDetail->warehouse_id = $validated['warehouse_id'];
+            // $orderDetail->warehouse_id = $validated['warehouse_id'];
             $orderDetail->product_id = $product['product_id'];
             $orderDetail->stock_history_id = $product['stock_history_id'];
             $orderDetail->quantity = $quantity;
@@ -483,6 +542,7 @@ class InHouseSellController extends Controller
             $orderDetail->total_price = $product['total_price'];
             $orderDetail->vat_percent = $vatPercent;
             $orderDetail->total_vat = $totalVat;
+            $orderDetail->mother_vassels_id = $product['mother_vassel_id'];
             $orderDetail->total_price_with_vat = $totalPriceWithVat;
             $orderDetail->status = 1;
             $orderDetail->save();
@@ -675,16 +735,17 @@ class InHouseSellController extends Controller
             'product_id'   => 'required|integer',
         ]);
 
-        $stockHistories = StockHistory::where('warehouse_id', $request->warehouse_id)
+        $stock = StockHistory::where('warehouse_id', $request->warehouse_id)
             ->where('product_id', $request->product_id)
+            ->where('mother_vassels_id', $request->mother_vessel_id)
             ->where('available_qty', '>', 0)
             ->latest()
             ->select('id', 'selling_price', 'available_qty', 'unit_cost')
-            ->get();
+            ->first();
 
         return response()->json([
             'success' => true,
-            'stockHistories' => $stockHistories,
+            'stock' => $stock,
         ]);
     }
 }

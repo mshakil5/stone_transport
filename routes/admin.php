@@ -310,6 +310,9 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
 
     Route::post('/assign-warehouse', [OrderController::class, 'assignWarehouse'])->name('assign.warehouse');
 
+    Route::get('/get-products-by-mv/{id}', [InHouseSellController::class, 'getProductsByMotherVessel']);
+    Route::post('/get-product-stock', [InHouseSellController::class, 'getStock']);
+
     //In House sell
     Route::get('/in-house-sell', [InHouseSellController::class, 'inHouseSell'])->name('inhousesell');
     Route::post('/in-house-sell', [InHouseSellController::class, 'inHouseSellStore'])->name('inhousesell');

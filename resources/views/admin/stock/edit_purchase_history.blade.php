@@ -164,7 +164,7 @@
                                         <select class="form-control select2" id="product_id" name="product_id">
                                             <option value="">Select...</option>
                                             @foreach($products as $product)
-                                                <option value="{{ $product->id }}" data-name="{{ $product->name }}">{{ $product->name }}</option>
+                                                <option value="{{ $product->id }}" data-name="{{ $product->name }}">{{ $product->name }} - {{ $product->product_code }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -223,8 +223,8 @@
                                     <div class="form-group">
                                         <label for="quantity_type">Quantity Type</label>
                                         <select class="form-control" id="quantity_type" name="quantity_type">
-                                            <option value="Survey Quantity">Survey Quantity</option>
                                             <option value="Scale Quantity">Scale Quantity</option>
+                                            <option value="Survey Quantity">Survey Quantity</option>
                                         </select>
                                     </div>
                                 </div>
@@ -615,7 +615,7 @@
                 if (response.product) {
                   let newOption = $('<option>', {
                         value: response.product.id,
-                        text: response.product.name,
+                        text: response.product.name + ' - ' + response.product.product_code,
                         'data-name': response.product.name,
                         selected: true
                     });
