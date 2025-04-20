@@ -535,7 +535,7 @@
                             className: "swal-button--confirm"
                         }
                     }).then(() => {
-                        window.location.href = response.pdf_url;
+                        window.open(response.pdf_url, '_blank');
                         setTimeout(function() {
                             location.reload();
                         }, 1000);
