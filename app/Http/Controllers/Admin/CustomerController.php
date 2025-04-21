@@ -11,6 +11,7 @@ use App\Mail\CustomerEmail;
 use Illuminate\Support\Facades\Mail;
 use App\Models\OrderDueCollection;
 use App\Models\Order;
+use Illuminate\Support\Str;
 
 class CustomerController extends Controller
 {
@@ -173,10 +174,16 @@ class CustomerController extends Controller
             'password' => 'required|string|min:6',
         ]);
 
+        if (!$request->email) {
+            $email = Str::slug($request->name . ' ' . $request->surname, '-') . rand(100, 9000) . '@gmail.com';
+        } else {
+            $email = $request->email;
+        }      
+
         $user = User::create([
             'name' => $request->name,
             'surname' => $request->surname,
-            'email' => $request->email,
+            'email' => $email,
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
             'is_type' => 0,

@@ -734,7 +734,7 @@
                 processData: false,
                 contentType: false,
                 success: function(response) {
-                    console.log(response);
+                    // console.log(response);
                     $('#user_id').append(`<option value="${response.id}" selected>${$('#name').val()} ${$('#surname').val() || ''}</option>`);
                     $('#newWholeSalerForm')[0].reset();
                     $('#newWholeSalerModal').modal('hide');
