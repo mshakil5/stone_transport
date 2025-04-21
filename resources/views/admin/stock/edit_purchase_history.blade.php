@@ -552,8 +552,19 @@
               }
           },
           error: function(xhr, status, error) {
-              // console.log(xhr.responseText);
-              alert('Error adding supplier. Please try again.');
+                var errorMessage = "An error occurred. Please try again later.";
+                  if (xhr.responseJSON && xhr.responseJSON.errors) {
+                      errorMessage = Object.values(xhr.responseJSON.errors)[0][0];
+                  }
+                swal({
+                    text: errorMessage,
+                    icon: "error",
+                    button: {
+                        text: "OK",
+                        className: "swal-button--confirm"
+                    }
+                })
+              console.log(xhr.responseText);
           }
       });
     });
