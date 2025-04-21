@@ -489,9 +489,9 @@
       let name = $('#supplier_name').val();
       let email = $('#supplier_email').val();
 
-      if (name == '' || email == '') {
+      if (name == '') {
         swal({
-          text: "Name and Email are required !",
+          text: "Name is required !",
           icon: "error",
           button: {
               text: "OK",

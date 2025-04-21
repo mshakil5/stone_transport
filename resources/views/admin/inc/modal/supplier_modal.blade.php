@@ -12,7 +12,7 @@
                 <!-- New Supplier Form -->
                 <form id="newSupplierForm">
                     <div class="row">
-                        <div class="col-sm-6">
+                        <div class="col-sm-12">
                             <div class="form-group">
                                 <label>Name <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="supplier_name" name="name" placeholder="Enter name" required>
@@ -20,7 +20,7 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label>Email <span class="text-danger">*</span></label>
+                                <label>Email</label>
                                 <input type="email" class="form-control" id="supplier_email" name="email" placeholder="Enter email">
                             </div>
                         </div>
