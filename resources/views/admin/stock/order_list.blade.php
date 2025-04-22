@@ -155,7 +155,7 @@
               </div>
               <div class="row mb-3">
                   <div class="col"><strong>Discount Amount:</strong> <span id="discountAmount"></span></div>
-                  <div class="col"><strong>Net Amount:</strong> <span id="netAmount"></span></div>
+                  <div class="col"><strong>Due Amount:</strong> <span id="netAmount"></span></div>
               </div>
           
               <div class="mb-3">

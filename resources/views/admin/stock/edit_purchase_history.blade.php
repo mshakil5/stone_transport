@@ -416,7 +416,7 @@
                                     </div>
                                     <div class="row justify-content-end mt-1">
                                         <div class="col-sm-8 d-flex align-items-center">
-                                            <span class="">Net Amount:</span>
+                                            <span class="">Due Amount:</span>
                                             <input type="text" class="form-control" id="net_amount" readonly style="width: 150px; margin-left: auto;" value="{{ $purchase->net_amount }}">
                                         </div>
                                     </div>

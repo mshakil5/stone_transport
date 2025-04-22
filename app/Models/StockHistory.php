@@ -24,4 +24,10 @@ class StockHistory extends Model
     {
         return $this->belongsTo(Stock::class);
     }
+
+    public function motherVessel()
+    {
+        return $this->belongsTo(MotherVassel::class, 'mother_vassels_id');
+    }
+    
 }

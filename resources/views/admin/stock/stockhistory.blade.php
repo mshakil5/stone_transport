@@ -55,8 +55,8 @@
                                     <tr>
                                         <th>Sl</th>
                                         <th>Stocking Date</th>
-                                        <th>Product Code</th>
-                                        <th>Product Name</th>
+                                        <th>Product</th>
+                                        <th>Mother Vessel</th>
                                         <th>Purchased</th>
                                         <th>Sold</th>
                                         <th>Damaged</th>
@@ -202,8 +202,8 @@
             columns: [
                 { data: 'sl', name: 'sl', orderable: false, searchable: false },
                 { data: 'date', name: 'date' },
-                { data: 'product_code', name: 'product_code' },
-                { data: 'product_name', name: 'product_name' },
+                { data: 'product_info', name: 'product_info' },
+                { data: 'mother_Vessel', name: 'mother_Vessel' },
                 { data: 'quantity_formatted', name: 'quantity' },
                 { data: 'selling_qty', name: 'selling_qty' },
                 { data: 'systemloss_qty', name: 'systemloss_qty' },     

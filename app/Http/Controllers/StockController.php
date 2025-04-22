@@ -42,8 +42,7 @@ class StockController extends Controller
     public function getStocks(Request $request)
     {
         // $query = Stock::query();
-        $query = Stock::select('product_id', 'warehouse_id', 'size','color',  \DB::raw('SUM(quantity) as total_quantity'))
-            ->groupBy('product_id', 'size','color');
+        $query = Stock::select('product_id', 'warehouse_id', 'size','color', 'quantity');
         if ($request->has('warehouse_id') && $request->warehouse_id != '') {
             $query->where('warehouse_id', $request->warehouse_id);
         }
@@ -66,9 +65,6 @@ class StockController extends Controller
             })
             ->addColumn('product_code', function ($row) {
                 return $row->product ? $row->product->product_code : 'N/A';
-            })
-            ->addColumn('quantity_formatted', function ($row) {
-                return $row->total_quantity ? number_format($row->total_quantity, 0) : 'N/A';
             })
             // ->addColumn('warehouse', function ($row) {
             //     $warehouseDtl = '<b>'.$row->warehouse ? $row->warehouse->name .'-'. $row->warehouse->location : 'N/A'.'</b>';
@@ -102,7 +98,7 @@ class StockController extends Controller
     {
         
         
-        $query = StockHistory::select('date', 'stockid', 'purchase_id', 'product_id', 'stock_id', 'warehouse_id', 'quantity', 'selling_qty','available_qty', 'size','color','systemloss_qty','purchase_price','selling_price', 'systemloss_qty');
+        $query = StockHistory::select('date', 'stockid', 'purchase_id', 'product_id', 'stock_id', 'warehouse_id', 'quantity', 'selling_qty','available_qty', 'size','color','systemloss_qty','purchase_price','selling_price', 'systemloss_qty', 'mother_vassels_id',);
         if ($request->has('warehouse_id') && $request->warehouse_id != '') {
             $query->where('warehouse_id', $request->warehouse_id);
         }
@@ -119,12 +115,13 @@ class StockController extends Controller
             ->addColumn('date', function ($row) {
                 return $row->date ? Carbon::parse($row->date)->format('d-m-Y') : 'N/A';
             })
-            ->addColumn('product_name', function ($row) {
-                return $row->product ? $row->product->name : 'N/A';
+            ->addColumn('product_info', function ($row) {
+                if ($row->product) {
+                    return $row->product->product_code . '-' . $row->product->name;
+                }
+                return 'N/A';
             })
-            ->addColumn('product_code', function ($row) {
-                return $row->product ? $row->product->product_code : 'N/A';
-            })
+    
             ->addColumn('quantity_formatted', function ($row) {
                 return $row->quantity ? number_format($row->quantity, 0) : ' ';
             })
@@ -147,6 +144,10 @@ class StockController extends Controller
             ->addColumn('purchase_price', function ($row) {
                 return $row->purchase_price ? $row->purchase_price : '';
                 // return json_encode($row);
+            })
+
+            ->addColumn('mother_Vessel', function ($row) {
+                return $row->motherVessel ? $row->motherVessel->name : '';
             })
 
             ->addColumn('warehouse', function ($row) {

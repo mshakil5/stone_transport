@@ -199,7 +199,7 @@
                 { data: 'product_name', name: 'product_name' },
                 { data: 'product_code', name: 'product_code' },
                 { data: 'warehouse', name: 'warehouse' },
-                { data: 'quantity_formatted', name: 'quantity' },
+                { data: 'quantity', name: 'quantity' },
                 {data: 'action', name: 'action', orderable: false, searchable: false}
             ],
             // columnDefs: [
