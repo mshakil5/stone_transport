@@ -6,6 +6,8 @@
     @php
         $company = \App\Models\CompanyDetails::select('company_name', 'company_logo', 'address1', 'email1', 'phone1', 'website')->first();
         use Carbon\Carbon;
+        $cashPaid = \App\Models\Transaction::where('order_id', $order->id)->where('table_type', 'Sales')->where('payment_type', 'Cash')->where('transaction_type', 'Received')->sum('amount');
+        $bankPaid = \App\Models\Transaction::where('order_id', $order->id)->where('table_type', 'Sales')->where('payment_type', 'Bank')->where('transaction_type', 'Received')->sum('amount');
     @endphp
 
     <!-- CSRF Token -->
@@ -26,7 +28,7 @@
 
 </head>
 
-<body>
+<body style="background: url('data:image/png;base64,{{ base64_encode(file_get_contents(public_path('invoice_bg.jpg'))) }}') no-repeat center center; background-size: contain;">
 
 
     <section class="invoice">
@@ -37,7 +39,7 @@
 
                     <table style="width: 100%;">
                         <tbody>
-                            <tr>
+                            <tr style="visibility: hidden">
                                 <td colspan="2" class="" style="border :0px solid #dee2e6;width:50%;">
                                     <div class="col-lg-2" style="flex: 2; text-align: left;">
                                         <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('images/company/'.$company->company_logo))) }}" width="120px" style="display:inline-block;" />
@@ -182,8 +184,8 @@
                                       {{ $productName }} @if($warrantyDuration) ({{ $warrantyDuration }}) @endif
                                     </td>
                                     <td style="border: 0px solid #ffffff!important; padding: 1px 10px;text-align:center;width: 10%">{{$detail->quantity}} </td>
-                                    <td style="border: 0px solid #ffffff!important; padding: 1px 10px;text-align:center;width: 10%">£{{ number_format($detail->price_per_unit, 2) }}</td>
-                                    <td style="border: 0px solid #ffffff!important; padding: 1px 1px;text-align:right;width: 20%">£{{ number_format($detail->total_price , 2) }}</td>
+                                    <td style="border: 0px solid #ffffff!important; padding: 1px 10px;text-align:center;width: 10%">Tk {{ number_format($detail->price_per_unit, 2) }}</td>
+                                    <td style="border: 0px solid #ffffff!important; padding: 1px 1px;text-align:right;width: 20%">Tk {{ number_format($detail->total_price , 2) }}</td>
                                 </tr>
 
                                 @endforeach
@@ -198,7 +200,7 @@
                                     <td style="width: 25%">&nbsp;</td>
                                     <td style="width: 25%">&nbsp;</td>
                                     <td>Subtotal</td>
-                                    <td style="text-align:right">£{{ number_format($order->subtotal_amount - $order->warranty_amount, 2) }}</td>
+                                    <td style="text-align:right">Tk {{ number_format($order->subtotal_amount - $order->warranty_amount, 2) }}</td>
                                 </tr>
                                 @if($order->discount_amount > 0)
                                 <tr>
@@ -206,7 +208,7 @@
                                     <td style="width: 25%">&nbsp;</td>
                                     <td style="width: 25%">&nbsp;</td>
                                     <td>Discount</td>
-                                    <td style="text-align:right">£{{ number_format($order->discount_amount, 2) }}</td>
+                                    <td style="text-align:right">Tk {{ number_format($order->discount_amount, 2) }}</td>
                                 </tr>
                                 @endif
                                 @if($order->shipping_amount > 0)
@@ -215,7 +217,7 @@
                                     <td style="width: 25%">&nbsp;</td>
                                     <td style="width: 25%">&nbsp;</td>
                                     <td>Delivery Charge</td>
-                                    <td style="text-align:right">£{{ number_format($order->shipping_amount, 2) }}</td>
+                                    <td style="text-align:right">Tk {{ number_format($order->shipping_amount, 2) }}</td>
                                 </tr>
                                 @endif
 
@@ -225,7 +227,7 @@
                                     <td>&nbsp;</td>
                                     <td>&nbsp;</td>
                                     <td>Vat @if($order->vat_percent) ({{ $order->vat_percent }}%) @endif</td>
-                                    <td style="text-align:right">£{{ number_format($order->vat_amount, 2) }}</td>
+                                    <td style="text-align:right">Tk {{ number_format($order->vat_amount, 2) }}</td>
                                 </tr>
                                 @endif
 
@@ -235,7 +237,7 @@
                                     <td>&nbsp;</td>
                                     <td>&nbsp;</td>
                                     <td>Warranty </td>
-                                    <td style="text-align:right">£{{ number_format($order->warranty_amount, 2) }}</td>
+                                    <td style="text-align:right">Tk {{ number_format($order->warranty_amount, 2) }}</td>
                                 </tr>
                                 @endif
 
@@ -244,8 +246,38 @@
                                     <td></td>
                                     <td>&nbsp;</td>
                                     <td style="background-color: #f2f2f2">Total</td>
-                                    <td style="text-align:right; background-color: #f2f2f2">£{{ number_format($order->net_amount, 2) }}</td>
+                                    <td style="text-align:right; background-color: #f2f2f2">Tk {{ number_format($order->net_amount, 2) }}</td>
                                 </tr>
+                                @php
+
+                                @endphp
+                                @if ($cashPaid > 0)        
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td>&nbsp;</td>
+                                    <td>Cash Paid</td>
+                                    <td style="text-align:right;">Tk {{ number_format($cashPaid, 2) }}</td>
+                                </tr>
+                                @endif
+                                @if ($bankPaid > 0)   
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td>&nbsp;</td>
+                                    <td>Bank Paid</td>
+                                    <td style="text-align:right;">Tk {{ number_format($bankPaid, 2) }}</td>
+                                </tr>
+                                @endif
+                                @if ($order->due_amount > 0)                       
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td>&nbsp;</td>
+                                    <td style="background-color: #f2f2f2">Due</td>
+                                    <td style="text-align:right; background-color: #f2f2f2">Tk {{ number_format($order->due_amount, 2) }}</td>
+                                </tr>
+                                @endif
 
                             </tbody>
                             <tfoot style="border :0px solid #dee2e6 ; width: 100%; ">
@@ -256,7 +288,7 @@
 
                     <br><br>
 
-                    <div class="row overflow" style="position:fixed; bottom:0; width:100%;font-family: Arial, Helvetica;font-size: 12px; ">
+                    <div class="row overflow" style="position:fixed; bottom:0; width:100%;font-family: Arial, Helvetica;font-size: 12px; visibility: hidden">
                         <hr>
                         <table style="width:100%; border-collapse: collapse;">
                             <thead>

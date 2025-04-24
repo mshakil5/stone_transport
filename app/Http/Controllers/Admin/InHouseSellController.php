@@ -42,25 +42,16 @@ class InHouseSellController extends Controller
 
     public function getProductsByMotherVessel($id)
     {
-        $products = Purchase::select('id')
-            ->where('mother_vassels_id', $id)
-            ->with(['purchaseHistory.product:id,name,product_code'])
+        $products = StockHistory::where('mother_vassels_id', $id)
+            ->where('available_qty', '>', 0)
+            ->with('product:id,name,product_code')
             ->get()
-            ->pluck('purchaseHistory')
-            ->flatten()
             ->pluck('product')
             ->unique('id')
-            ->values()
-            ->map(function ($product) {
-                return [
-                    'id' => $product->id,
-                    'name' => $product->name,
-                    'product_code' => $product->product_code,
-                ];
-            });
+            ->values();
     
         return response()->json(['products' => $products]);
-    }    
+    } 
 
     public function getStock(Request $request)
     {
@@ -68,10 +59,10 @@ class InHouseSellController extends Controller
         $motherVesselId = $request->input('mother_vessel_id');
     
         if (!$productId || !$motherVesselId) {
-            return response()->json(['count' => 0, 'html' => '']);
+            return response()->json(['count' => 0, 'html' => '', 'warehouses' => []]);
         }
     
-        $stocks = StockHistory::with(['warehouse:id,name'])
+        $stocks = StockHistory::with('warehouse:id,name,location')
             ->select('warehouse_id', 'available_qty')
             ->where('product_id', $productId)
             ->where('mother_vassels_id', $motherVesselId)
@@ -81,19 +72,69 @@ class InHouseSellController extends Controller
             ->groupBy('warehouse_id');
     
         $html = '';
+        $warehouseOptions = [];
+    
         foreach ($stocks as $warehouseId => $entries) {
-            $warehouseName = $entries->first()->warehouse->name ?? 'N/A';
+            $warehouse = $entries->first()->warehouse;
+            $warehouseName = $warehouse->name ?? 'N/A';
             $qty = $entries->sum('available_qty');
-            $html .= '<div>' . $warehouseName . ' - ' . intval($qty) . ' pcs</div>';
+    
+            if ($qty > 0) {
+                $html .= '<div>' . $warehouseName . ' - ' . intval($qty) . ' pcs</div>';
+                $warehouseOptions[] = [
+                    'id' => $warehouseId,
+                    'name' => $warehouseName,
+                    'location' => $warehouse->location ?? ''
+                ];
+            }
         }
-
+    
         $totalQty = $stocks->flatten()->sum('available_qty');
-
+    
         return response()->json([
             'count' => $totalQty,
             'html' => $html,
+            'warehouses' => $warehouseOptions,
         ]);
+    }     
+
+    public function getMotherVesselsByWarehouse($warehouseId)
+    {
+        $vessels = StockHistory::where('warehouse_id', $warehouseId)
+            ->where('available_qty', '>', 0)
+            ->select('mother_vassels_id')
+            ->distinct()
+            ->with('motherVessel:id,name,code') // Include 'code'
+            ->get()
+            ->pluck('motherVessel')
+            ->unique('id')
+            ->values();
+    
+        return response()->json(['vessels' => $vessels]);
     }    
+
+    public function getProductsByWarehouseVessel($warehouseId, $motherVesselId)
+    {
+        $stocks = StockHistory::with('product:id,name,product_code')
+            ->select('product_id', 'warehouse_id', 'available_qty')
+            ->where('warehouse_id', $warehouseId)
+            ->where('mother_vassels_id', $motherVesselId)
+            ->where('available_qty', '>', 0)
+            ->latest()
+            ->get()
+            ->unique('product_id')
+            ->values();
+
+        $products = $stocks->map(function ($stock) {
+            return [
+                'id' => $stock->product_id,
+                'name' => $stock->product->name ?? 'Unnamed Product',
+                'code' => $stock->product->product_code ?? '',
+            ];
+        });
+
+        return response()->json(['products' => $products]);
+    }
 
     public function inHouseSellStore(Request $request)
     {

@@ -313,6 +313,10 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
     Route::get('/get-products-by-mv/{id}', [InHouseSellController::class, 'getProductsByMotherVessel']);
     Route::post('/get-product-stock', [InHouseSellController::class, 'getStock']);
 
+    Route::get('/get-mother-vessels-by-warehouse/{id}', [InHouseSellController::class, 'getMotherVesselsByWarehouse']);
+
+    Route::get('/get-products-by-warehouse-vessel/{warehouseId}/{motherVesselId}', [InHouseSellController::class, 'getProductsByWarehouseVessel']);
+
     //In House sell
     Route::get('/in-house-sell', [InHouseSellController::class, 'inHouseSell'])->name('inhousesell');
     Route::post('/in-house-sell', [InHouseSellController::class, 'inHouseSellStore'])->name('inhousesell');

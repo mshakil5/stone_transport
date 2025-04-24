@@ -71,6 +71,45 @@
                                     </div>
                                 </div>
 
+                                <div class="col-sm-12"><hr></div>
+
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="warehouse_id2">Choose Warehouse <span class="text-danger">*</span></label>
+                                        <select name="warehouse_id2" id="warehouse_id2" class="form-control select2">
+                                            <option value="">Select</option>
+                                            @foreach ($warehouses as $warehouse)
+                                              <option value="{{$warehouse->id}}">{{$warehouse->name}}-{{$warehouse->location}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="mother_vessel_id2">Choose Mother Vessel <span class="text-danger">*</span></label>
+                                        <select name="mother_vessel_id2" id="mother_vessel_id2" class="form-control select2">
+                                            <option value="">Select</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label for="product_id2">Choose Product <span class="text-danger">*</span></label>
+                                        <select class="form-control select2" id="product_id2" name="product_id2">
+                                            <option value="">Select...</option>             
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-1">
+                                    <label for="addProductBtn2">Action</label>
+                                    <div class="col-auto d-flex align-items-end">
+                                        <button type="button" id="addProductBtn2" class="btn btn-secondary">Add</button>
+                                    </div>
+                                </div>
+
                                 <div class="col-sm-4">
                                   <div class="form-group">
                                       <label for="mother_vessel_id">Choose Mother Vessel <span class="text-danger">*</span></label>
@@ -124,7 +163,7 @@
                                         </thead>
                                         <tbody>
                                         @foreach ($order->orderDetails as $detail)
-                                            <tr>
+                                            <tr data-product-id="{{ $detail->product_id }}">
                                                 <td>{{ $detail->product->name }}
                                                     <input type="hidden" name="product_id[]" value="{{ $detail->product_id }}">
                                                     <input type="hidden" name="stock_history_id[]" value="{{ $detail->stock_history_id  }}" data-stock-history-id="{{ $detail->stock_history_id  }}">
@@ -213,13 +252,22 @@
                                             </div>
 
                                             
-                                            <div class="row">
+                                            <div class="row mb-3">
                                                 <div class="col-sm-6 d-flex align-items-center justify-content-end">
                                                     <span>Bank Payment:</span>
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <input type="text" class="form-control" id="bank_payment" name="bank_payment" value="{{ $bankAmount ? $bankAmount->at_amount : '' }}">
                                                     <span class="errmsg text-danger"></span>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-sm-6 d-flex align-items-center justify-content-end">
+                                                    <span>Due Amount:</span>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <input type="text" class="form-control" id="due_amount" name="due_amount" value="{{ $order->due_amount ?? 0.00 }}" readonly>
                                                 </div>
                                             </div>
 
@@ -338,6 +386,62 @@
       });
   });
 
+  $('#warehouse_id2').change(function () {
+      let warehouseId = $(this).val();
+      if (!warehouseId) return;
+
+      $.ajax({
+          url: '/admin/get-mother-vessels-by-warehouse/' + warehouseId,
+          method: 'GET',
+          beforeSend: function () {
+              $('#mother_vessel_id2').html('<option>Loading...</option>');
+          },
+          success: function (res) {
+              let options = '<option value="">Select...</option>';
+              if (res.vessels && res.vessels.length > 0) {
+                  res.vessels.forEach(v => {
+                      let name = v.name ?? '';
+                      let code = v.code ?? '';
+                      options += `<option value="${v.id}">${name} - ${code}</option>`;
+                  });
+              } else {
+                  options = '<option value="">No vessels found</option>';
+              }
+              $('#mother_vessel_id2').html(options);
+          }
+      });
+  });
+
+  $('#warehouse_id2, #mother_vessel_id2').change(function () {
+      const warehouseId = $('#warehouse_id2').val();
+      const motherVesselId = $('#mother_vessel_id2').val();
+
+      if (!warehouseId || !motherVesselId) return;
+
+      $.ajax({
+          url: `/admin/get-products-by-warehouse-vessel/${warehouseId}/${motherVesselId}`,
+          method: 'GET',
+          beforeSend: function () {
+              $('#product_id2').html('<option>Loading...</option>');
+          },
+          success: function (res) {
+            // console.log(res);
+              let options = '<option value="">Select...</option>';
+              if (res.products?.length) {
+                  res.products.forEach(p => {
+                    options += `<option value="${p.id}" data-name="${p.name}">${p.name} - ${p.code}</option>`;
+                  });
+              } else {
+                  options = '<option value="">No products found</option>';
+              }
+              $('#product_id2').html(options);
+          },
+          error: function () {
+              $('#product_id2').html('<option value="">Error loading products</option>');
+          }
+      });
+  });
+
 </script>
 
 <script>
@@ -364,6 +468,9 @@
             var discount = parseFloat($('#discount').val()) || 0;
             var netAmount = itemTotalAmount - discount + parseFloat(totalVatAmount);
             $('#net_amount').val(netAmount.toFixed(2) || '0.00');
+
+            var dueAmount = netAmount - ((parseFloat($('#cash_payment').val()) || 0) + (parseFloat($('#bank_payment').val()) || 0));
+            $('#due_amount').val(dueAmount.toFixed(2) || '0.00');
         }
 
         $('#addProductBtn').click(function () {
@@ -394,6 +501,15 @@
                 swal({
                     text: 'Please select a product.',
                     icon: "error",
+                    button: "OK"
+                });
+                return;
+            }
+
+            if ($(`#productTable tbody tr[data-product-id="${productId}"]`).length) {
+                swal({
+                    text: 'This product is already added.',
+                    icon: "warning",
                     button: "OK"
                 });
                 return;
@@ -466,6 +582,117 @@
             });
         });
 
+        $('#addProductBtn2').click(function () {
+            var warehouseId = $('#warehouse_id2').val();
+            var motherVesselId = $('#mother_vessel_id2').val();
+            var selectedProduct = $('#product_id2 option:selected');
+            var productId = selectedProduct.val();
+            var productName = selectedProduct.data('name');
+
+            if (!warehouseId) {
+                swal({
+                    text: 'Please select a warehouse.',
+                    icon: "error",
+                    button: "OK"
+                });
+                return;
+            }
+            if (!motherVesselId) {
+                swal({
+                    text: 'Please select a mother vessel.',
+                    icon: "error",
+                    button: "OK"
+                });
+                return;
+            }
+
+            if (!productId) {
+                swal({
+                    text: 'Please select a product.',
+                    icon: "error",
+                    button: "OK"
+                });
+                return;
+            }
+
+            if ($(`#productTable tbody tr[data-product-id="${productId}"]`).length) {
+                swal({
+                    text: 'This product is already added.',
+                    icon: "warning",
+                    button: "OK"
+                });
+                return;
+            }
+
+            $.ajax({
+                url: '/admin/get-stock-history',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    warehouse_id: warehouseId,
+                    product_id: productId,
+                    mother_vessel_id: motherVesselId
+                },
+                success: function (response) {
+                  // console.log(response);
+                  if (response.stock) {
+                      var stock = response.stock;
+
+                      var stockHistoryId = stock.id;
+                      var sellingPrice = !isNaN(parseFloat(stock.selling_price)) ? parseFloat(stock.selling_price).toFixed(2) : '0.00';
+                      var unitCost = !isNaN(parseFloat(stock.unit_cost)) ? parseFloat(stock.unit_cost).toFixed(2) : '0.00';
+                      var availableQty = stock.available_qty;
+
+                      if (unitCost > 0.00) {
+                          productName = productName + `<br> <span class="bg-warning p-1">Unit Cost: ${unitCost}</span>`;
+                      }
+
+                      var productRow = `<tr data-product-id="${productId}">
+                          <td>${productName}
+                              <input type="hidden" name="product_id[]" value="${productId}">
+                              <input type="hidden" name="stock_history_id[]" value="${stockHistoryId}" data-stock-history-id="${stockHistoryId}">
+                              <input type="hidden" name="mother_vassel_id[]" value="${motherVesselId}">
+                          </td>
+                          <td><input type="number" class="form-control quantity" name="quantity[]" value="1" min="1" max="${availableQty}" data-max-quantity="${availableQty}" /></td>
+                          <td><input type="number" class="form-control price_per_unit" name="price_per_unit[]" value="${sellingPrice}" step="0.01" /></td>
+                          <td class="total_price">${sellingPrice}</td>
+                          <td>
+                            <button type="button" class="btn btn-sm btn-danger remove-product" title="Remove">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                          </td>
+                      </tr>`;
+
+                      $('#productTable tbody').append(productRow);
+
+                      $('#product_id2').val(null).trigger('change');
+                      $('#mother_vessel_id2').val(null).trigger('change');
+                      $('#warehouse_id2').val(null).trigger('change');
+                      $('#stock_history').val('').prop('disabled', true);
+                      $('#quantity').val('');
+                      $('#price_per_unit').val('');
+
+                      updateSummary();
+                  } else {
+                      swal({
+                          text: 'No stock history found for the selected product in this warehouse.',
+                          icon: "warning",
+                          button: "OK"
+                      });
+                  }
+                },
+                error: function () {
+                    swal({
+                        text: 'An error occurred while fetching stock history.',
+                        icon: "error",
+                        button: "OK"
+                    });
+                }
+            });
+        });
+
         $(document).on('click', '.remove-product', function() {
             $(this).closest('tr').remove();
             updateSummary();
@@ -478,7 +705,7 @@
             }
         });
 
-        $(document).on('input', '#productTable input.quantity, #productTable input.price_per_unit, #vat_percent, #discount', function () {
+        $(document).on('input', '#productTable input.quantity, #productTable input.price_per_unit, #vat_percent, #discount, #cash_payment, #bank_payment', function () {
             updateSummary();
         });
 

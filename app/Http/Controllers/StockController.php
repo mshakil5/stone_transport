@@ -706,7 +706,7 @@ class StockController extends Controller
                         if ($latestHistory) {
                             $latestHistory->quantity = max($latestHistory->quantity + $qtyDiff, 0);
                             $latestHistory->available_qty = max($latestHistory->available_qty + $qtyDiff, 0);
-                            $latestHistory->unit_cost = $unitCost;
+                            $latestHistory->unit_cost = $unitCost + $product['unit_price'];
                             $latestHistory->lighter_vassels_id = $product['lighter_vassel_id'] ?? null;
                             $latestHistory->mother_vassels_id = $request->mother_vassels_id ?? null;
                             $latestHistory->updated_by = Auth::id();
@@ -730,7 +730,7 @@ class StockController extends Controller
                         $newStockHistory->quantity = $newQty;
                         $newStockHistory->available_qty = $newQty;
                         $newStockHistory->created_by = Auth::id();
-                        $newStockHistory->unit_cost = $unitCost;
+                        $newStockHistory->unit_cost = $unitCost + $product['unit_price'];
                         $newStockHistory->save();
                     }
         
@@ -800,7 +800,7 @@ class StockController extends Controller
                         $latestHistory->updated_by = Auth::id();
                         $latestHistory->lighter_vassels_id = $product['lighter_vassel_id'] ?? null;
                         $latestHistory->mother_vassels_id = $request->mother_vassels_id ?? null;
-                        $latestHistory->unit_cost = $unitCost;
+                        $latestHistory->unit_cost = $unitCost + $product['unit_price'];
                         $latestHistory->save();
                     }
                 } else {
@@ -819,7 +819,7 @@ class StockController extends Controller
                     $newStockHistory->quantity = $newQty;
                     $newStockHistory->available_qty = $newQty;
                     $newStockHistory->created_by = Auth::id();
-                    $newStockHistory->unit_cost = $unitCost;
+                    $newStockHistory->unit_cost = $unitCost + $product['unit_price'];
                     $newStockHistory->lighter_vassels_id = $product['lighter_vassel_id'] ?? null;
                     $newStockHistory->mother_vassels_id = $request->mother_vassels_id ?? null;
                     $newStockHistory->save();
@@ -1109,6 +1109,7 @@ class StockController extends Controller
         $request->validate([
             'consignment_number' => 'required|string|max:255',
             'mother_vassels_id' => 'required',
+            'supplier_id' => 'required',
             'advance_date' => 'required',
             'purchase_type' => 'required|string|max:50',
             'advance_amount' => 'nullable|numeric|min:0|required_if:purchase_type,Due',
@@ -1118,6 +1119,7 @@ class StockController extends Controller
         $purchase = new Purchase();
         $purchase->consignment_number = $request->consignment_number;
         $purchase->advance_date = $request->advance_date;
+        $purchase->supplier_id = $request->supplier_id;
         $purchase->mother_vassels_id = $request->mother_vassels_id;
         $purchase->purchase_type = $request->purchase_type;
         $purchase->advance_amount = $request->advance_amount;

@@ -48,7 +48,7 @@
                                               Add New
                                           </span>
                                         </label>
-                                        <select class="form-control select2" id="supplier_id" name="supplier_id">
+                                        <select class="form-control select2" id="supplier_id" name="supplier_id" required>
                                             <option value="">Select...</option>
                                             @foreach($suppliers as $supplier)
                                                 <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>

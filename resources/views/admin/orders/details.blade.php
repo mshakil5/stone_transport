@@ -59,7 +59,7 @@
               <div class="col-sm-4 invoice-col">
                 <h4 class="mb-3">Order Information</h4>
                 <strong>Invoice:</strong> {{ $order->invoice }} <br>
-                <strong>Purchase Date:</strong> {{ \Carbon\Carbon::parse($order->purchase_date)->format('d-m-Y') }} <br>
+                <strong>Date:</strong> {{ \Carbon\Carbon::parse($order->purchase_date)->format('d-m-Y') }} <br>
                 {{-- <strong>Payment Method:</strong> 
                     @if($order->payment_method === 'paypal')
                         PayPal
@@ -104,8 +104,8 @@
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>Product Image</th>
-                            <th>Product Name</th>
+                            {{-- <th>Product Image</th> --}}
+                            <th>Product</th>
                             <th>Quantity</th>
                             <th>Price per Unit</th>
                             <th>Total Price</th>
@@ -114,7 +114,7 @@
                     <tbody>
                         @foreach($order->orderDetails as $orderDetail)
                             <tr>
-                                <td>
+                                {{-- <td>
                                     @if($orderDetail->product)
                                         <img src="{{ asset('/images/products/' . $orderDetail->product->feature_image) }}" alt="{{ $orderDetail->product->name }}" style="width: 100px; height: auto;">
                                     @elseif($order->bundleProduct)
@@ -122,14 +122,11 @@
                                     @else
                                         N/A
                                     @endif
-                                </td>
+                                </td> --}}
                                 <td>
                                     @if($orderDetail->product)
-                                        {{ $orderDetail->product->name ?? 'N/A' }}
-                                    @elseif($order->bundleProduct)
-                                        {{ $order->bundleProduct->name }}
-                                    @else
-                                        N/A
+                                    {{ $orderDetail->product ? $orderDetail->product->name . ' - ' . $orderDetail->product->product_code : 'N/A' }}
+
                                     @endif
                                 </td>
 
@@ -215,22 +212,40 @@
                       <th style="width:50%">Subtotal:</th>
                       <td>{{ number_format($order->subtotal_amount, 2) }}</td>
                     </tr>
+                    @if ($order->vat_amount > 0)       
                     <tr>
                       <th>Vat Amount</th>
                       <td> {{ $order->vat_amount }}</td>
                     </tr>
+                    @endif
+                    @if ($order->shipping_amount > 0)  
                     <tr>
                       <th>Shipping:</th>
                       <td>{{ number_format($order->shipping_amount, 2) }}</td>
                     </tr>
+                    @endif
+                    @if ($order->discount_amount > 0)  
                     <tr>
                       <th>Discount:</th>
                       <td>{{ number_format($order->discount_amount, 2) }}</td>
                     </tr>
+                    @endif
                     <tr>
                       <th>Total:</th>
                       <td>{{ number_format($order->net_amount, 2) }}</td>
                     </tr>
+                    @if ($order->paid_amount > 0)  
+                    <tr>
+                      <th>Paid:</th>
+                      <td>{{ number_format($order->paid_amount, 2) }}</td>
+                    </tr>
+                    @endif
+                    @if ($order->due_amount > 0)  
+                    <tr>
+                      <th>Due:</th>
+                      <td>{{ number_format($order->due_amount, 2) }}</td>
+                    </tr>
+                    @endif
                   </table>
 
 
