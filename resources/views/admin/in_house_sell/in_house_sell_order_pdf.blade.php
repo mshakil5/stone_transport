@@ -256,7 +256,7 @@
                                     <td></td>
                                     <td></td>
                                     <td>&nbsp;</td>
-                                    <td>Cash Paid</td>
+                                    <td>Cash Received</td>
                                     <td style="text-align:right;">Tk {{ number_format($cashPaid, 2) }}</td>
                                 </tr>
                                 @endif
@@ -265,7 +265,7 @@
                                     <td></td>
                                     <td></td>
                                     <td>&nbsp;</td>
-                                    <td>Bank Paid</td>
+                                    <td>Bank Received</td>
                                     <td style="text-align:right;">Tk {{ number_format($bankPaid, 2) }}</td>
                                 </tr>
                                 @endif
@@ -284,6 +284,17 @@
 
                             </tfoot>
                         </table>
+
+                        @php
+                            use NumberToWords\NumberToWords;
+
+                            $numberToWords = new NumberToWords();
+                            $numberTransformer = $numberToWords->getNumberTransformer('en');
+                            $amountInWords = ucfirst($numberTransformer->toWords(round($order->net_amount))) . ' taka only.';
+                        @endphp
+
+                    <p style="text-align:left; font-size:14px; font-weight:bold; margin-left:10px"><strong>In Words:</strong> {{ $amountInWords }}</p>
+
                     </div>
 
                     <br><br>

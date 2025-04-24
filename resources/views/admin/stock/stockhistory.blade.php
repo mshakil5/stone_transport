@@ -186,6 +186,7 @@
         }
 
         var table = $('#stock-table').DataTable({
+            dom: 'Bfrtip',
             processing: true,
             serverSide: true,
             ajax: {

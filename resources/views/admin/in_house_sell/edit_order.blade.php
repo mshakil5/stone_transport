@@ -243,7 +243,7 @@
                                             
                                             <div class="row mb-3">
                                                 <div class="col-sm-6 d-flex align-items-center justify-content-end">
-                                                    <span>Cash Payment:</span>
+                                                    <span>Cash Received:</span>
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <input type="number" class="form-control" id="cash_payment" name="cash_payment" value="{{ $cashAmount ? $cashAmount->at_amount : '' }}">
@@ -254,7 +254,7 @@
                                             
                                             <div class="row mb-3">
                                                 <div class="col-sm-6 d-flex align-items-center justify-content-end">
-                                                    <span>Bank Payment:</span>
+                                                    <span>Bank Received:</span>
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <input type="text" class="form-control" id="bank_payment" name="bank_payment" value="{{ $bankAmount ? $bankAmount->at_amount : '' }}">
