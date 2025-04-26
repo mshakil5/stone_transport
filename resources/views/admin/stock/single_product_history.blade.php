@@ -159,7 +159,7 @@
                                     @foreach ($salesHistories as $key => $data)
                                         <tr>
                                             <td>{{ date('d-m-Y', strtotime($data->created_at))}}</td>
-                                            <td>{{ $data->order->user->name}} 
+                                            <td>{{ $data->order->user->name ?? ''}} 
                                                 <a href="{{route('getallorder', $data->order->user->id )}}" class="btn btn-sm btn-success">
                                                     <i class="fas fa-arrow-right"></i>
                                                 </a>
