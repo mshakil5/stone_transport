@@ -160,9 +160,11 @@
                                         <tr>
                                             <td>{{ date('d-m-Y', strtotime($data->created_at))}}</td>
                                             <td>{{ $data->order->user->name ?? ''}} 
+                                              @if(isset($data->order->user))
                                                 <a href="{{route('getallorder', $data->order->user->id )}}" class="btn btn-sm btn-success">
                                                     <i class="fas fa-arrow-right"></i>
                                                 </a>
+                                              @endif
                                             </td>
                                             <td>{{ $data->warehouse_id ? $data->warehouse->name : " "}}</td>      
                                             <td>{{ $data->quantity}}</td>
