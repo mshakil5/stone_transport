@@ -8,7 +8,7 @@
             </a>
         </li>
 
-        <a href="{{ route('toggle.sidebar') }}" class="btn btn-info my-2 d-none">
+        <a href="{{ route('toggle.sidebar') }}" class="btn btn-info my-2">
             Switch to Accounting <i class="fas fa-arrow-right"></i>
         </a>
 

@@ -54,29 +54,29 @@ class ChartOfAccountController extends Controller
         if (empty($request->sub_account_head)) {
             return response()->json(['status' => 303, 'message' => 'Sub Account Field Is Required..!']);
         }
-        if (empty($request->contingent)) {
-            return response()->json(['status' => 303, 'message' => 'Contigent Field Is Required..!']);
-        }
-        if (empty($request->serial)) {
-            return response()->json(['status' => 303, 'message' => 'Serial Field Is Required..!']);
-        }
+        // if (empty($request->contingent)) {
+        //     return response()->json(['status' => 303, 'message' => 'Contigent Field Is Required..!']);
+        // }
+        // if (empty($request->serial)) {
+        //     return response()->json(['status' => 303, 'message' => 'Serial Field Is Required..!']);
+        // }
 
         $existingAccount = ChartOfAccount::where('account_name', $request->account_name)
-                                     ->where('branch_id', Auth::user()->branch_id)
+                                    //  ->where('branch_id', Auth::user()->branch_id)
                                      ->first();
     
         if ($existingAccount) {
             return response()->json(['status' => 303, 'message' => 'Account Name already exists for this branch..!']);
         }
 
-        $existingSerial = ChartOfAccount::where('account_head', $request->account_head)
-                                    ->where('sub_account_head', $request->sub_account_head)
-                                    ->where('serial', $request->serial)
-                                    ->first();
+        // $existingSerial = ChartOfAccount::where('account_head', $request->account_head)
+        //                             ->where('sub_account_head', $request->sub_account_head)
+        //                             ->where('serial', $request->serial)
+        //                             ->first();
 
-        if ($existingSerial) {
-            return response()->json(['status' => 303, 'message' => 'This serial number already exists for this account head and sub account head..!']);
-        }
+        // if ($existingSerial) {
+        //     return response()->json(['status' => 303, 'message' => 'This serial number already exists for this account head and sub account head..!']);
+        // }
 
         $chartOfAccount = new ChartOfAccount();
         $chartOfAccount->account_head = $request->account_head;
@@ -87,11 +87,11 @@ class ChartOfAccountController extends Controller
         $chartOfAccount->serial = $request->serial;
         $chartOfAccount->description = $request->description;
         $chartOfAccount->status = 1;
-        $chartOfAccount->branch_id = Auth::user()->branch_id;
+        // $chartOfAccount->branch_id = Auth::user()->branch_id;
         $chartOfAccount->created_by = Auth::user()->id;
         $chartOfAccount->save();
 
-        return response()->json(['status' => 200, 'message' => 'Created Successfully']);
+        return response()->json(['status' => 200, 'message' => 'Created Successfully', 'data' => $chartOfAccount]);
     }
 
     public function edit($id)
@@ -122,12 +122,12 @@ class ChartOfAccountController extends Controller
         if (empty($request->sub_account_head)) {
             return response()->json(['status' => 303, 'message' => 'Sub Account Field Is Required..!']);
         }
-        if (empty($request->contingent)) {
-            return response()->json(['status' => 303, 'message' => 'Contigent Field Is Required..!']);
-        }
-        if (empty($request->serial)) {
-            return response()->json(['status' => 303, 'message' => 'Serial Field Is Required..!']);
-        }
+        // if (empty($request->contingent)) {
+        //     return response()->json(['status' => 303, 'message' => 'Contigent Field Is Required..!']);
+        // }
+        // if (empty($request->serial)) {
+        //     return response()->json(['status' => 303, 'message' => 'Serial Field Is Required..!']);
+        // }
 
         $chartOfAccount = ChartOfAccount::find($id);
 

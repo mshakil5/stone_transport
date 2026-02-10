@@ -15,11 +15,7 @@ class EquityHolderController extends Controller
     {
         if($request->ajax()){
             $equityHolders = EquityHolder::with('branch')->latest()->get();
-            return DataTables::of($equityHolders)
-                ->addColumn('branch_name', function ($equityHolder) {
-                    return $equityHolder->branch->name;
-                })
-                ->make(true);
+            return DataTables::of($equityHolders)->make(true);
         }
         return view('admin.equity_holders.index');
     }
