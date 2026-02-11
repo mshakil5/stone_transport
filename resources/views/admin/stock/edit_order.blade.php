@@ -8,7 +8,7 @@
             <div class="col-md-12">
                 <div class="card card-secondary">
                     <div class="card-header">
-                        <h3 class="card-title" id="cardTitle">Create Order</h3>
+                        <h3 class="card-title" id="cardTitle">Edit Order</h3>
                     </div>
                     <div class="card-body">
                         <form id="createThisForm">
@@ -17,13 +17,13 @@
                                 <div class="col-sm-3">
                                     <div class="form-group">
                                         <label for="advance_date">Advance Date <span class="text-danger">*</span></label>
-                                        <input type="date" class="form-control" id="advance_date" name="advance_date" required value="{{ date('Y-m-d') }}">
+                                        <input type="date" class="form-control" id="advance_date" name="advance_date" required value="{{ $purchase->advance_date }}">
                                     </div>
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="form-group">
                                         <label for="consignment_number">Consignment Number <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" id="consignment_number" name="consignment_number" required>
+                                        <input type="text" class="form-control" id="consignment_number" name="consignment_number" required value="{{ $purchase->consignment_number }}">
                                     </div>
                                 </div>
                                 <div class="col-sm-3">
@@ -36,7 +36,7 @@
                                         <select class="form-control select2" id="mother_vassels_id" name="mother_vassels_id" required>
                                             <option value="">Select...</option>
                                             @foreach($motherVassels as $mother_vassel)
-                                                <option value="{{ $mother_vassel->id }}">{{ $mother_vassel->name }} - {{ $mother_vassel->code }}</option>
+                                                <option value="{{ $mother_vassel->id }}" @selected($purchase->mother_vassels_id == $mother_vassel->id)>{{ $mother_vassel->name }} - {{ $mother_vassel->code }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -51,7 +51,7 @@
                                         <select class="form-control select2" id="supplier_id" name="supplier_id" required>
                                             <option value="">Select...</option>
                                             @foreach($suppliers as $supplier)
-                                                <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
+                                                <option value="{{ $supplier->id }}" @selected($purchase->supplier_id == $supplier->id)>{{ $supplier->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -61,28 +61,28 @@
                                         <label for="purchase_type">Payment Type <span class="text-danger">*</span></label>
                                         <select class="form-control" id="purchase_type" name="purchase_type" required>
                                             <option value="">Select...</option>
-                                            <option value="Cash">Cash</option>
-                                            <option value="Bank">Bank</option>
-                                            <option value="Due">Due</option>
+                                            <option value="Cash" @selected($purchase->purchase_type == 'Cash')>Cash</option>
+                                            <option value="Bank" @selected($purchase->purchase_type == 'Bank')>Bank</option>
+                                            <option value="Due" @selected($purchase->purchase_type == 'Due')>Due</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="form-group">
                                         <label for="advance_amount">Advance Amount</label>
-                                        <input type="number" step="0.01" class="form-control" id="advance_amount" name="advance_amount" placeholder="">
+                                        <input type="number" step="0.01" class="form-control" id="advance_amount" name="advance_amount" value="{{ $purchase->advance_amount ?? '' }}">
                                     </div>
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="form-group">
                                         <label for="advance_quantity">Advance Quantity</label>
-                                        <input type="number" class="form-control" id="advance_quantity" name="advance_quantity" min="1">
+                                        <input type="number" class="form-control" id="advance_quantity" name="advance_quantity" min="1" value="{{ $purchase->advance_quantity ?? '' }}">
                                     </div>
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="form-group">
                                         <label for="cost_per_unit">Cost Per Unit</label>
-                                        <input type="number" class="form-control" id="cost_per_unit" name="cost_per_unit" min="1">
+                                        <input type="number" class="form-control" id="cost_per_unit" name="cost_per_unit" min="1" value="{{ $purchase->cost_per_unit ?? '' }}">
                                     </div>
                                 </div>
 
@@ -143,6 +143,30 @@
 
                                     <span class="badge badge-success" style="cursor: pointer;" data-toggle="modal" data-target="#chartModal">Add New Expense</span>
                                     <div id="expense-container">
+                                        @forelse($purchaseExpenses as $expense)
+                                        <div class="row mt-1 expense-row" id="row-{{ $expense->id }}">
+                                            <div class="col-sm-12 d-flex align-items-center">
+                                                <select class="form-control expense-type" style="width: 200px;">
+                                                    <option value="">Select Expense</option>
+                                                    @foreach($expenses as $exp)
+                                                        <option value="{{ $exp->id }}" @selected($expense->chart_of_account_id == $exp->id)>{{ $exp->account_name }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <select class="form-control payment-type" style="width: 100px; margin-left: 10px;">
+                                                    <option value="Bank" @selected($expense->payment_type == 'Bank')>Bank</option>
+                                                    <option value="Cash" @selected($expense->payment_type == 'Cash')>Cash</option>
+                                                </select>
+                                                <input type="number" class="form-control expense-amount" style="width: 100px; margin-left: 10px;" min="0" value="{{ $expense->amount }}">                              
+                                                <input type="text" class="form-control expense-description" style="width: 150px; margin-left: 10px;" value="{{ $expense->description ?? '' }}">
+                                                <input type="text" class="form-control expense-note" style="width: 150px; margin-left: 10px;" value="{{ $expense->note ?? '' }}">
+                                                @if ($loop->first)
+                                                <button type="button" class="btn btn-success add-expense btn-sm" style="margin-left: 10px;"><i class="fas fa-plus"></i></button>
+                                                @else
+                                                <button type="button" class="btn btn-danger remove-expense btn-sm" style="margin-left: 10px;"><i class="fas fa-trash"></i></button>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        @empty
                                         <div class="row mt-1 expense-row" id="row-default">
                                             <div class="col-sm-12 d-flex align-items-center">
                                                 <select class="form-control expense-type" style="width: 200px;" >
@@ -161,11 +185,13 @@
                                                 <button type="button" class="btn btn-success add-expense btn-sm" style="margin-left: 10px;"><i class="fas fa-plus"></i></button>
                                             </div>
                                         </div>
+                                        @endforelse
                                     </div>
                                 </div>
                             </div>
                             <div class="card-footer">
-                                <button type="button" id="addBtn" class="btn btn-secondary" value="Create"><i class="fas fa-plus"></i> Create</button>
+                                <button type="button" id="addBtn" class="btn btn-secondary" value="Update"><i class="fas fa-edit"></i> Update</button>
+                                <a href="{{ route('orderList') }}" class="btn btn-secondary">Back</a>
                             </div>
                         </form>
                     </div>
@@ -229,7 +255,6 @@
 
 <script>
     $(document).ready(function() {
-        const addedExpenses = new Set();
 
         function generateDropdownOptions() {
             let options = '';
@@ -420,11 +445,9 @@
         });
 
         $('#addBtn').on('click', function(e) {
-            console.log('Button clicked');
             e.preventDefault();
             
             if (!$('#consignment_number').val()) {
-                console.log('Consignment Number missing');
                 swal("Error!", "Consignment Number is required!", "error");
                 return;
             }
@@ -475,11 +498,11 @@
             formData.expenses = expenses;
 
             $.ajax({
-                url: '{{ route("storeOrder") }}',
+                url: '{{ route("updateOrder", $purchase->id) }}',
                 type: 'POST',
                 data: formData,
                 success: function(response) {
-                    swal("Success!", "Order created successfully!", "success").then(() => {
+                    swal("Success!", "Order updated successfully!", "success").then(() => {
                         window.location.href = "{{ route('orderList') }}";
                     });
                 },

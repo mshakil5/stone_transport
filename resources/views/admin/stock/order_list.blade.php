@@ -59,12 +59,18 @@
                                         <a class="btn btn-sm btn-warning mb-2" onclick="showViewPurchaseModal({{ $purchase->id }})">View Details
                                         </a>
                                         @if(in_array('9', json_decode(auth()->user()->role->permission)))
-                                            <a href="{{ route('purchase.edit', $purchase->id) }}" class="btn btn-sm @if($purchase->invoice) btn-info @else btn-success @endif"></i> 
-                                              @if($purchase->invoice)
-                                                Update Stock
-                                              @else 
-                                                Add To Stock
-                                              @endif
+                                            @if(!$purchase->invoice)
+                                                <a href="{{ route('editOrder', $purchase->id) }}" class="btn btn-sm btn-warning">
+                                                    <i class="fas fa-edit"></i> Edit
+                                                </a>
+                                            @endif
+                                            <a href="{{ route('purchase.edit', $purchase->id) }}" class="btn btn-sm @if($purchase->invoice) btn-info @else btn-success @endif">
+                                                <i class="fas fa-plus"></i>
+                                                @if($purchase->invoice)
+                                                    Update Stock
+                                                @else
+                                                    Add To Stock
+                                                @endif
                                             </a>
                                         @endif
                                     </td>

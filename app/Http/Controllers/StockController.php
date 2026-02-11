@@ -25,6 +25,7 @@ use Carbon\Carbon;
 use App\Models\MotherVassel;
 use App\Models\LighterVassel;
 use App\Models\Ghat;
+use App\Models\ChartOfAccount;
 
 class StockController extends Controller
 {
@@ -558,7 +559,10 @@ class StockController extends Controller
         $motherVassels = MotherVassel::select('id', 'name','code')->orderby('id','DESC')->get();
         $lighterVassels = LighterVassel::select('id', 'name','code')->orderby('id','DESC')->get();
         $ghats = Ghat::select('id', 'name','code')->orderby('id','DESC')->get();
-        return view('admin.stock.edit_purchase_history', compact('purchase', 'products', 'suppliers', 'warehouses', 'cashAmount', 'bankAmount', 'colors', 'sizes','motherVassels','lighterVassels','ghats'));
+        $purchaseExpenses = Transaction::where('purchase_id', $purchase->id)
+        ->where('table_type', 'Expenses')
+        ->get();
+        return view('admin.stock.edit_purchase_history', compact('purchase', 'products', 'suppliers', 'warehouses', 'cashAmount', 'bankAmount', 'colors', 'sizes','motherVassels','lighterVassels','ghats','purchaseExpenses'));
     }
 
     public function stockUpdate(Request $request)
@@ -1096,12 +1100,14 @@ class StockController extends Controller
     public function createOrder()
     {
         if (!(in_array('7', json_decode(auth()->user()->role->permission)))) {
-          return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
+            return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
         }
 
         $motherVassels = MotherVassel::select('id', 'name','code')->orderby('id','DESC')->get();
         $suppliers = Supplier::orderby('id','DESC')->where('status', 1)->get();
-        return view('admin.stock.create_order', compact('motherVassels', 'suppliers'));
+        $expenses = ChartOfAccount::where('account_head', 'Expenses')->get();
+        
+        return view('admin.stock.create_order', compact('motherVassels', 'suppliers', 'expenses'));
     }
 
     public function storeOrder(Request $request)
@@ -1114,39 +1120,197 @@ class StockController extends Controller
             'purchase_type' => 'required|string|max:50',
             'advance_amount' => 'nullable|numeric|min:0|required_if:purchase_type,Due',
             'advance_quantity' => 'nullable|integer|min:1|required_if:purchase_type,Due',
+            'expenses' => 'nullable|array',
+            'expenses.*.expense_id' => 'required|numeric',
+            'expenses.*.payment_type' => 'nullable|string',
+            'expenses.*.amount' => 'required|numeric',
+            'expenses.*.description' => 'nullable|string',
+            'expenses.*.note' => 'nullable|string',
         ]);
 
-        $purchase = new Purchase();
-        $purchase->consignment_number = $request->consignment_number;
-        $purchase->advance_date = $request->advance_date;
-        $purchase->supplier_id = $request->supplier_id;
-        $purchase->mother_vassels_id = $request->mother_vassels_id;
-        $purchase->purchase_type = $request->purchase_type;
-        $purchase->advance_amount = $request->advance_amount;
-        $purchase->advance_quantity = $request->advance_quantity;
-        $purchase->cost_per_unit = $request->cost_per_unit;
-        $purchase->created_by = auth()->user()->id;
-        $purchase->save();
+        DB::beginTransaction();
 
-        $transaction = new Transaction();
-        $transaction->date = $request->advance_date;
-        $transaction->purchase_id = $purchase->id;
-        $transaction->table_type = "Purchase";
-        if($request->purchase_type == "Due"){
-          $transaction->transaction_type = "Due";
-        } else {
-          $transaction->transaction_type = "Advance";
+        try {
+            $purchase = new Purchase();
+            $purchase->consignment_number = $request->consignment_number;
+            $purchase->advance_date = $request->advance_date;
+            $purchase->supplier_id = $request->supplier_id;
+            $purchase->mother_vassels_id = $request->mother_vassels_id;
+            $purchase->purchase_type = $request->purchase_type;
+            $purchase->advance_amount = $request->advance_amount;
+            $purchase->advance_quantity = $request->advance_quantity;
+            $purchase->cost_per_unit = $request->cost_per_unit;
+            $purchase->created_by = auth()->user()->id;
+            $purchase->save();
+
+            $transaction = new Transaction();
+            $transaction->date = $request->advance_date;
+            $transaction->purchase_id = $purchase->id;
+            $transaction->table_type = "Purchase";
+            $transaction->supplier_id = $request->supplier_id;
+            if($request->purchase_type == "Due"){
+                $transaction->transaction_type = "Due";
+            } else {
+                $transaction->transaction_type = "Advance";
+            }
+
+            $transaction->payment_type = $request->purchase_type;
+            $transaction->amount = $request->advance_amount;
+            $transaction->at_amount = $request->advance_amount;
+            $transaction->created_by = auth()->id();
+            $transaction->save();
+
+            $transaction->tran_id = 'PR' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
+            $transaction->save();
+
+            $expenses = $request->input('expenses', []);
+
+            foreach ($expenses as $expense) {
+                $transactionExpense = new Transaction();
+                $transactionExpense->date = $request->advance_date;
+                $transactionExpense->table_type = 'Expenses';
+                $transactionExpense->purchase_id = $purchase->id;
+                $transactionExpense->supplier_id = $request->supplier_id;
+                $transactionExpense->amount = $expense['amount'];
+                $transactionExpense->at_amount = $expense['amount'];
+                $transactionExpense->payment_type = $expense['payment_type'];
+                $transactionExpense->chart_of_account_id = $expense['expense_id'];
+                $transactionExpense->expense_id = $expense['expense_id'];
+                $transactionExpense->description = $expense['description'];
+                $transactionExpense->note = $expense['note'];
+                $transactionExpense->transaction_type = 'Current';
+                $transactionExpense->created_by = auth()->id();
+                $transactionExpense->save();
+
+                $transactionExpense->tran_id = 'EX' . date('ymd') . str_pad($transactionExpense->id, 4, '0', STR_PAD_LEFT);
+                $transactionExpense->save();
+            }
+
+            DB::commit();
+
+            return response()->json(['message' => 'Order created successfully!'], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'Something went wrong!', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function editOrder($id)
+    {
+        if (!(in_array('7', json_decode(auth()->user()->role->permission)))) {
+            return redirect()->back()->with('error', 'Sorry, You do not have permission to access that page.');
         }
 
-        $transaction->payment_type = $request->purchase_type;
-        $transaction->amount = $request->advance_amount;
-        $transaction->at_amount = $request->advance_amount;
-        $transaction->save();
+        $purchase = Purchase::findOrFail($id);
+        $motherVassels = MotherVassel::select('id', 'name','code')->orderby('id','DESC')->get();
+        $suppliers = Supplier::orderby('id','DESC')->where('status', 1)->get();
+        $expenses = ChartOfAccount::where('account_head', 'Expenses')->get();
+        $purchaseExpenses = Transaction::where('purchase_id', $id)
+            ->where('table_type', 'Expenses')
+            ->get();
+        
+        return view('admin.stock.edit_order', compact('purchase', 'motherVassels', 'suppliers', 'expenses', 'purchaseExpenses'));
+    }
 
-        $transaction->tran_id = 'PR' . date('ymd') . str_pad($transaction->id, 4, '0', STR_PAD_LEFT);
-        $transaction->save();
+    public function updateOrder(Request $request, $id)
+    {
+        $request->validate([
+            'consignment_number' => 'required|string|max:255',
+            'mother_vassels_id' => 'required',
+            'supplier_id' => 'required',
+            'advance_date' => 'required',
+            'purchase_type' => 'required|string|max:50',
+            'advance_amount' => 'nullable|numeric|min:0',
+            'advance_quantity' => 'nullable|integer|min:1',
+            'expenses' => 'nullable|array',
+            'expenses.*.expense_id' => 'required|numeric',
+            'expenses.*.payment_type' => 'nullable|string',
+            'expenses.*.amount' => 'required|numeric',
+            'expenses.*.description' => 'nullable|string',
+            'expenses.*.note' => 'nullable|string',
+        ]);
 
-        return response()->json(['message' => 'Order created successfully!'], 201);
+        DB::beginTransaction();
+
+        try {
+            $purchase = Purchase::findOrFail($id);
+            
+            $purchase->update([
+                'consignment_number' => $request->consignment_number,
+                'advance_date' => $request->advance_date,
+                'supplier_id' => $request->supplier_id,
+                'mother_vassels_id' => $request->mother_vassels_id,
+                'purchase_type' => $request->purchase_type,
+                'advance_amount' => $request->advance_amount,
+                'advance_quantity' => $request->advance_quantity,
+                'cost_per_unit' => $request->cost_per_unit,
+            ]);
+
+            $mainTransaction = Transaction::where('purchase_id', $id)
+                ->where('table_type', 'Purchase')
+                ->first();
+
+            if ($mainTransaction) {
+                $mainTransaction->update([
+                    'date' => $request->advance_date,
+                    'amount' => $request->advance_amount,
+                    'at_amount' => $request->advance_amount,
+                    'payment_type' => $request->purchase_type,
+                ]);
+            }
+
+            $newExpenses = $request->input('expenses', []);
+            $newExpenseIds = collect($newExpenses)->pluck('expense_id')->toArray();
+
+            Transaction::where('purchase_id', $id)
+                ->where('table_type', 'Expenses')
+                ->whereNotIn('chart_of_account_id', $newExpenseIds)
+                ->delete();
+
+            foreach ($newExpenses as $expense) {
+                $transactionExpense = Transaction::where('purchase_id', $id)
+                    ->where('chart_of_account_id', $expense['expense_id'])
+                    ->where('table_type', 'Expenses')
+                    ->first();
+
+                if ($transactionExpense) {
+                    $transactionExpense->update([
+                        'date' => $request->advance_date,
+                        'amount' => $expense['amount'],
+                        'at_amount' => $expense['amount'],
+                        'payment_type' => $expense['payment_type'],
+                        'description' => $expense['description'],
+                        'note' => $expense['note'],
+                    ]);
+                } else {
+                    $newTransaction = new Transaction();
+                    $newTransaction->date = $request->advance_date;
+                    $newTransaction->table_type = 'Expenses';
+                    $newTransaction->purchase_id = $purchase->id;
+                    $newTransaction->supplier_id = $request->supplier_id;
+                    $newTransaction->amount = $expense['amount'];
+                    $newTransaction->at_amount = $expense['amount'];
+                    $newTransaction->payment_type = $expense['payment_type'];
+                    $newTransaction->chart_of_account_id = $expense['expense_id'];
+                    $newTransaction->expense_id = $expense['expense_id'];
+                    $newTransaction->description = $expense['description'];
+                    $newTransaction->note = $expense['note'];
+                    $newTransaction->transaction_type = 'Current';
+                    $newTransaction->created_by = auth()->id();
+                    $newTransaction->save();
+
+                    $newTransaction->tran_id = 'EX' . date('ymd') . str_pad($newTransaction->id, 4, '0', STR_PAD_LEFT);
+                    $newTransaction->save();
+                }
+            }
+
+            DB::commit();
+
+            return response()->json(['message' => 'Order updated successfully!'], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'Something went wrong!', 'error' => $e->getMessage()], 500);
+        }
     }
 
     public function advancePayment(Request $request)

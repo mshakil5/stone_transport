@@ -328,7 +328,7 @@
                                     </table>
                                 </div>
 
-                                <div class="col-sm-6 mt-4 mb-5">
+                                <div class="col-sm-6 mt-4 mb-5 d-none">
 
                                     <div class="row d-none">
                                         <div class="col-sm-6 d-flex align-items-center">
@@ -366,6 +366,36 @@
                                         </div>
                                     </div>
                                     
+                                </div>
+
+                                <div class="col-sm-6 mt-4 mb-5">
+                                    <h5 class="mb-3">Expenses:</h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Expense Type</th>
+                                                    <th>Payment Type</th>
+                                                    <th>Amount</th>
+                                                    <th>Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @forelse($purchaseExpenses as $expense)
+                                                    <tr>
+                                                        <td>{{ $expense->chartOfAccount->account_name ?? 'N/A' }}</td>
+                                                        <td>{{ $expense->payment_type }}</td>
+                                                        <td>{{ number_format($expense->amount, 2) }}</td>
+                                                        <td>{{ $expense->description ?? '-' }}</td>
+                                                    </tr>
+                                                @empty
+                                                    <tr>
+                                                        <td colspan="4" class="text-center text-muted">No expenses added</td>
+                                                    </tr>
+                                                @endforelse
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
 
                                 <div class="col-sm-6 mt-4 mb-5">

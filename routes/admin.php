@@ -274,6 +274,9 @@ Route::group(['prefix' =>'admin/', 'middleware' => ['auth', 'is_admin']], functi
 
     Route::post('/store-order', [StockController::class, 'storeOrder'])->name('storeOrder');
 
+    Route::get('/edit-order/{id}', [StockController::class, 'editOrder'])->name('editOrder');
+    Route::post('/update-order/{id}', [StockController::class, 'updateOrder'])->name('updateOrder');
+
     Route::post('/advance-payment', [StockController::class, 'advancePayment']);
     Route::post('/advance-payment-update', [StockController::class, 'advancePaymentUpdate']);
 
